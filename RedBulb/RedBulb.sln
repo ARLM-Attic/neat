@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedBulb", "RedBulb\RedBulb.csproj", "{565CD6B9-7FA5-4EBA-AF83-FEFC8CE1EA6D}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs05.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = RedBulb\\Content\\Content.contentproj
+		SccProjectTopLevelParentUniqueName1 = RedBulb\\RedBulb.csproj
+		SccProjectName1 = RedBulb/Content
+		SccLocalPath1 = RedBulb\\Content
+		SccProjectUniqueName2 = RedBulb\\RedBulb.csproj
+		SccProjectName2 = RedBulb
+		SccLocalPath2 = RedBulb
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{565CD6B9-7FA5-4EBA-AF83-FEFC8CE1EA6D}.Debug|x86.ActiveCfg = Debug|x86
+		{565CD6B9-7FA5-4EBA-AF83-FEFC8CE1EA6D}.Debug|x86.Build.0 = Debug|x86
+		{565CD6B9-7FA5-4EBA-AF83-FEFC8CE1EA6D}.Release|x86.ActiveCfg = Release|x86
+		{565CD6B9-7FA5-4EBA-AF83-FEFC8CE1EA6D}.Release|x86.Build.0 = Release|x86
+		{C8BE0818-2280-46EF-86E8-8524504BB946}.Debug|x86.ActiveCfg = Debug|x86
+		{C8BE0818-2280-46EF-86E8-8524504BB946}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
