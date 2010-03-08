@@ -29,6 +29,7 @@ namespace RedBulb
         public void LoadFont(string name, SpriteFont data)
         {
             name = name.ToLower();
+            if (fonts.ContainsKey(name)) fonts.Remove(name);
             fonts.Add(name, data);
         }
 
