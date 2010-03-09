@@ -13,7 +13,8 @@
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>9be72586-700e-436f-b77a-aa88d18c3e1e</XnaCrossPlatformGroupID>
     <ApplicationIcon>mass.ico</ApplicationIcon>
-    <Thumbnail>GameThumbnail.png</Thumbnail>
+    <Thumbnail>
+    </Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ManifestCertificateThumbprint>E4AB69F871249E915299B217CA88500DEAB3DEFA</ManifestCertificateThumbprint>
     <ManifestKeyFile>MassacreXMAS_TemporaryKey.pfx</ManifestKeyFile>
@@ -97,7 +98,7 @@
     <Compile Include="TreeMain.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GameThumbnail.png" />
+    <Content Include="GameThumbnail1.png" />
     <Content Include="mass.ico" />
   </ItemGroup>
   <ItemGroup>
