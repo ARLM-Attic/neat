@@ -98,7 +98,7 @@
     <Compile Include="TreeMain.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GameThumbnail1.png" />
+    <Content Include="GameThumbnail.png" />
     <Content Include="mass.ico" />
   </ItemGroup>
   <ItemGroup>
