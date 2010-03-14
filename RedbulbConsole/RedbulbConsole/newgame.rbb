@@ -1,0 +1,4 @@
+﻿rem RedBulb Batch File
+c_hide
+
+call config.rbb

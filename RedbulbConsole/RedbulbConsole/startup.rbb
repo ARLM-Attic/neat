@@ -1,0 +1,15 @@
+﻿rem RedBulb Batch File
+c_hide
+
+echo Loading Sprites
+load texture sprites\1080sky
+load texture sprites\agameby
+load texture sprites\cloud1
+load texture sprites\nozunelogo
+load texture sprites\mazelllogo
+load texture sprites\lobbybg
+
+echo Loading Music
+load song sounds\titlemusic1
+
+call config.rbb
