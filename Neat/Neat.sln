@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neat", "Neat\Neat\Neat.csproj", "{415C88FE-D239-45DA-80B5-95DF35A03CC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeatContent", "Neat\NeatContent\NeatContent.contentproj", "{6F005619-AD80-47AB-A975-061A4766F11C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SideScrollerDesigner", "SideScrollerDesigner\SideScrollerDesigner.csproj", "{61743B32-891D-434B-A21A-9FE68F394451}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverRaidDesigner", "RiverRaidDesigner\RiverRaidDesigner.csproj", "{669E8515-D6AF-4F37-944A-7D33D21D488D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverRaidX", "RiverRaidX\RiverRaidX\RiverRaidX.csproj", "{09A7AE23-5FAA-4917-A1E5-489F374E99C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverRaidXContent", "RiverRaidX\RiverRaidXContent\RiverRaidXContent.contentproj", "{02005D6D-5C35-4FBC-9263-678D47920956}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{415C88FE-D239-45DA-80B5-95DF35A03CC0}.Debug|x86.ActiveCfg = Debug|x86
+		{415C88FE-D239-45DA-80B5-95DF35A03CC0}.Debug|x86.Build.0 = Debug|x86
+		{415C88FE-D239-45DA-80B5-95DF35A03CC0}.Release|x86.ActiveCfg = Release|x86
+		{415C88FE-D239-45DA-80B5-95DF35A03CC0}.Release|x86.Build.0 = Release|x86
+		{6F005619-AD80-47AB-A975-061A4766F11C}.Debug|x86.ActiveCfg = Debug|x86
+		{6F005619-AD80-47AB-A975-061A4766F11C}.Release|x86.ActiveCfg = Release|x86
+		{61743B32-891D-434B-A21A-9FE68F394451}.Debug|x86.ActiveCfg = Debug|x86
+		{61743B32-891D-434B-A21A-9FE68F394451}.Debug|x86.Build.0 = Debug|x86
+		{61743B32-891D-434B-A21A-9FE68F394451}.Release|x86.ActiveCfg = Release|x86
+		{61743B32-891D-434B-A21A-9FE68F394451}.Release|x86.Build.0 = Release|x86
+		{669E8515-D6AF-4F37-944A-7D33D21D488D}.Debug|x86.ActiveCfg = Debug|x86
+		{669E8515-D6AF-4F37-944A-7D33D21D488D}.Debug|x86.Build.0 = Debug|x86
+		{669E8515-D6AF-4F37-944A-7D33D21D488D}.Release|x86.ActiveCfg = Release|x86
+		{669E8515-D6AF-4F37-944A-7D33D21D488D}.Release|x86.Build.0 = Release|x86
+		{09A7AE23-5FAA-4917-A1E5-489F374E99C2}.Debug|x86.ActiveCfg = Debug|x86
+		{09A7AE23-5FAA-4917-A1E5-489F374E99C2}.Debug|x86.Build.0 = Debug|x86
+		{09A7AE23-5FAA-4917-A1E5-489F374E99C2}.Release|x86.ActiveCfg = Release|x86
+		{09A7AE23-5FAA-4917-A1E5-489F374E99C2}.Release|x86.Build.0 = Release|x86
+		{02005D6D-5C35-4FBC-9263-678D47920956}.Debug|x86.ActiveCfg = Debug|x86
+		{02005D6D-5C35-4FBC-9263-678D47920956}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
