@@ -19,17 +19,17 @@ namespace NeatStarter
     {
         public NeatStarterGame()
         {
-            gameWidth = 800;
-            gameHeight = 600;
-            fullscreen = false;
+            GameWidth = 800;
+            GameHeight = 600;
+            FullScreen = false;
         }
 
         protected override void Initialize()
         {
             base.Initialize();
-            hasConsole = true;
-            consoleKey = Keys.OemTilde;
-            graphics.ApplyChanges();
+            HasConsole = true;
+            ConsoleKey = Keys.OemTilde;
+            Graphics.ApplyChanges();
             Window.Title = "THIS IS NEAT.";
         }
 
@@ -50,7 +50,7 @@ namespace NeatStarter
         protected override void Behave(GameTime gameTime)
         {
             if (IsTapped(Keys.F11))
-                graphics.ToggleFullScreen();
+                Graphics.ToggleFullScreen();
             if (IsTapped(Keys.Pause))
                 IsPaused = !IsPaused;
             base.Behave(gameTime);
@@ -64,7 +64,7 @@ namespace NeatStarter
         public override void CreateParts()
         {
             base.CreateParts();
-            parts["mainmenu"] = new StartScreen(this);
+            Parts["mainmenu"] = new StartScreen(this);
         }
     }
 }

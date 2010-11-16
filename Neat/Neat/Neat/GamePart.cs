@@ -24,10 +24,10 @@ namespace Neat
     public class GamePart
     {
 #region Fields
-        protected SpriteBatch spriteBatch { get { return game.spriteBatch; } set { game.spriteBatch = value; } }
+        protected SpriteBatch SpriteBatch { get { return game.SpriteBatch; } set { game.SpriteBatch = value; } }
         public NeatGame game;
         public GameTime gamesTime;
-        public uint frame { get { return game.frame; }}
+        public uint frame { get { return game.Frame; }}
 #endregion
 
 #region Initialize

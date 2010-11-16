@@ -33,9 +33,9 @@ namespace Neat
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
 
-        public Neat.Console.Console console;
-        public bool hasConsole = true;
-        public Keys consoleKey = Keys.OemTilde;
+        public Neat.Console.Console Console;
+        public bool HasConsole = true;
+        public Keys ConsoleKey = Keys.OemTilde;
 #if WINDOWS
         public bool IsWideScreen()
         {
@@ -43,57 +43,57 @@ namespace Neat
         }
 #endif
 
-        public bool freezed = false;
-        public bool forceSignIn = true;
+        public bool Freezed = false;
+#if XLIVE
+        public bool ForceSignIn = true;
+#endif
+        public RAM Ram;
 
-        public RAM ram;
-
-        public GraphicsDeviceManager graphics;
-        public SpriteBatch spriteBatch;
-        public Random randomGenerator;
+        public GraphicsDeviceManager Graphics;
+        public SpriteBatch SpriteBatch;
+        public Random RandomGenerator;
 
 #if XLIVE
         public NetworkHelper networkHelper;
 #endif
 
-        public Dictionary<string,GamePart> parts;
-        public string activePart;
+        public Dictionary<string,GamePart> Parts;
+        public string ActivePart;
 
 #if WINDOWS_PHONE
-        public int gameWidth
+        public int GameWidth
         {
             get{return Window.ClientBounds.Width;}
             set{}
         }
-        public int gameHeight
+        public int GameHeight
         {
             get{return Window.ClientBounds.Height;}
             set{}
         }
 #else
-
         public int 
-            gameWidth = 1024,
-            gameHeight=768;
+            GameWidth = 1024,
+            GameHeight=768;
 #endif
-        public bool fullscreen = false;
+        public bool FullScreen = false;
 
 #if WINDOWS
         public virtual void InitializeGraphics()
         {
             GraphicsDevice.Reset();
             
-            graphics.PreferredBackBufferWidth = gameWidth;
-            graphics.PreferredBackBufferHeight = gameHeight;
+            Graphics.PreferredBackBufferWidth = GameWidth;
+            Graphics.PreferredBackBufferHeight = GameHeight;
             
-            graphics.IsFullScreen = fullscreen;
+            Graphics.IsFullScreen = FullScreen;
             
-            graphics.ApplyChanges();
+            Graphics.ApplyChanges();
         }
 
         public void ToggleFullScreen()
         {
-            graphics.ToggleFullScreen();
+            Graphics.ToggleFullScreen();
         }
 #endif
 #if WINDOWS_PHONE
@@ -109,7 +109,7 @@ namespace Neat
 
         public NeatGame()
         {
-            ram = new RAM(this);
+            Ram = new RAM(this);
 #if !WINDOWS_PHONE
             
             videos = new Dictionary<string, Video>();
@@ -120,12 +120,12 @@ namespace Neat
             effects = new Dictionary<string, Effect>();
             fonts = new Dictionary<string, SpriteFont>();
 
-            console = new Neat.Console.Console(this);
+            Console = new Neat.Console.Console(this);
 #if XLIVE
             Components.Add(new GamerServicesComponent(this));
 #endif
-            graphics = new GraphicsDeviceManager(this);
-            randomGenerator = new Random();
+            Graphics = new GraphicsDeviceManager(this);
+            RandomGenerator = new Random();
             Content.RootDirectory = "Content";
 
 
@@ -136,21 +136,21 @@ namespace Neat
         }
 
         bool isFirstTime = true;
-        public uint frame = 0;
-        public const uint maxFrame = 16777214;
+        public uint Frame = 0;
+        public const uint MaxFrame = uint.MaxValue - 2;
 
-        public void ActivatePart(string  part)
+        public void ActivatePart(string part)
         {
-            parts[part].Activate();
-            activePart = part;
+            Parts[part].Activate();
+            ActivePart = part;
         }
 
-        public SpriteFont normalFont;
+        public SpriteFont NormalFont;
 
         #region Logic
         protected override void Initialize()
         {
-            frame = 0;
+            Frame = 0;
 
 #if XLIVE
             networkHelper = new NetworkHelper(this,gamestime);
@@ -161,35 +161,27 @@ namespace Neat
             InitializeGraphics();
 
             SayMessage("ClientBounds: " + Window.ClientBounds.Width.ToString() + "x" + Window.ClientBounds.Height.ToString());
-            SayMessage("Display Mode: " + graphics.GraphicsDevice.DisplayMode.Width.ToString() + "x" + graphics.GraphicsDevice.DisplayMode.Height.ToString());
-            SayMessage("Aspect Ratio: " + graphics.GraphicsDevice.DisplayMode.AspectRatio.ToString());
+            SayMessage("Display Mode: " + Graphics.GraphicsDevice.DisplayMode.Width.ToString() + "x" + Graphics.GraphicsDevice.DisplayMode.Height.ToString());
+            SayMessage("Aspect Ratio: " + Graphics.GraphicsDevice.DisplayMode.AspectRatio.ToString());
 
             base.Initialize();
         }
 
         public virtual void CreateParts()
         {
-            parts.Add("mainmenu", new EasyMenus.MainMenu(this));
-            parts.Add("quitconfirm", new EasyMenus.QuitConfirmationMenu(this));
-            parts.Add("optionsmenu", new EasyMenus.OptionsMenu(this));
-            parts.Add("ingamemenu", new EasyMenus.InGameMenu(this));
-        }
-
-        public virtual void RestartGame()
-        {
+            Parts.Add("mainmenu", new EasyMenus.MainMenu(this));
+            Parts.Add("quitconfirm", new EasyMenus.QuitConfirmationMenu(this));
+            Parts.Add("optionsmenu", new EasyMenus.OptionsMenu(this));
+            Parts.Add("ingamemenu", new EasyMenus.InGameMenu(this));
         }
 
         void InitializeParts()
         {
-            foreach (var p in parts)
+            foreach (var p in Parts)
             {
                 p.Value.Initialize();
             }
         }
-
-        #endregion
-
-        #region Debug Helpers
 
         #endregion
     }

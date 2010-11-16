@@ -32,10 +32,10 @@ namespace Neat
             try
             {
                 // GRAPHICS
-                if (key == "g_width") _game.gameWidth = int.Parse(value);
-                else if (key == "g_height") _game.gameHeight = int.Parse(value);
-                else if (key == "g_fullscreen") _game.fullscreen = bool.Parse(value);
-                else if (key == "g_autoclear") _game.autoClear = bool.Parse(value);
+                if (key == "g_width") _game.GameWidth = int.Parse(value);
+                else if (key == "g_height") _game.GameHeight = int.Parse(value);
+                else if (key == "g_fullscreen") _game.FullScreen = bool.Parse(value);
+                else if (key == "g_autoclear") _game.AutoClear = bool.Parse(value);
 
                 // SFX/ MUSIC
                 else if (key == "a_mediavolume") MediaPlayer.Volume = float.Parse(value);
@@ -45,7 +45,7 @@ namespace Neat
                 else if (key == "a_mute") _game.muteAllSounds = bool.Parse(value);
 
                 // ENGINE
-                else if (key == "e_freeze") _game.freezed = bool.Parse(value);
+                else if (key == "e_freeze") _game.Freezed = bool.Parse(value);
             }
             catch { }
             DVar v = new DVar();
@@ -58,10 +58,10 @@ namespace Neat
             try
             {
                 // GRAPHICS
-                if (key == "g_width") return _game.gameWidth.ToString();
-                else if (key == "g_height") return _game.gameHeight.ToString();
-                else if (key == "g_fullscreen") return _game.fullscreen.ToString();
-                else if (key == "g_autoclear") return _game.autoClear.ToString();
+                if (key == "g_width") return _game.GameWidth.ToString();
+                else if (key == "g_height") return _game.GameHeight.ToString();
+                else if (key == "g_fullscreen") return _game.FullScreen.ToString();
+                else if (key == "g_autoclear") return _game.AutoClear.ToString();
 
                 // SFX/ MUSIC
                 else if (key == "a_mediavolume") return MediaPlayer.Volume.ToString();
@@ -71,7 +71,7 @@ namespace Neat
                 else if (key == "a_mute") return _game.muteAllSounds.ToString();
 
                 // ENGINE
-                else if (key == "e_freeze") return _game.freezed.ToString();
+                else if (key == "e_freeze") return _game.Freezed.ToString();
             }
             catch { return "#ERROR"; }
             key = key.Trim().ToLower();

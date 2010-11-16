@@ -21,6 +21,7 @@ using Neat.MenuSystem;
 
 namespace Neat
 {
+    //TODO: Uncomment whenever XLIVE can actually be used.
     public delegate void XEventHandler();
 #if XLIVE && TODO
     public class NetworkHelper

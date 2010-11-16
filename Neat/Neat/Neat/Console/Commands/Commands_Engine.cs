@@ -38,8 +38,8 @@ namespace Neat.Console
         {
             try
             {
-                game.freezed = !game.freezed;
-                WriteLine("e_freeze is " + (game.freezed ? "ON" : "OFF"));
+                game.Freezed = !game.Freezed;
+                WriteLine("e_freeze is " + (game.Freezed ? "ON" : "OFF"));
             }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }

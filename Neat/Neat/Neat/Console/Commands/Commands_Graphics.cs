@@ -21,8 +21,8 @@ namespace Neat.Console
             {
                 int _w = int.Parse(args[1]);
                 int _h = int.Parse(args[2]);
-                game.gameWidth = _w;
-                game.gameHeight = _h;
+                game.GameWidth = _w;
+                game.GameHeight = _h;
             }
             catch
             {
@@ -46,11 +46,11 @@ namespace Neat.Console
         void g_fullscreen(IList<string> args)
         {
             if (args.Count == 1) //Toggle Fullscreen
-                game.fullscreen = !game.fullscreen;
+                game.FullScreen = !game.FullScreen;
             else try //Has Parameters
                 {
                     bool _state = bool.Parse(args[1]);
-                    game.fullscreen = _state;
+                    game.FullScreen = _state;
                 }
                 catch
                 {
@@ -65,11 +65,11 @@ namespace Neat.Console
         void g_showmouse(IList<string> args)
         {
             if (args.Count == 1) //Toggle Fullscreen
-                game.showMouse = !game.showMouse;
+                game.ShowMouse = !game.ShowMouse;
             else try //Has Parameters
                 {
                     bool _state = bool.Parse(args[1]);
-                    game.showMouse = _state;
+                    game.ShowMouse = _state;
                 }
                 catch
                 {
@@ -83,11 +83,11 @@ namespace Neat.Console
         void g_autoclear(IList<string> args)
         {
             if (args.Count == 1) //Toggle Fullscreen
-                game.autoClear = !game.autoClear;
+                game.AutoClear = !game.AutoClear;
             else try //Has Parameters
                 {
                     bool _state = bool.Parse(args[1]);
-                    game.autoClear = _state;
+                    game.AutoClear = _state;
                 }
                 catch
                 {
@@ -100,7 +100,7 @@ namespace Neat.Console
              */
         void g_background(IList<string> args)
         {
-            try { game.backGroundColor = ParseColor(Args2Str(args, 1)); }
+            try { game.BackGroundColor = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
@@ -114,10 +114,10 @@ namespace Neat.Console
             try
             {
                 if (args.Count > 4)
-                    game.spriteBatch.Draw(game.getTexture(Args2Str(args, 5)),
+                    game.SpriteBatch.Draw(game.getTexture(Args2Str(args, 5)),
                         new Rectangle(int.Parse(args[1]), int.Parse(args[2]), int.Parse(args[3]), int.Parse(args[4])), Color.White);
                 else
-                    game.spriteBatch.Draw(game.getTexture(args[3]), //game.getTexture(Args2Str(args, 3)),
+                    game.SpriteBatch.Draw(game.getTexture(args[3]), //game.getTexture(Args2Str(args, 3)),
                         new Vector2(float.Parse(args[1]), float.Parse(args[2])), Color.White);
             }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }

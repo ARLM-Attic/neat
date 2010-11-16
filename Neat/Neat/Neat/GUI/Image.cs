@@ -41,11 +41,11 @@ namespace Neat.GUI
 
         public void CenterX()
         {
-            Position.X = game.gameWidth / 2 - game.getTexture(BackgroundImage).Width / 2;
+            Position.X = game.GameWidth / 2 - game.getTexture(BackgroundImage).Width / 2;
         }
         public void CenterY()
         {
-            Position.Y = game.gameHeight / 2 - game.getTexture(BackgroundImage).Height / 2;
+            Position.Y = game.GameHeight / 2 - game.getTexture(BackgroundImage).Height / 2;
         }
         public void Center()
         {
@@ -56,7 +56,7 @@ namespace Neat.GUI
         public void StretchToScreen()
         {
             Position = Vector2.Zero;
-            Size = new Vector2(((float)(game.gameWidth)), ((float)(game.gameHeight)));
+            Size = new Vector2(((float)(game.GameWidth)), ((float)(game.GameHeight)));
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {

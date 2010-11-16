@@ -50,7 +50,7 @@ namespace Neat
         {
             alpha += fadeRate;
             if (alpha > 2.0f && NextScreen.Trim().Length > 0)
-                game.console.Run("ap " + NextScreen);
+                game.Console.Run("ap " + NextScreen);
             base.Behave(gameTime);
         }
 
@@ -63,10 +63,10 @@ namespace Neat
         public override void Render(GameTime gameTime)
         {
             var t = game.getTexture("neatlogo");
-            Vector2 p = new Vector2( (game.gameWidth - t.Width) / 2f, (game.gameHeight - t.Height) / 2f);
+            Vector2 p = new Vector2( (game.GameWidth - t.Width) / 2f, (game.GameHeight - t.Height) / 2f);
             game.GetEffect("ColorFilter").Parameters["mulColor"].SetValue(new Vector4(MathHelper.Clamp(alpha,0.0f,1.0f)));
             game.UseEffect("ColorFilter");
-            game.spriteBatch.Draw(t, p, Color.White);
+            game.SpriteBatch.Draw(t, p, Color.White);
             base.Render(gameTime);
         }
     }

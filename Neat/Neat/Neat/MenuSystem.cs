@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
+using Neat.Graphics;
  
 
 namespace Neat
@@ -25,7 +26,7 @@ namespace Neat
     {
         public class MenuSystem
         {
-            public Vector2 position;
+            public Vector2 Position;
             
             NeatGame game;
             SpriteFont font;
@@ -38,10 +39,10 @@ namespace Neat
             float selectedItemColorRate = -0.001f;
             float selectedItemColor = 1f;
             
-            public List<MenuItem> items;
+            public List<MenuItem> Items;
 
             int _selectedItem = 0;
-            public int selectedItem
+            public int SelectedItem
             {
                 get { return _selectedItem; }
                 set
@@ -49,18 +50,18 @@ namespace Neat
                     _selectedItem = value;
                     try
                     {
-                        if (items.Count > value) items[value].Focused();
+                        if (Items.Count > value) Items[value].Focused();
                     }
                     catch { }
                 }
             }
-            public bool repeat = true;
-            public bool enableShortcuts = false ;
-            public Vector2 itemsOffset = new Vector2(0, 65f);
-            public Vector2 selectedItemOffset = new Vector2(5f, 0);
-            public Color defaultItemColor = Color.CornflowerBlue;
-            public Color selectedItemForeground = Color.Yellow;
-            public Color disabledItemForeground = Color.Silver;
+            public bool Repeat = true;
+            public bool EnableShortcuts = false ;
+            public Vector2 ItemsOffset = new Vector2(0, 65f);
+            public Vector2 SelectedItemOffset = new Vector2(5f, 0);
+            public Color DefaultItemColor = Color.CornflowerBlue;
+            public Color SelectedItemForeground = Color.Yellow;
+            public Color DisabledItemForeground = Color.Silver;
             float longestItem = 0f;
             
             public MenuSystem(NeatGame g, Vector2 b, SpriteFont f)
@@ -68,19 +69,19 @@ namespace Neat
                 font = f;
                 game = g;
                 
-                position = b;
+                Position = b;
                 Initialize();
             }
 
             void Initialize()
             {
-                items = new List<MenuItem>();
+                Items = new List<MenuItem>();
                 itemSelector = Rectangle.Empty;
             }
 
             public MenuItem GetLastMenuItem()
             {
-                return items[items.Count - 1];
+                return Items[Items.Count - 1];
             }
             public void Enable()
             {
@@ -115,7 +116,7 @@ namespace Neat
                     if (bracketDistance < 0) bracketDistanceIncreasing = !bracketDistanceIncreasing;
                 }
 
-                foreach (MenuItem item in items)
+                foreach (MenuItem item in Items)
                 {
                     item.alpha += item.alphaV;
                     if (item.alpha > maxItemAlpha )
@@ -129,7 +130,7 @@ namespace Neat
                         item.alpha = minItemAlpha;
                     }
                 }
-                Vector3 c = selectedItemForeground.ToVector3();
+                Vector3 c = SelectedItemForeground.ToVector3();
                 if (selectedItemColor > 1f)
                 {
                     selectedItemColor = 1f;
@@ -144,7 +145,7 @@ namespace Neat
                 }
                 selectedItemColor += selectedItemColorRate;
                 c.Y = selectedItemColor;
-                selectedItemForeground = new Color(c);
+                SelectedItemForeground = new Color(c);
             }
 
             void HandleInput(GameTime gameTime)
@@ -156,7 +157,7 @@ namespace Neat
                 if (game.IsTapped (Keys.Enter))
 #endif
                     { game.GetSound("bleep3").Play(1f,0,0); 
-                    items[ selectedItem].Selected();}
+                    Items[ SelectedItem].Selected();}
 #if ZUNE
                  (IsTapped( Buttons.DPadDown)) 
 #elif WINDOWS || WINDOWS_PHONE
@@ -171,7 +172,7 @@ namespace Neat
 #endif
                     { Bleep(); PrevItem(); }
 #if WINDOWS || WINDOWS_PHONE
-                if (enableShortcuts) HandleShortcuts();
+                if (EnableShortcuts) HandleShortcuts();
 #endif
 #if WINDOWS_PHONE
                 if (game.IsTouched())
@@ -198,7 +199,6 @@ namespace Neat
             void Bleep()
             {
                 game.GetSound("bleep10").Play(1f,0,0);
-                //game.bleepSound.Play(1f);
             }
             void HandleShortcuts()
             {
@@ -206,17 +206,17 @@ namespace Neat
             }
             void NextItem()
             {
-                selectedItem++;
-                if (selectedItem >= items.Count)
+                SelectedItem++;
+                if (SelectedItem >= Items.Count)
                 {
-                    if (repeat) selectedItem = 0;
-                    else selectedItem = items.Count - 1;
+                    if (Repeat) SelectedItem = 0;
+                    else SelectedItem = Items.Count - 1;
                 }
-                if (!items[selectedItem].enabled)
+                if (!Items[SelectedItem].Enabled)
                 {
-                    if (selectedItem == items.Count - 1)
+                    if (SelectedItem == Items.Count - 1)
                     {
-                        if (!repeat) PrevItem();
+                        if (!Repeat) PrevItem();
                         else NextItem();
                     }
                     else
@@ -226,18 +226,18 @@ namespace Neat
             void PrevItem()
             {
 
-                if (selectedItem == 0)
+                if (SelectedItem == 0)
                 {
-                    if (repeat) selectedItem = items.Count - 1;
+                    if (Repeat) SelectedItem = Items.Count - 1;
                     //else selectedItem = 0;
                 }
                 else
-                    selectedItem--;
-                if (!items[selectedItem].enabled)
+                    SelectedItem--;
+                if (!Items[SelectedItem].Enabled)
                 {
-                    if (selectedItem == 0)
+                    if (SelectedItem == 0)
                     {
-                        if (!repeat) NextItem();
+                        if (!Repeat) NextItem();
                         else PrevItem();
                     }
                     else
@@ -271,52 +271,40 @@ namespace Neat
                 if (enabled) Render(gameTime);   
             }
 
-            Color GetShadowColorFromAlpha(float alpha)
-            {
-                return game.GetColorWithAlpha(Color.Black, alpha);
-                //Vector3 c = Color.Black.ToVector3();
-                //return new Color(new Vector4(c, alpha));
-            }
-            Color GetColorWithAlpha(Color col,float alpha)
-            {
-                return game.GetColorWithAlpha(col, alpha);
-                //Vector3 c = col.ToVector3();
-                //return new Color(new Vector4(c, alpha));
-            }
             public void Render(GameTime gameTime)
             {
-                for (int i = 0; i < items.Count ; i++)
+                for (int i = 0; i < Items.Count ; i++)
                 {
-                    Color drawColor = items[i].GetForeColor();
-                    bool isSelected = (selectedItem == i);
+                    Color drawColor = Items[i].GetForeColor();
+                    bool isSelected = (SelectedItem == i);
                     //if (selectedItem == i) drawColor = selectedItemForeground;
-                    if (!items[i].enabled) drawColor = GetColorWithAlpha( disabledItemForeground, items[i].alpha);
-                    
-                    game.DrawShadowedString(
+                    if (!Items[i].Enabled) drawColor = GraphicsHelper.GetColorWithAlpha( DisabledItemForeground, Items[i].alpha);
+
+                    GraphicsHelper.DrawShadowedString(game.SpriteBatch,
                         font,
-                        (items[i].caption),
-                        (position-centerOffset)+i*itemsOffset+(isSelected?selectedItemOffset:Vector2.Zero),
-                        (isSelected?selectedItemForeground :drawColor),
-                        (isSelected ? Color.Black : GetShadowColorFromAlpha(items[i].alpha ))
+                        (Items[i].Caption),
+                        (Position-centerOffset)+i*ItemsOffset+(isSelected?SelectedItemOffset:Vector2.Zero),
+                        (isSelected?SelectedItemForeground :drawColor),
+                        (isSelected ? Color.Black :GraphicsHelper.GetShadowColorFromAlpha(Items[i].alpha ))
                         );
                     if (isSelected)
                     {
-                        game.spriteBatch.DrawString(
+                        game.SpriteBatch.DrawString(
                             font,
                             "| ",
-                            ((position - centerOffset) + i * itemsOffset + (isSelected ? selectedItemOffset : Vector2.Zero)) -
+                            ((Position - centerOffset) + i * ItemsOffset + (isSelected ? SelectedItemOffset : Vector2.Zero)) -
                             new Vector2(font.MeasureString("| ").X + bracketDistance, 0),
                             Color.Brown);
-                        game.spriteBatch.DrawString(
+                        game.SpriteBatch.DrawString(
                             font,
                             " |",
-                            ((position - centerOffset) + i * itemsOffset + (isSelected ? selectedItemOffset : Vector2.Zero)) +
+                            ((Position - centerOffset) + i * ItemsOffset + (isSelected ? SelectedItemOffset : Vector2.Zero)) +
                             (new Vector2(longestItem + bracketDistance, 0)),
                             Color.Brown);
                     }
                 }
 
-                game.spriteBatch.Draw(
+                game.SpriteBatch.Draw(
                     game.getTexture("menuFocus"),
                     itemSelector,
                     Color.White);
@@ -330,19 +318,26 @@ namespace Neat
             Vector2 centerOffset=Vector2.Zero;
             public void AddItem(string Caption, bool Enabled)
             {
-                items.Add(new MenuItem(this, Caption, Enabled));
+                Items.Add(new MenuItem(this, Caption, Enabled));
                 RecalculateSizes();
-                GetLastMenuItem().forecolor = defaultItemColor;
-                GetLastMenuItem().alpha = (float)items.Count * 0.1f;
+                GetLastMenuItem().Forecolor = DefaultItemColor;
+                GetLastMenuItem().alpha = (float)Items.Count * 0.1f;
                 GetLastMenuItem().alphaV = itemAlphaRate;
             }
             public void RecalculateSizes()
             {
-                foreach (MenuItem item in items)
+                try
                 {
-                    if (font.MeasureString(item.caption).X > longestItem) longestItem = font.MeasureString(item.caption).X;
+                    foreach (MenuItem item in Items)
+                    {
+                        if (font.MeasureString(item.Caption).X > longestItem) longestItem = font.MeasureString(item.Caption).X;
+                    }
+                    centerOffset = new Vector2(longestItem / 2, ((Items.Count - 1) * ItemsOffset.Y + font.MeasureString("|").Y) / 2);
                 }
-                centerOffset = new Vector2(longestItem / 2, ((items.Count - 1) * itemsOffset.Y + font.MeasureString("|").Y) / 2);
+                catch (Exception e)
+                {
+                    game.Console.WriteLine("MenuSystem.RecalculateSizes(): " + e.Message);
+                }
             }
             
         }

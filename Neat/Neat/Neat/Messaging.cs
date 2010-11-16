@@ -24,8 +24,9 @@ namespace Neat
     {
         GameTime gamestime;
         // Helper funcs for debug n messaging
+        // It's better to use Console.
         string[] gameMessages;
-        public int gameMessagesCount = 7;
+        public int GameMessagesCount = 7;
 
         public Vector2 messagesPosition = Vector2.Zero;
 
@@ -48,11 +49,11 @@ namespace Neat
             { 
                 // :-) Do nothing.
             }
-            for (int i = 0; i < gameMessagesCount - 1; i++)
+            for (int i = 0; i < GameMessagesCount - 1; i++)
             {
                 gameMessages[i] = gameMessages[i + 1];
             }
-            gameMessages[gameMessagesCount - 1] = msg;
+            gameMessages[GameMessagesCount - 1] = msg;
         }
 
         public string GetMessages()
@@ -67,8 +68,8 @@ namespace Neat
 
         public void ResetMessages()
         {
-            gameMessages = new string[gameMessagesCount];
-            for (int i = 0; i < gameMessagesCount; i++)
+            gameMessages = new string[GameMessagesCount];
+            for (int i = 0; i < GameMessagesCount; i++)
             {
                 gameMessages[i] = "";
             }

@@ -169,32 +169,28 @@ namespace Neat
         {
             return currentMouseState.LeftButton == ButtonState.Released && lastMouseState.LeftButton == ButtonState.Pressed;
         }
-
         public bool IsMousePressed()
         {
             return currentMouseState.LeftButton == ButtonState.Pressed;
         }
-
         public bool IsRightMouseClicked()
         {
             return currentMouseState.RightButton == ButtonState.Released && lastMouseState.RightButton == ButtonState.Pressed;
         }
-
         public bool IsRightMousePressed()
         {
             return currentMouseState.RightButton == ButtonState.Pressed;
         }
-
         public bool IsMidMouseClicked()
         {
             return currentMouseState.MiddleButton == ButtonState.Released && lastMouseState.MiddleButton == ButtonState.Pressed;
         }
-
         public bool IsMidMousePressed()
         {
             return currentMouseState.MiddleButton == ButtonState.Pressed;
         }
 #endif
+
 #if WINDOWS || WINDOWS_PHONE
         public bool IsTapped(Keys key)
         {

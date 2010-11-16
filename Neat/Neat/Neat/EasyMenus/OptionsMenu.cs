@@ -31,44 +31,77 @@ namespace Neat.EasyMenus
 
         int gameWidth2, gameHeight2;
         bool fullscreen2;
-
-         void OpenOptionsMenu()
+        MenuItem resolutionItem;
+        List<Point> resolutions;
+        int selectedResolution = 0;
+        void OpenOptionsMenu()
         {
-            gameWidth2 = game.gameWidth;
-            gameHeight2 = game.gameHeight;
-            fullscreen2 = game.fullscreen;
-            system.items[0].caption = ("Fullscreen: " + (fullscreen2 ? "ON" : "OFF"));
-            system.items[1].caption = ("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
+            gameWidth2 = game.GameWidth;
+            gameHeight2 = game.GameHeight;
+            fullscreen2 = game.FullScreen;
+            System.Items[0].Caption = ("Fullscreen: " + (fullscreen2 ? "ON" : "OFF"));
+            System.Items[1].Caption = ("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
+
+            resolutions = new List<Point>();
+            resolutions.Add(new Point(800, 600));
+            resolutions.Add(new Point(1024, 768));
+            resolutions.Add(new Point(1280, 720));
+            resolutions.Add(new Point(1280, 800));
+            resolutions.Add(new Point(1280, 1024));
+            resolutions.Add(new Point(1920, 1080));
+            resolutions.Add(new Point(1920, 1200));
+
+            Point currentRes = new Point(game.GameWidth, game.GameHeight);
+            bool found = false;
+            for (int i = 0; i < resolutions.Count; i++)
+            {
+                var item = resolutions[i];
+                if (item == currentRes)
+                {
+                    found = true;
+                    selectedResolution = i;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                resolutions.Add(currentRes);
+                selectedResolution = resolutions.Count - 1;
+            }
         }
 
-         public override void Activate()
-         {
-             OpenOptionsMenu();
-             base.Activate();
-         }
+        public override void Activate()
+        {
+            OpenOptionsMenu();
+            base.Activate();
+        }
 
         public override void CreateMenu()
         {
-            gameWidth2 = game.gameWidth;
-            gameHeight2 = game.gameHeight;
-            fullscreen2 = game.fullscreen;
-            system.AddItem("Fullscreen: " + (fullscreen2 ? "ON" : "OFF"));
+            gameWidth2 = game.GameWidth;
+            gameHeight2 = game.GameHeight;
+            fullscreen2 = game.FullScreen;
+            System.AddItem("Fullscreen: " + (fullscreen2 ? "ON" : "OFF"));
 #if !WINDOWS
-            system.GetLastMenuItem().enabled = false;
+            System.GetLastMenuItem().Enabled = false;
 #endif
-            system.AddItem("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
-            system.AddItem("Resolution: 1024x1024", false);
-            //system.AddItem("Apply Settings", false);
-            system.AddItem("Back");
-            system.items[1].caption = ("Resolution: " + gameWidth2.ToString() + "x" + gameHeight2.ToString());
-            system.itemsOffset = new Vector2(0, 100);
+            System.AddItem("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
+            System.AddItem("Resolution: ", true);
+            resolutionItem = System.GetLastMenuItem();
+            resolutionItem.Caption += game.GameWidth.ToString() + "x" + game.GameHeight.ToString();
+            System.AddItem("Apply Settings", true);
+            System.AddItem("Back");
+#if !WINDOWS
+            resolutionItem.Enabled = false;
+#endif
+            System.ItemsOffset = new Vector2(0, 100);
             Activate();
             base.CreateMenu();
         }
 
         public override void LoadContent()
         {
-            font = game.Content.Load<SpriteFont>("menuFont");
+            Font = game.Content.Load<SpriteFont>("menuFont");
             base.LoadContent();
         }
 
@@ -94,54 +127,44 @@ namespace Neat.EasyMenus
 
         void SelectItem()
         {
-            switch (system.selectedItem)
+            switch (System.SelectedItem)
             {
                 case 0:
                     fullscreen2 = !fullscreen2;
-                    system.items[0].caption = ("Fullscreen: " + (fullscreen2 ? "ON  " : "OFF  "));
+                    System.Items[0].Caption = ("Fullscreen: " + (fullscreen2 ? "ON  " : "OFF  "));
 #if WINDOWS
-                    game.ToggleFullScreen();
+                    //game.ToggleFullScreen();
 #endif
                     //optionsMenu.recalculateSizes();
                     break;
                 case 1:
                     game.muteAllSounds = !game.muteAllSounds;
-                    system.items[1].caption=("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
-                    break;
-                case 100000:
-                    if (gameWidth2 == 1024)
-                    {
-                        gameWidth2 = 1280; gameHeight2 = 960;
-                    }
-                    else if (gameWidth2 == 1280 && gameHeight2 == 960)
-                    {
-                        gameWidth2 = 1280; gameHeight2 = 1024;
-                    }
-                    else if (gameWidth2 == 1280 && gameHeight2 == 1024)
-                    {
-                        gameWidth2 = 1024; gameHeight2 = 768;
-                    }
-                    system.items[1].caption = ("Resolution: " + gameWidth2.ToString() + "x" + gameHeight2.ToString());
-                    //optionsMenu.recalculateSizes();
+                    System.Items[1].Caption=("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
                     break;
                 case 2:
-#if WINDOWS
-                    game.gameWidth = gameWidth2;
-                    game.gameHeight = gameHeight2;
-                    game.fullscreen = fullscreen2;
-                    game.InitializeGraphics();
-#endif
+                    selectedResolution = (selectedResolution + 1) % resolutions.Count;
+                    resolutionItem.Caption = ("Resolution: " + resolutions[selectedResolution].X.ToString() + "x" + resolutions[selectedResolution].Y.ToString());
+                    //optionsMenu.recalculateSizes();
                     break;
                 case 3:
-                    game.ActivatePart("mainmenu");
+#if WINDOWS
+                    game.GameWidth = resolutions[selectedResolution].X;
+                    game.GameHeight = resolutions[selectedResolution].Y;
+                    game.FullScreen = fullscreen2;
+                    game.InitializeGraphics();
+                    Reset();
+#endif
+                    break;
+                case 4:
+                    game.Console.Run("ap mainmenu");
                     break;
             }
         }
 
         public override void Render(GameTime gameTime)
         {
-            game.spriteBatch.Draw(game.getTexture("menuBackground"), new Rectangle(0, 0, game.gameWidth, game.gameHeight), Color.White);
-            game.spriteBatch.Draw(game.getTexture("transparent"), new Rectangle(0, 0, game.gameWidth, game.gameHeight), Color.Black);
+            game.SpriteBatch.Draw(game.getTexture("menuBackground"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.White);
+            game.SpriteBatch.Draw(game.getTexture("transparent"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.Black);
 
             base.Render(gameTime);
         }

@@ -7,57 +7,47 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Neat
 {
-    class IBTexture
+    class Sprite
     {
         List<Texture2D> textures;
         int frames;
         int playingFrame;
         string name;
-        double frameRate;
+        public double FrameRate;
 
-        public IBTexture(string textureName, List<Texture2D> t, double rate)
+        public Sprite(string textureName, List<Texture2D> t, double rate)
         {
             textures = t;
             frames = textures.Count;
             name = textureName;
-            frameRate = rate;
+            FrameRate = rate;
             playingFrame = 0;
         } //Animated Texture
 
-        public IBTexture(string textureName, Texture2D t)
+        public Sprite(string textureName, Texture2D t)
         {
             textures = new List<Texture2D>();
             textures.Add( t) ;
             frames = textures.Count;
             name = textureName;
-            frameRate = 0;
+            FrameRate = 0;
             playingFrame = 0;
         } //Still Texture
 
         public Texture2D GetTexture(GameTime gameTime)
         {
-            if (frameRate > 0)
+            if (FrameRate > 0)
             {
-                playingFrame = (int)(gameTime.TotalGameTime.TotalMilliseconds / frameRate) % frames;
-                /*if (gameTime.TotalGameTime.Milliseconds % frameRate == 0)
-                {
-                    playingFrame++;
-                    if (playingFrame >= frames) playingFrame = 0;
-                }*/
+                playingFrame = (int)(gameTime.TotalGameTime.TotalMilliseconds / FrameRate) % frames;
             }
             return textures[playingFrame];
         }
 
         public Texture2D GetTexture(uint frame)
         {
-            if (frameRate > 0)
+            if (FrameRate > 0)
             {
-                playingFrame = (int)(frame / frameRate) % frames;
-                /*if (gameTime.TotalGameTime.Milliseconds % frameRate == 0)
-                {
-                    playingFrame++;
-                    if (playingFrame >= frames) playingFrame = 0;
-                }*/
+                playingFrame = (int)(frame / FrameRate) % frames;
             }
             return textures[playingFrame];
         }

@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
+using Neat.Graphics;
  
 
 namespace Neat
@@ -96,29 +97,30 @@ namespace Neat
         {
             if (alpha > 0)
             {
-                game.spriteBatch.Draw(game.getTexture("mediaHUD"),
-                    drawPosition, game.GetColorWithAlpha(Color.White, alpha));
+                game.SpriteBatch.Draw(game.getTexture("mediaHUD"),
+                    drawPosition, GraphicsHelper.GetColorWithAlpha(Color.White, alpha));
 
                 //text
                 try
                 {
-                    game.DrawShadowedString(game.GetFont(fontName),
+                    GraphicsHelper.DrawShadowedString(game.SpriteBatch,
+                        game.GetFont(fontName),
                         trackName,
                        drawPosition + trackNameOffset,
-                       game.GetColorWithAlpha(Color.White, alpha),
-                       game.GetColorWithAlpha(Color.Black, alpha));
+                       GraphicsHelper.GetColorWithAlpha(Color.White, alpha),
+                       GraphicsHelper.GetColorWithAlpha(Color.Black, alpha));
 
-                    game.DrawShadowedString(game.GetFont(fontName),
+                    GraphicsHelper.DrawShadowedString(game.SpriteBatch, game.GetFont(fontName),
                          trackAlbum,
                         drawPosition + trackAlbumOffset,
-                        game.GetColorWithAlpha(Color.White, alpha),
-                        game.GetColorWithAlpha(Color.Black, alpha));
+                        GraphicsHelper.GetColorWithAlpha(Color.White, alpha),
+                        GraphicsHelper.GetColorWithAlpha(Color.Black, alpha));
 
-                    game.DrawShadowedString(game.GetFont(fontName),
+                    GraphicsHelper.DrawShadowedString(game.SpriteBatch, game.GetFont(fontName),
                          trackArtist,
                         drawPosition + trackArtistOffset,
-                        game.GetColorWithAlpha(Color.White, alpha),
-                        game.GetColorWithAlpha(Color.Black, alpha));
+                        GraphicsHelper.GetColorWithAlpha(Color.White, alpha),
+                        GraphicsHelper.GetColorWithAlpha(Color.Black, alpha));
                 }
                 catch
                 { alpha = 0; }

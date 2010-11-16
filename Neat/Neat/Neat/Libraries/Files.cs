@@ -25,7 +25,7 @@ namespace Neat
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
             LoadSong("Sounds\\blank");
 #if !WINDOWS_PHONE
             LoadVideo("Videos\\errorvideo","error");
@@ -64,17 +64,18 @@ namespace Neat
             LoadFont("messageBoxTextFont", "messageBoxTextFont");
             LoadFont("consolefont", "consolefont");
             LoadFont("fxFont", "fxFont");
-            normalFont = Content.Load<SpriteFont>("normal");
-            LoadFont("Normal", normalFont);
+            NormalFont = Content.Load<SpriteFont>("normal");
+            LoadFont("Normal", NormalFont);
 
             LoadEffect("Effects\\ColorFilter");
+            LoadEffect("Effects\\ColorAdder");
 
             InitializeParts0();
         }
 
         void InitializeParts0()
         {
-            parts = new Dictionary<string, GamePart>();
+            Parts = new Dictionary<string, GamePart>();
 
             CreateParts();
             LoadPartsFiles();
@@ -84,7 +85,7 @@ namespace Neat
 
         void LoadPartsFiles()
         {
-            foreach (var p in parts)
+            foreach (var p in Parts)
             {
                 p.Value.LoadContent();
             }

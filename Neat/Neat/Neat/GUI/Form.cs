@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
 using Neat.EasyMenus;
+using Neat.Mathematics;
 
 namespace Neat.GUI
 {
@@ -33,7 +34,7 @@ namespace Neat.GUI
         {
             Objects = new Dictionary<string, FormObject>();
             game = g;
-            HasMouse = game.showMouse;
+            HasMouse = game.ShowMouse;
         }
 
         public virtual void Update(GameTime gameTime)
@@ -63,7 +64,7 @@ namespace Neat.GUI
                 {
                     foreach (var item in Objects)
                     {
-                        if (Geometry2D.Vectors2Rectangle(item.Value.Position, item.Value.Size).Intersects(
+                        if (GeometryHelper.Vectors2Rectangle(item.Value.Position, item.Value.Size).Intersects(
                             new Rectangle(Mouse.GetState().X, Mouse.GetState().Y,1, 1)))
                         {
                             item.Value.Pressed();
@@ -75,7 +76,7 @@ namespace Neat.GUI
                 {
                     foreach (var item in Objects)
                     {
-                        if (Geometry2D.Vectors2Rectangle(item.Value.Position, item.Value.Size).Intersects(
+                        if (GeometryHelper.Vectors2Rectangle(item.Value.Position, item.Value.Size).Intersects(
                             new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 2, 2)))
                         {
                             item.Value.Released();
@@ -102,7 +103,7 @@ namespace Neat.GUI
             foreach (var item in Objects )
             {
                 if (item.Value.Visible)
-                    item.Value.Draw(gameTime, game.spriteBatch);
+                    item.Value.Draw(gameTime, game.SpriteBatch);
             }
         }
 

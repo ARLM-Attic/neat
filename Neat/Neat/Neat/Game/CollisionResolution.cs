@@ -36,7 +36,6 @@ namespace Neat
         LineBrush lb;
         PhysicsSimulator sim;
         List<Body> bodies;
-        Line l1, l2;
         List<Color> palette;
         bool paused = false;
         public override void Initialize()
@@ -166,9 +165,8 @@ namespace Neat
         {
             int q = 0;
             base.Render(gameTime);
-            game.Write(showFill.ToString() + Geometry2D.Coords2String(bodies[0].Mesh.GetPosition()), new Vector2(100));
+            game.Write(showFill.ToString() + GeometryHelper.Coords2String(bodies[0].Mesh.GetPosition()), new Vector2(100));
 
-            var cn = 0;
             foreach (var item in bodies)
             {
                 q++;
@@ -176,7 +174,7 @@ namespace Neat
                 
                 foreach (var tri in item.Mesh.Triangles)
                 {
-                    tri.Draw(game.spriteBatch, lb, c);
+                    tri.Draw(game.SpriteBatch, lb, c);
                 }
             }
 

@@ -64,18 +64,18 @@ namespace Neat
         }
         public void UseEffect(string effect)
         {
-            spriteBatch.End();
-            spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, GetEffect(effect));
+            SpriteBatch.End();
+            SpriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, GetEffect(effect));
         }
         public void UseEffect(Effect effect)
         {
-            spriteBatch.End();
-            spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null,effect);
+            SpriteBatch.End();
+            SpriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null,effect);
         }
         public void RestartBatch()
         {
-            spriteBatch.End();
-            spriteBatch.Begin();
+            SpriteBatch.End();
+            SpriteBatch.Begin();
         }
 #if TODO
         /***********************************************/

@@ -17,19 +17,18 @@ namespace Neat
 {
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
-        public Color backGroundColor = Color.Black;
+        public Color BackGroundColor = Color.Black;
 
-        public bool autoDraw = true;
-        public bool autoClear = true;
-        public bool showMouse = true;
+        public bool AutoDraw = true;
+        public bool AutoClear = true;
+        public bool ShowMouse = false;
 
-        public RasterizerState rasterizerState = RasterizerState.CullNone;
         bool _landscape = false;
 
         RenderTarget2D _renderTarget;
         Vector2 _vecOrigin, _vecDest;  
 
-        public bool landscape
+        public bool Landscape
         {
             get
             {
@@ -39,8 +38,8 @@ namespace Neat
             {
                 if (value)
                 {
-                    _renderTarget = new RenderTarget2D(GraphicsDevice, gameWidth, gameHeight);
-                    _vecOrigin = new Vector2(gameWidth/2f, gameHeight/2f);
+                    _renderTarget = new RenderTarget2D(GraphicsDevice, GameWidth, GameHeight);
+                    _vecOrigin = new Vector2(GameWidth/2f, GameHeight/2f);
                     _vecDest = new Vector2(_vecOrigin.Y, _vecOrigin.X);
                 }
                 _landscape = value;
@@ -50,24 +49,24 @@ namespace Neat
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public void Clear(Color c)
         {
-            graphics.GraphicsDevice.Clear(c);
+            Graphics.GraphicsDevice.Clear(c);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             gamestime = gameTime;
 
-            if (landscape)
+            if (Landscape)
             {
                 GraphicsDevice.SetRenderTarget(_renderTarget);
             }
 
-            if (autoClear)
-                graphics.GraphicsDevice.Clear(backGroundColor);
+            if (AutoClear)
+                Graphics.GraphicsDevice.Clear(BackGroundColor);
 
 
-            if (autoDraw)
-                spriteBatch.Begin();
+            if (AutoDraw)
+                SpriteBatch.Begin();
 
 #if XLIVE
             if (SignedInGamer.SignedInGamers.Count > 0 || !needSignIn || !forceSignIn)
@@ -76,7 +75,7 @@ namespace Neat
                 Render(gameTime);
             }
 
-            if (showMouse
+            if (ShowMouse
 #if XLIVE
                 && !Guide.IsVisible
 #endif
@@ -87,22 +86,22 @@ namespace Neat
 #endif
             }
 #if WINDOWS
-            if (hasConsole)
+            if (HasConsole)
             {
-                if (!autoDraw) spriteBatch.Begin();
-                console.Draw(0, 10);
-                if (!autoDraw) spriteBatch.End();
+                if (!AutoDraw) SpriteBatch.Begin();
+                Console.Draw(0, 10);
+                if (!AutoDraw) SpriteBatch.End();
             }
 #endif
-            if (autoDraw)
-                spriteBatch.End();
+            if (AutoDraw)
+                SpriteBatch.End();
 
-            if (landscape)
+            if (Landscape)
             {
                 GraphicsDevice.SetRenderTarget(null);
 
-                spriteBatch.Begin();
-                spriteBatch.Draw(
+                SpriteBatch.Begin();
+                SpriteBatch.Draw(
                     _renderTarget, 
                     _vecDest, 
                     null, 
@@ -113,58 +112,24 @@ namespace Neat
                     SpriteEffects.None, 
                     0);
 
-                spriteBatch.End();
+                SpriteBatch.End();
             }
 
             base.Draw(gameTime);
         }
         protected virtual void DrawMouse(Vector2 pos)
         {
-            spriteBatch.Draw(getTexture("mousePointer"),
+            SpriteBatch.Draw(getTexture("mousePointer"),
                 pos, Color.White);
         }
         protected virtual void Render(GameTime gameTime)
         {
-            parts[activePart].Render(gameTime);
-        }
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //deprecated methods
-        #region Depricated Methods
-        public void Write(string text, Vector2 position)
-        {
-            GraphicsHelper.DrawShadowedString(spriteBatch, normalFont, text, position, Color.White);
+            Parts[ActivePart].Render(gameTime);
         }
         
-        public void DrawShadowedString(SpriteFont spriteFont, string text, Vector2 position, Color foreColor, Color backColor)
+        public void Write(string text, Vector2 position)
         {
-            GraphicsHelper.DrawShadowedString(spriteBatch, spriteFont, text, position, foreColor, backColor);
+            GraphicsHelper.DrawShadowedString(SpriteBatch, NormalFont, text, position, Color.White);
         }
-        public void DrawShadowedString(SpriteFont spriteFont, string text, Vector2 position, Vector2 shadowOffset, Color foreColor, Color backColor)
-        {
-            GraphicsHelper.DrawShadowedString(spriteBatch, spriteFont, text, position, shadowOffset, foreColor, backColor);
-        }
-        public void DrawShadowedString(SpriteFont spriteFont, string text, Vector2 position, Color foreColor)
-        {
-            GraphicsHelper.DrawShadowedString(spriteBatch, spriteFont, text, position, foreColor);
-        }
-        public void DrawShadowedString(SpriteFont spriteFont, string text, Vector2 position, Vector2 shadowOffset, Color foreColor)
-        {
-            GraphicsHelper.DrawShadowedString(spriteBatch, spriteFont, text, position,
-                shadowOffset, foreColor);
-        }
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        public Color GetShadowColorFromAlpha(float alpha)
-        {
-            return GraphicsHelper.GetShadowColorFromAlpha(alpha);
-        }
-        public Color GetColorWithAlpha(Color col, float alpha)
-        {
-            return GraphicsHelper.GetColorWithAlpha(col, alpha);
-        }
-        public Color GetRandomColor()
-        {
-            return GraphicsHelper.GetRandomColor();
-        }
-        #endregion
     }
 }

@@ -27,29 +27,34 @@ namespace Neat
             : base(G)
         {
         }
-        public MenuSystem.MenuSystem system;
-        public SpriteFont font;
+        public MenuSystem.MenuSystem System;
+        public SpriteFont Font;
 
         public override void Initialize()
         {
-            system = new Neat.MenuSystem.MenuSystem(
-                game,
-                new Vector2(game.gameWidth / 2, game.gameHeight / 2 - 100),
-                font);
-            CreateMenu();
+            Reset();
             base.Initialize();
+        }
+        public virtual void Reset()
+        {
+            System = new Neat.MenuSystem.MenuSystem(
+                game,
+                new Vector2(game.GameWidth / 2, game.GameHeight / 2 - 100),
+                Font);
+            CreateMenu();
         }
         public virtual void CreateMenu()
         {
         }
         public override void Activate()
         {
-            system.Enable();
             base.Activate();
+            System.Enable();
+            System.Position = new Vector2(game.GameWidth / 2, game.GameHeight / 2 - 100);
         }
         public override void Behave(GameTime gameTime)
         {
-            system.Update(gameTime);
+            System.Update(gameTime);
             base.Behave(gameTime);
         }
 
@@ -60,7 +65,7 @@ namespace Neat
 
         public override void Render(GameTime gameTime)
         {
-            system.Draw(gameTime);
+            System.Draw(gameTime);
             base.Render(gameTime);
         }
     }

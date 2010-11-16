@@ -90,14 +90,14 @@ namespace Neat
             base.Render(gameTime);
             foreach (var item in poly1.Triangles)
             {
-                item.Draw(game.spriteBatch, lb, Color.White);
+                item.Draw(game.SpriteBatch, lb, Color.White);
             }
-            poly2.Draw(game.spriteBatch, lb, Color.Red);
+            poly2.Draw(game.SpriteBatch, lb, Color.Red);
             Vector2 mtd = Vector2.Zero;
             var c = (Polygon.Collide(poly1, poly2, out mtd));
             game.Write(c.ToString(), new Vector2(100));
-            if (c) game.Write("mtd="+Geometry2D.Coords2String(mtd)+
-            "\nmouse="+Geometry2D.Coords2String(mouse), new Vector2(200));
+            if (c) game.Write("mtd="+GeometryHelper.Coords2String(mtd)+
+            "\nmouse="+GeometryHelper.Coords2String(mouse), new Vector2(200));
             form.Draw(gameTime);
         }
     }

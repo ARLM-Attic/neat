@@ -23,7 +23,7 @@ namespace Neat
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
         protected GameTime gamesTime;
-        Dictionary<String, IBTexture> textures = new Dictionary<string, IBTexture>();
+        Dictionary<String, Sprite> textures = new Dictionary<string, Sprite>();
 
         public virtual void LoadTexture(string path)
         {
@@ -31,7 +31,7 @@ namespace Neat
             try
             {
                 textures.Add(textureName,
-                    new IBTexture(textureName,
+                    new Sprite(textureName,
                     Content.Load<Texture2D>(path)));
             }
             catch
@@ -44,7 +44,7 @@ namespace Neat
             try
             {
                 textures.Add(name.ToLower(),
-                    new IBTexture(name,
+                    new Sprite(name,
                     Content.Load<Texture2D>(path)));
             }
             catch
@@ -74,7 +74,7 @@ namespace Neat
                     Content.Load<Texture2D>(path));
             }
             textures.Add(name.ToLower(),
-                new IBTexture(name,
+                new Sprite(name,
                 frames, frameRate));
         }
         
@@ -82,7 +82,7 @@ namespace Neat
         {
             try
             {
-                return textures[name.ToLower()].GetTexture(frame);
+                return textures[name.ToLower()].GetTexture(Frame);
                 //return textures[name.ToLower()].getTexture(gamesTime);
             }
             catch

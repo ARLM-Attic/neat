@@ -12,10 +12,10 @@ namespace Neat
         public class MenuItem
         {
             MenuSystem system;
-            public string caption = "Menu Item";
-            public bool enabled = true;
-            public string tag;
-            public Color forecolor = Color.CornflowerBlue;
+            public string Caption = "Menu Item";
+            public bool Enabled = true;
+            public string Tag;
+            public Color Forecolor = Color.CornflowerBlue;
             public float alpha = 0.5f;
             public float alphaV = 0.001f;
             //public Keys shortcut = Keys.OemTilde ;
@@ -30,7 +30,7 @@ namespace Neat
 
             public Color GetForeColor()
             {
-                Vector3 c = forecolor.ToVector3();
+                Vector3 c = Forecolor.ToVector3();
 
                 return new Color(new Vector4(c,alpha));
             }
@@ -43,19 +43,19 @@ namespace Neat
             void Initialize(MenuSystem System, string Caption, bool Enabled)
             {
                 system = System;
-                caption = Caption;
-                enabled = Enabled;
+                this.Caption = Caption;
+                this.Enabled = Enabled;
             }
 
             public void Focused()
             {
-                if (!enabled) return;
+                if (!Enabled) return;
                 if (OnFocus != null) OnFocus();
             }
 
             public void Selected()
             {
-                if (!enabled) return;
+                if (!Enabled) return;
                 if (OnSelect != null) OnSelect();
             }
 

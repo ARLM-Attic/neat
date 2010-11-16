@@ -54,8 +54,8 @@ namespace Neat.GUI
                     GraphicsHelper.DrawShadowedString(spriteBatch, game.GetFont(Font), Text, Position,
                         (IsMouseHold ? MouseHoldColor :
                         (IsMouseHovered ? MouseHoverColor :
-                        game.GetColorWithAlpha(ForeColor, alpha))),
-                        game.GetColorWithAlpha(ShadowColor, alpha));
+                        GraphicsHelper.GetColorWithAlpha(ForeColor, alpha))),
+                        GraphicsHelper.GetColorWithAlpha(ShadowColor, alpha));
 
                     GraphicsHelper.DrawShadowedString(spriteBatch, game.GetFont(Font), lastText, Position,
                         (IsMouseHold ? MouseHoldColor :
@@ -79,7 +79,7 @@ namespace Neat.GUI
                     spriteBatch.DrawString(game.GetFont(Font), Text, Position,
                         (IsMouseHold ? MouseHoldColor :
                         (IsMouseHovered ? MouseHoverColor :
-                        game.GetColorWithAlpha(ForeColor, alpha))));
+                        GraphicsHelper.GetColorWithAlpha(ForeColor, alpha))));
                     spriteBatch.DrawString(game.GetFont(Font), lastText, Position,
                         (IsMouseHold ? MouseHoldColor :
                         (IsMouseHovered ? MouseHoverColor :

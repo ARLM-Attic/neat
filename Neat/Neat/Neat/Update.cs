@@ -25,8 +25,8 @@ namespace Neat
 #if XLIVE
         public bool needSignIn = true;
 #endif
-        public int updateCPS = 0;
-        public int drawCPS = 0;
+        //public int updateCPS = 0;
+        //public int drawCPS = 0;
         public bool IsPaused = false;
         void UpdateGame(GameTime gameTime)
         {
@@ -46,14 +46,14 @@ namespace Neat
 
             if (isFirstTime) { FirstTime(); isFirstTime = false; }
 #if WINDOWS
-            if (hasConsole)
+            if (HasConsole)
             {
-                if (IsTapped(consoleKey))
-                    console.isActive = !console.isActive;
-                console.Update(gameTime);
+                if (IsTapped(ConsoleKey))
+                    Console.isActive = !Console.isActive;
+                Console.Update(gameTime);
             }
 #endif
-            if (!freezed)
+            if (!Freezed)
             {
                 Behave(gameTime);
 #if !WINDOWS_PHONE
@@ -91,9 +91,9 @@ namespace Neat
 #else
             UpdateGame(gameTime);
 #endif
-            frame++;
-            if (frame > maxFrame) frame = 0;
-            if (showMouse)
+            Frame++;
+            if (Frame > MaxFrame) Frame = 0;
+            if (ShowMouse)
             {
 #if WINDOWS
                 mousePosition = new Vector2((float)Mouse.GetState().X, (float)Mouse.GetState().Y);
@@ -136,7 +136,7 @@ namespace Neat
         public Vector2 mousePosition = Vector2.Zero;
         protected virtual void Behave(GameTime gameTime)
         {
-            if (!IsPaused && activePart != null) parts[activePart].Update(gameTime);
+            if (!IsPaused && ActivePart != null) Parts[ActivePart].Update(gameTime);
         }
     }
 }

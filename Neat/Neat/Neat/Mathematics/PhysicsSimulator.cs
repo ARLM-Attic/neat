@@ -123,7 +123,7 @@ namespace Neat.Mathematics
 
         public NeatGame game;
 
-        Neat.Console.Console console { get { return game.console; } set { game.console = value; } }
+        Neat.Console.Console console { get { return game.Console; } set { game.Console = value; } }
 
         public PhysicsSimulator(NeatGame i_game)
         {
@@ -247,13 +247,13 @@ namespace Neat.Mathematics
 
         Vector2 FindIntersectionPoint(Vector2 vNew, Vector2 vOld, Triangle tri)
         {
-            var ip = Geometry2D.GetIntersectionPoint(vNew, vOld, tri.A, tri.B);
+            var ip = GeometryHelper.GetIntersectionPoint(vNew, vOld, tri.A, tri.B);
             if (!float.IsNaN(ip.X)) return ip;
 
-            ip = Geometry2D.GetIntersectionPoint(vNew, vOld, tri.B, tri.C);
+            ip = GeometryHelper.GetIntersectionPoint(vNew, vOld, tri.B, tri.C);
             if (!float.IsNaN(ip.X)) return ip;
 
-            ip = Geometry2D.GetIntersectionPoint(vNew, vOld, tri.C, tri.A);
+            ip = GeometryHelper.GetIntersectionPoint(vNew, vOld, tri.C, tri.A);
             return ip;
         }
 

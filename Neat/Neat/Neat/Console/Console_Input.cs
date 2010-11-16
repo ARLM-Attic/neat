@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
+using Neat.Mathematics;
 namespace Neat.Console
 {
     public partial class Console
@@ -14,7 +15,7 @@ namespace Neat.Console
         Keys lastkey = Keys.None;
         bool IsPressed(Keys key)
         {
-            if ((game.frame % 20 == 0 && lastkey == key && game.IsPressed(key)) || game.IsReleased(key))
+            if ((game.Frame % 20 == 0 && lastkey == key && game.IsPressed(key)) || game.IsReleased(key))
             {
                 lastkey = key;
                 return true;
@@ -44,7 +45,7 @@ namespace Neat.Console
                         else if (i == 3) command += '#';
                         else if (i == 4) command += '$';
                         else if (i == 5) command += '%';
-                        else if (i == 6) { if (ctrl) command += Geometry2D.Vector2String(game.mousePosition); else command += '^'; }
+                        else if (i == 6) { if (ctrl) command += GeometryHelper.Vector2String(game.mousePosition); else command += '^'; }
                         else if (i == 7) command += '&';
                         else if (i == 8) command += '*';
                         else if (i == 9) command += '(';

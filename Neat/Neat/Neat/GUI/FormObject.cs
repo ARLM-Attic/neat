@@ -19,6 +19,7 @@ using Neat;
 using Neat.MenuSystem;
 using Neat.EasyMenus;
 using Neat.Graphics;
+using Neat.Mathematics;
 namespace Neat.GUI
 {
    // public delegate void XEventHandler();
@@ -84,7 +85,7 @@ namespace Neat.GUI
         {
             if (Enabled)
             {
-                IsMouseHovered = Geometry2D.IsVectorInRectangle(Position, Size, game.mousePosition);
+                IsMouseHovered = GeometryHelper.IsVectorInRectangle(Position, Size, game.mousePosition);
 #if WINDOWS
                 IsMouseHold = (IsMouseHovered) && (Mouse.GetState().LeftButton == ButtonState.Pressed);
 #elif ZUNE

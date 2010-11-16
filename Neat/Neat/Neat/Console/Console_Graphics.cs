@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
+using Neat.Graphics;
 namespace Neat.Console
 {
     public partial class Console
@@ -21,18 +22,18 @@ namespace Neat.Console
             int height = MeasureHeight(_lines);
 
             //Draw Rectangle
-            game.spriteBatch.Draw(
+            game.SpriteBatch.Draw(
                 game.getTexture(backTexture),
-                new Rectangle(0, _hoffset, game.gameWidth, height),
+                new Rectangle(0, _hoffset, game.GameWidth, height),
                 backColor);
 
             //Write Text
-            game.spriteBatch.DrawString(
+            game.SpriteBatch.DrawString(
                 game.GetFont(font),
                 "> " + command + "_",
                 new Vector2(0, _hoffset),
                 inputColor);
-            game.spriteBatch.DrawString(
+            game.SpriteBatch.DrawString(
                 game.GetFont(font),
                 messages,
                 new Vector2(0, _hoffset + game.GetFont(font).MeasureString("Z\n").Y),
@@ -82,7 +83,7 @@ namespace Neat.Console
             fx_alpha2 = 1f;
             fx_alpha2_speed = -0.125f;
             fx_alpha2_end = 0f;
-            fx_offset = new Vector2(0, 0 + game.gameHeight / 2 - 100);
+            fx_offset = new Vector2(0, 0 + game.GameHeight / 2 - 100);
             fx_offset_speed = new Vector2(0, 0.4f);
         }
 
@@ -92,17 +93,17 @@ namespace Neat.Console
             {
                 Vector2 size = game.GetFont("fxFont").MeasureString(fx_text) * fx_scale;
                 Vector2 position = new Vector2(
-                    game.gameWidth / 2 - size.X / 2 + 0,
+                    game.GameWidth / 2 - size.X / 2 + 0,
                     fx_offset.Y);
                 fx_offset += fx_offset_speed;
 
                 if (fx_on)
                 {
-                    game.spriteBatch.DrawString(
+                    game.SpriteBatch.DrawString(
                         game.GetFont("fxFont"),
                         fx_text,
                         position,
-                        game.GetColorWithAlpha(fx_Color, fx_alpha), 0,
+                        GraphicsHelper.GetColorWithAlpha(fx_Color, fx_alpha), 0,
                         Vector2.Zero, // size / 2,
                         fx_scale,
                         SpriteEffects.None, 0);
@@ -112,11 +113,11 @@ namespace Neat.Console
                 }
                 else
                 {
-                    game.spriteBatch.DrawString(
+                    game.SpriteBatch.DrawString(
                         game.GetFont("fxFont"),
                         fx_text,
                         position,
-                        game.GetColorWithAlpha(fx_Color, fx_alpha2), 0,
+                        GraphicsHelper.GetColorWithAlpha(fx_Color, fx_alpha2), 0,
                         Vector2.Zero,
                         fx_scale,
                         SpriteEffects.None, 0);

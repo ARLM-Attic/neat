@@ -4,11 +4,10 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Neat.Mathematics;
 
-namespace Neat
+namespace Neat.Mathematics
 {
-    public static class Geometry2D
+    public static class GeometryHelper
     {
         
 #if WINDOWS
@@ -24,11 +23,11 @@ namespace Neat
 
         public static Vector2 GetIntersectionPoint(Vector2 line1_a, Vector2 line1_b, Vector2 line2_a, Vector2 line2_b)
         {
-            Line line1 = new Line();
+            LineSegment line1 = new LineSegment();
             line1.StartPos = line1_a;
             line1.EndPos = line1_b;
 
-            Line line2 = new Line();
+            LineSegment line2 = new LineSegment();
             line2.StartPos = line2_a;
             line2.EndPos = line2_b;
 
@@ -38,12 +37,13 @@ namespace Neat
         {
             return float.IsNaN(v.X);
         }
-        public static Vector2 GetIntersectionPoint(Line firstLine, Line secondLine)
+
+        public static Vector2 GetIntersectionPoint(LineSegment firstLine, LineSegment secondLine)
         {
             return GetIntersectionPoint(firstLine, secondLine, true, true);
         }
 
-        public static Vector2 GetIntersectionPoint(Line firstLine, Line secondLine, bool firstSegment, bool secondSegment)
+        public static Vector2 GetIntersectionPoint(LineSegment firstLine, LineSegment secondLine, bool firstSegment, bool secondSegment)
         {
             double Ua, Ub;
 

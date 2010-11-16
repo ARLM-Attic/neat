@@ -29,7 +29,7 @@ namespace Neat.Console
         public Console(NeatGame _game)
         {
             game = _game;
-            ram = game.ram;
+            ram = game.Ram;
             Clear();
             InitCommands();
             command = "";

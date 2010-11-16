@@ -30,23 +30,23 @@ namespace Neat.EasyMenus
 
         public override void CreateMenu()
         {
-            system.AddItem("Do you really want to quit?", false);
+            System.AddItem("Do you really want to quit?", false);
             
-            system.AddItem("No! i wanna play a bit more");
-            system.GetLastMenuItem().forecolor = Color.Green;
-            system.AddItem("Yes. lemme out!");
+            System.AddItem("No! i wanna play a bit more");
+            System.GetLastMenuItem().Forecolor = Color.Green;
+            System.AddItem("Yes. lemme out!");
                        
-            system.GetLastMenuItem().forecolor = Color.Red;
-            system.disabledItemForeground = Color.White;
-            system.itemsOffset = new Vector2(0, 100);
-            system.selectedItem = 1;
+            System.GetLastMenuItem().Forecolor = Color.Red;
+            System.DisabledItemForeground = Color.White;
+            System.ItemsOffset = new Vector2(0, 100);
+            System.SelectedItem = 1;
             Activate();
             base.CreateMenu();
         }
 
         public override void LoadContent()
         {
-            font = game.Content.Load<SpriteFont>("menuFont");
+            Font = game.Content.Load<SpriteFont>("menuFont");
             base.LoadContent();
         }
 
@@ -66,7 +66,7 @@ namespace Neat.EasyMenus
 
         void SelectItem()
         {
-            switch (system.selectedItem)
+            switch (System.SelectedItem)
             {
                 case 1: //back
                     game.ActivatePart("mainmenu");
@@ -79,8 +79,8 @@ namespace Neat.EasyMenus
 
         public override void Render(GameTime gameTime)
         {
-            game.spriteBatch.Draw(game.getTexture("menuBackground"), new Rectangle(0, 0, game.gameWidth, game.gameHeight), Color.White);
-            game.spriteBatch.Draw(game.getTexture("transparent"), new Rectangle(0, 0, game.gameWidth, game.gameHeight), Color.Black);
+            game.SpriteBatch.Draw(game.getTexture("menuBackground"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.White);
+            game.SpriteBatch.Draw(game.getTexture("transparent"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.Black);
             base.Render(gameTime);
         }
     }

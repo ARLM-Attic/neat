@@ -13,22 +13,22 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Neat.Mathematics
 {
-    public class Line
+    public class LineSegment
     {
         public Vector2 StartPos;
         public Vector2 EndPos;
 
-        public Line()
+        public LineSegment()
         {
         }
 
-        public Line(Vector2 v1, Vector2 v2)
+        public LineSegment(Vector2 v1, Vector2 v2)
         {
             StartPos = v1;
             EndPos = v2;
         }
 
-        public Line(float ax, float ay, float bx, float by)
+        public LineSegment(float ax, float ay, float bx, float by)
         {
             StartPos = new Vector2(ax, ay);
             EndPos = new Vector2(bx, by);
