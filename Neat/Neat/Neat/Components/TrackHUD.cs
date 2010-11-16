@@ -20,20 +20,19 @@ using Neat.MenuSystem;
 using Neat.Graphics;
  
 
-namespace Neat
+namespace Neat.Components
 {
-    public class TrackHUD
+    public class TrackHUD : DrawableGameComponent
     {
-        public NeatGame game;
+        NeatGame game;
         
-        public float alpha = 0f;
-        public float alphaSpeed = 0.01f;
+        float alpha = 0f;
+        float alphaSpeed = 0.01f;
 
+        bool fade = true;
+        public Vector2 DrawPosition;
 
-        public bool fade = true;
-        public Vector2 drawPosition;
-
-        public string fontName = "Calibri";
+        public string FontName = "Calibri";
 
         Vector2 trackNameOffset = new Vector2(20, 10);
         Vector2 trackArtistOffset = new Vector2(20, 40);
@@ -44,8 +43,13 @@ namespace Neat
              trackArtist = "",
              trackAlbum = "";
 
-         Song ActiveSong;
-         //Vector2 offset = new Vector2(11, 11);
+        Song ActiveSong;
+
+        public TrackHUD(NeatGame _game)
+            : base(_game)
+        {
+            game = _game;
+        }
 
         public void Refresh()
         {
@@ -62,12 +66,13 @@ namespace Neat
             }
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             Refresh();
+            base.Initialize();
         }
 
-        public void Update()
+        public override void Update(GameTime gameTime)
         {
             if (trackName.Trim().Length == 0) alpha = -0.1f;
             if (fade)
@@ -75,7 +80,30 @@ namespace Neat
                 alpha += alphaSpeed;
                 if (alpha < 0f) fade = false;
                 if (alpha > 2f) { alphaSpeed *= -1; }
-                
+
+            }
+            base.Update(gameTime);
+        }
+
+        protected override void LoadContent()
+        {
+            MediaPlayer.ActiveSongChanged += new EventHandler<EventArgs>(MediaPlayer_ActiveSongChanged);
+            base.LoadContent();
+        }
+
+        void MediaPlayer_ActiveSongChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                game.Console.WriteLine("Song Changed to " + MediaPlayer.Queue.ActiveSong.Name + " | Album: " + MediaPlayer.Queue.ActiveSong.Album);
+                DrawPosition = new Vector2(0, (game.Window.ClientBounds.Height) - 100);
+
+                Refresh();
+                FadeIn();
+            }
+            catch
+            {
+                game.SayMessage("Error changing the song");
             }
         }
 
@@ -93,38 +121,42 @@ namespace Neat
             fade = true;
         }
 
-        public void Draw()
+        public override void Draw(GameTime gameTime)
         {
             if (alpha > 0)
             {
+                game.SpriteBatch.Begin();
                 game.SpriteBatch.Draw(game.getTexture("mediaHUD"),
-                    drawPosition, GraphicsHelper.GetColorWithAlpha(Color.White, alpha));
+                    DrawPosition, GraphicsHelper.GetColorWithAlpha(Color.White, alpha));
 
                 //text
                 try
                 {
                     GraphicsHelper.DrawShadowedString(game.SpriteBatch,
-                        game.GetFont(fontName),
+                        game.GetFont(FontName),
                         trackName,
-                       drawPosition + trackNameOffset,
+                       DrawPosition + trackNameOffset,
                        GraphicsHelper.GetColorWithAlpha(Color.White, alpha),
                        GraphicsHelper.GetColorWithAlpha(Color.Black, alpha));
 
-                    GraphicsHelper.DrawShadowedString(game.SpriteBatch, game.GetFont(fontName),
+                    GraphicsHelper.DrawShadowedString(game.SpriteBatch, game.GetFont(FontName),
                          trackAlbum,
-                        drawPosition + trackAlbumOffset,
+                        DrawPosition + trackAlbumOffset,
                         GraphicsHelper.GetColorWithAlpha(Color.White, alpha),
                         GraphicsHelper.GetColorWithAlpha(Color.Black, alpha));
 
-                    GraphicsHelper.DrawShadowedString(game.SpriteBatch, game.GetFont(fontName),
+                    GraphicsHelper.DrawShadowedString(game.SpriteBatch, game.GetFont(FontName),
                          trackArtist,
-                        drawPosition + trackArtistOffset,
+                        DrawPosition + trackArtistOffset,
                         GraphicsHelper.GetColorWithAlpha(Color.White, alpha),
                         GraphicsHelper.GetColorWithAlpha(Color.Black, alpha));
+                    
                 }
                 catch
                 { alpha = 0; }
+                game.SpriteBatch.End();
             }
+            base.Draw(gameTime);
         }
     }
 }

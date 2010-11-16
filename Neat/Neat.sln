@@ -15,7 +15,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverRaidXContent", "RiverR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeatStarter", "NeatStarter\NeatStarter\NeatStarter.csproj", "{7BC0C28A-D2C0-4D0D-9274-71E44781E560}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "NeatStarterContent", "NeatStarter\NeatStarterContent\NeatStarterContent.contentproj", "{9A4C2AD8-EC33-4CA3-B758-9C855967668C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeatStarterContent", "NeatStarter\NeatStarterContent\NeatStarterContent.contentproj", "{9A4C2AD8-EC33-4CA3-B758-9C855967668C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeatConsole", "NeatConsole\NeatConsole\NeatConsole.csproj", "{87B62593-4878-4F87-92EB-731479731173}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "NeatConsoleContent", "NeatConsole\NeatConsoleContent\NeatConsoleContent.contentproj", "{9EE10827-A41D-409C-B1DF-BBEC793254F0}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
@@ -53,6 +57,12 @@ Global
 		{7BC0C28A-D2C0-4D0D-9274-71E44781E560}.Release|x86.Build.0 = Release|x86
 		{9A4C2AD8-EC33-4CA3-B758-9C855967668C}.Debug|x86.ActiveCfg = Debug|x86
 		{9A4C2AD8-EC33-4CA3-B758-9C855967668C}.Release|x86.ActiveCfg = Release|x86
+		{87B62593-4878-4F87-92EB-731479731173}.Debug|x86.ActiveCfg = Debug|x86
+		{87B62593-4878-4F87-92EB-731479731173}.Debug|x86.Build.0 = Debug|x86
+		{87B62593-4878-4F87-92EB-731479731173}.Release|x86.ActiveCfg = Release|x86
+		{87B62593-4878-4F87-92EB-731479731173}.Release|x86.Build.0 = Release|x86
+		{9EE10827-A41D-409C-B1DF-BBEC793254F0}.Debug|x86.ActiveCfg = Debug|x86
+		{9EE10827-A41D-409C-B1DF-BBEC793254F0}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
