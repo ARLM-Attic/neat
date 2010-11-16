@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverRaidX", "RiverRaidX\Ri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiverRaidXContent", "RiverRaidX\RiverRaidXContent\RiverRaidXContent.contentproj", "{02005D6D-5C35-4FBC-9263-678D47920956}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeatStarter", "NeatStarter\NeatStarter\NeatStarter.csproj", "{7BC0C28A-D2C0-4D0D-9274-71E44781E560}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "NeatStarterContent", "NeatStarter\NeatStarterContent\NeatStarterContent.contentproj", "{9A4C2AD8-EC33-4CA3-B758-9C855967668C}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -43,6 +47,12 @@ Global
 		{09A7AE23-5FAA-4917-A1E5-489F374E99C2}.Release|x86.Build.0 = Release|x86
 		{02005D6D-5C35-4FBC-9263-678D47920956}.Debug|x86.ActiveCfg = Debug|x86
 		{02005D6D-5C35-4FBC-9263-678D47920956}.Release|x86.ActiveCfg = Release|x86
+		{7BC0C28A-D2C0-4D0D-9274-71E44781E560}.Debug|x86.ActiveCfg = Debug|x86
+		{7BC0C28A-D2C0-4D0D-9274-71E44781E560}.Debug|x86.Build.0 = Debug|x86
+		{7BC0C28A-D2C0-4D0D-9274-71E44781E560}.Release|x86.ActiveCfg = Release|x86
+		{7BC0C28A-D2C0-4D0D-9274-71E44781E560}.Release|x86.Build.0 = Release|x86
+		{9A4C2AD8-EC33-4CA3-B758-9C855967668C}.Debug|x86.ActiveCfg = Debug|x86
+		{9A4C2AD8-EC33-4CA3-B758-9C855967668C}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
