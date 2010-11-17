@@ -72,5 +72,49 @@ namespace Neat.GUI
         {
             return ((FancyLabel)this);
         }
+
+        public override void AttachToConsole()
+        {
+            base.AttachToConsole();
+            game.Console.AddCommand("fo_center", fo_center);
+            game.Console.AddCommand("fo_color", fo_color);
+            game.Console.AddCommand("fo_drawshadow", fo_drawshadow);
+            game.Console.AddCommand("fo_shadowcolor", fo_shadowcolor);
+        }
+
+        void fo_center(IList<string> args)
+        {
+            Center();
+        }
+
+        void fo_color(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            SetColor(game.Console.ParseColor(game.Console.Args2Str(args, 1)));
+        }
+
+        void fo_drawshadow(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                return;
+            }
+            DrawShadow = bool.Parse(args[1]);
+        }
+
+        void fo_shadowcolor(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            ShadowColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+        }
     }
 }

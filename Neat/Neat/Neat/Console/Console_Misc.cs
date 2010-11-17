@@ -76,7 +76,7 @@ namespace Neat.Console
             rulerHelper += "Z";
 
             return
-                (int)(game.GetFont(font).MeasureString(rulerHelper).Y) + 1;
+                (int)(game.GetFont(Font).MeasureString(rulerHelper).Y) + 1;
         }
     }
 }

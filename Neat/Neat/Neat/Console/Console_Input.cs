@@ -68,7 +68,7 @@ namespace Neat.Console
             if (game.IsTapped(Keys.Enter, Buttons.A))
             {
                 commandsbuffer.Add(command);
-                if (echo) WriteLine("  > " + command);
+                if (Echo) WriteLine("  > " + command);
                 ParseCommand();
                 command = "";
             }

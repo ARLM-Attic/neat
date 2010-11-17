@@ -17,19 +17,19 @@ namespace Neat.Console
             */
         void c_textcolor(IList<string> args)
         {
-            try { textColor = ParseColor(Args2Str(args, 1)); }
+            try { TextColor = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
         void c_inputcolor(IList<string> args)
         {
-            try { inputColor = ParseColor(Args2Str(args, 1)); }
+            try { InputColor = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
         void c_backcolor(IList<string> args)
         {
-            try { backColor = ParseColor(Args2Str(args, 1)); }
+            try { BackColor = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
@@ -38,13 +38,13 @@ namespace Neat.Console
              */
         void c_show(IList<string> args)
         {
-            try { isActive = true; }
+            try { IsActive = true; }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
         void c_hide(IList<string> args)
         {
-            try { isActive = false; }
+            try { IsActive = false; }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
@@ -53,7 +53,7 @@ namespace Neat.Console
              */
         void c_texture(IList<string> args)
         {
-            try { backTexture = Args2Str(args, 1); }
+            try { BackTexture = Args2Str(args, 1); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
@@ -62,7 +62,7 @@ namespace Neat.Console
              */
         void c_font(IList<string> args)
         {
-            try { font = Args2Str(args, 1); }
+            try { Font = Args2Str(args, 1); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 

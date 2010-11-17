@@ -37,13 +37,13 @@ namespace Neat.GUI
         }
 
         public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-        alpha += Speed * 0.01f;
-        if (alpha >= 1) { alpha = 0f; cursor++; lastText = Text; }
-        if (cursor >= Caption.Length) cursor = Caption.Length;
-        Text = Caption.Substring(0, cursor);
-    }
+        {
+            base.Update(gameTime);
+            alpha += Speed * 0.01f;
+            if (alpha >= 1) { alpha = 0f; cursor++; lastText = Text; }
+            if (cursor >= Caption.Length) cursor = Caption.Length;
+            Text = Caption.Substring(0, cursor);
+        }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
@@ -93,6 +93,22 @@ namespace Neat.GUI
                         ForeColor)));
                 }
             }
+        }
+
+        public override void AttachToConsole()
+        {
+            base.AttachToConsole();
+            game.Console.AddCommand("fo_speed", fo_speed);
+        }
+
+        void fo_speed(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [int]");
+                return;
+            }
+            Speed = int.Parse(args[1]);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Neat.Console
         public void Draw(int _hoffset, int _lines)
         {
             fx_Update();
-            if (!isActive) return;
+            if (!IsActive) return;
 
             string messages = GetMessages(_lines);
 
@@ -23,21 +23,21 @@ namespace Neat.Console
 
             //Draw Rectangle
             game.SpriteBatch.Draw(
-                game.getTexture(backTexture),
+                game.getTexture(BackTexture),
                 new Rectangle(0, _hoffset, game.GameWidth, height),
-                backColor);
+                BackColor);
 
             //Write Text
             game.SpriteBatch.DrawString(
-                game.GetFont(font),
+                game.GetFont(Font),
                 "> " + command + "_",
                 new Vector2(0, _hoffset),
-                inputColor);
+                InputColor);
             game.SpriteBatch.DrawString(
-                game.GetFont(font),
+                game.GetFont(Font),
                 messages,
-                new Vector2(0, _hoffset + game.GetFont(font).MeasureString("Z\n").Y),
-                textColor);
+                new Vector2(0, _hoffset + game.GetFont(Font).MeasureString("Z\n").Y),
+                TextColor);
         }
 
         #region Special Effects

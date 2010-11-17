@@ -127,7 +127,6 @@ namespace Neat.GUI
         {
             return ((Label)this);
         }
-
         public Button ToButton()
         {
             return ((Button)this);
@@ -135,6 +134,164 @@ namespace Neat.GUI
         public Image ToImage()
         {
             return ((Image)this);
+        }
+
+        public virtual void AttachToConsole()
+        {
+            game.Console.AddCommand("fo_enabled", fo_enabled);
+            game.Console.AddCommand("fo_selectable", fo_selectable);
+            game.Console.AddCommand("fo_visible", fo_visible);
+            game.Console.AddCommand("fo_position", fo_position);
+            game.Console.AddCommand("fo_size", fo_size);
+            game.Console.AddCommand("fo_caption", fo_caption);
+            game.Console.AddCommand("fo_bgimg", fo_bgimg);
+            game.Console.AddCommand("fo_pushsound", fo_pushsound);
+            game.Console.AddCommand("fo_font", fo_font);
+            game.Console.AddCommand("fo_tint", fo_tint);
+            game.Console.AddCommand("fo_forecolor", fo_forecolor);
+            game.Console.AddCommand("fo_hovercolor", fo_hovercolor);
+            game.Console.AddCommand("fo_holdcolor", fo_holdcolor);
+            game.Console.AddCommand("fo_disabledcolor", fo_disabledcolor);
+        }
+
+        void fo_enabled(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                return;
+            }
+            Enabled = bool.Parse(args[1]);
+        }
+
+        void fo_selectable(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                return;
+            }
+            Selectable = bool.Parse(args[1]);
+        }
+
+        void fo_visible(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                return;
+            }
+            Visible = bool.Parse(args[1]);
+        }
+
+        void fo_position(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [x,y]");
+                return;
+            }
+            Position = GeometryHelper.String2Vector(args[1]);
+        }
+
+        void fo_size(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [x,y]");
+                return;
+            }
+            Size = GeometryHelper.String2Vector(args[1]);
+        }
+
+        void fo_caption(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [string]");
+                return;
+            }
+            Caption = game.Console.Args2Str(args,1);
+        }
+
+        void fo_bgimg(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [string]");
+                return;
+            }
+            BackgroundImage = args[1];
+        }
+
+        void fo_pushsound(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [string]");
+                return;
+            }
+            PushSound = args[1];
+        }
+
+        void fo_font(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [string]");
+                return;
+            }
+            Font = args[1];
+        }
+
+        void fo_tint(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            TintColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+        }
+
+        void fo_forecolor(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            ForeColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+        }
+
+        void fo_hovercolor(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            MouseHoverColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+        }
+
+        void fo_holdcolor(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            MouseHoldColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+        }
+
+        void fo_disabledcolor(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            DisabledColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
         }
     }
 }

@@ -43,8 +43,8 @@ namespace Neat.Console
             try
             {
                 if (args.Count == 1) WriteLine("");
-                else if (args[1] == "on") echo = true;
-                else if (args[1] == "off") echo = false;
+                else if (args[1] == "on") Echo = true;
+                else if (args[1] == "off") Echo = false;
                 else if (args[1] == ".") WriteLine("");
                 else WriteLine(Args2Str(args, 1));
             }

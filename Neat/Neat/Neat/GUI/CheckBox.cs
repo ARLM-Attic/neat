@@ -74,5 +74,54 @@ namespace Neat.GUI
                     ForeColor)));
             }
         }
+
+        public override void AttachToConsole()
+        {
+            base.AttachToConsole();
+            game.Console.AddCommand("fo_checked", fo_checked);
+            game.Console.AddCommand("fo_drawshadow", fo_drawshadow);
+            game.Console.AddCommand("fo_checkedimg", fo_checkedimg);
+            game.Console.AddCommand("fo_uncheckedimg", fo_uncheckedimg);
+        }
+
+        void fo_checked(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                return;
+            }
+            Checked = bool.Parse(args[1]);
+        }
+
+        void fo_drawshadow(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                return;
+            }
+            DrawShadow = bool.Parse(args[1]);
+        }
+
+        void fo_checkedimg(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [string]");
+                return;
+            }
+            CheckedPicture = args[1];
+        }
+
+        void fo_uncheckedimg(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [string]");
+                return;
+            }
+            UncheckedPicture = args[1];
+        }
     }
 }

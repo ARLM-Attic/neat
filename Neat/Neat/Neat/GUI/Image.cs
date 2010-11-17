@@ -52,12 +52,12 @@ namespace Neat.GUI
             CenterX();
             CenterY();
         }
-
         public void StretchToScreen()
         {
             Position = Vector2.Zero;
             Size = new Vector2(((float)(game.GameWidth)), ((float)(game.GameHeight)));
         }
+
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (AutoSize)
@@ -72,6 +72,65 @@ namespace Neat.GUI
                     new Rectangle((int)(Position.X), (int)(Position.Y), (int)(Size.X), (int)(Size.Y)),
                     TintColor);
             }
+        }
+
+        public override void AttachToConsole()
+        {
+            base.AttachToConsole();
+            game.Console.AddCommand("fo_autosize", fo_autosize);
+            game.Console.AddCommand("fo_color", fo_color);
+            game.Console.AddCommand("fo_center", fo_center);
+            game.Console.AddCommand("fo_stretch", fo_stretch);
+        }
+
+        void fo_autosize(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                return;
+            }
+            AutoSize = bool.Parse(args[1]);
+        }
+
+        void fo_color(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            SetColor( game.Console.ParseColor(game.Console.Args2Str(args, 1)));
+        }
+
+        void fo_center(IList<string> args)
+        {
+            if (args.Count == 1)
+            {
+                Center();
+                return;
+            }
+            else if (args[1].ToLower()[0] == 'x')
+            {
+                CenterX();
+                return;
+            }
+            else if (args[1].ToLower()[0] == 'y')
+            {
+                CenterY();
+                return;
+            }
+            else
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " {x|y}");
+                return;
+            }
+        }
+
+        void fo_stretch(IList<string> args)
+        {
+            StretchToScreen();
+            return;
         }
     }
 }

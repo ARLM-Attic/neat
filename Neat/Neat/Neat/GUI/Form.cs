@@ -100,7 +100,7 @@ namespace Neat.GUI
 
         public virtual void Draw(GameTime gameTime)
         {
-            foreach (var item in Objects )
+            foreach (var item in Objects)
             {
                 if (item.Value.Visible)
                     item.Value.Draw(gameTime, game.SpriteBatch);
@@ -117,6 +117,83 @@ namespace Neat.GUI
         public FormObject GetObject(string name)
         {
             return Objects[name.ToLower()];
+        }
+
+        public void AttachToConsole()
+        {
+            if (game.Console == null) return;
+            
+            game.Console.AddCommand("f_newobject", f_newobject);
+            game.Console.AddCommand("f_delobject", f_delobject);
+            game.Console.AddCommand("f_selobject", f_selobject);
+            game.Console.AddCommand("f_listobjects", f_listobjects);
+        }
+
+        void f_newobject(IList<string> args)
+        {
+            if (args.Count != 3)
+            {
+                game.Console.WriteLine("syntax: f_newobject [objectname] [objecttype]");
+                return;
+            }
+            switch (args[2].ToLower())
+            {
+                case "box":
+                    NewObject(args[1], new Box());
+                    break;
+                case "button":
+                    NewObject(args[1], new Button());
+                    break;
+                case "checkbox":
+                    NewObject(args[1], new CheckBox());
+                    break;
+                case "fancylabel":
+                    NewObject(args[1], new FancyLabel());
+                    break;
+                case "formobject":
+                    NewObject(args[1], new FormObject());
+                    break;
+                case "image":
+                    NewObject(args[1], new Image());
+                    break;
+                case "label":
+                    NewObject(args[1], new Label());
+                    break;
+                case "typewriter":
+                    NewObject(args[1], new TypeWriter());
+                    break;
+                default:
+                    game.Console.WriteLine("Invalid Object type.");
+                    return;
+            }
+        }
+
+        void f_delobject(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: f_delobject [objectname]");
+                return;
+            }
+            if (Objects.ContainsKey(args[1].ToLower())) Objects.Remove(args[1].ToLower());
+        }
+
+        void f_selobject(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: f_selobject [objectname]");
+                return;
+            }
+            if (Objects.ContainsKey(args[1].ToLower())) GetObject(args[1]).AttachToConsole();
+        }
+
+        void f_listobjects(IList<string> args)
+        {
+            foreach (var item in Objects.Keys)
+            {
+                game.Console.WriteLine(item);
+            }
         }
     }
 }

@@ -18,14 +18,15 @@ namespace Neat.Console
         List<string> buffer;
         string command;
         RAM ram;
-        public bool isActive = false;
-        public string font = "consolefont";
-        public Color textColor = Color.White;
-        public Color inputColor = Color.Yellow;
-        public Color backColor = Color.DarkBlue;
-        public Keys consoleKey = Keys.OemTilde;
-        public string backTexture = "solid";
-        public bool echo = true;
+
+        public bool IsActive = false;
+        public string Font = "consolefont";
+        public Color TextColor = Color.White;
+        public Color InputColor = Color.Yellow;
+        public Color BackColor = Color.DarkBlue;
+        public Keys ConsoleKey = Keys.OemTilde;
+        public string BackTexture = "solid";
+        public bool Echo = true;
         public Console(NeatGame _game)
         {
             game = _game;
@@ -40,7 +41,7 @@ namespace Neat.Console
         public void Update(GameTime gameTime)
         {
             UpdateMessages();
-            if (!isActive) return;
+            if (!IsActive) return;
             HandleInput(gameTime);
         }
     }

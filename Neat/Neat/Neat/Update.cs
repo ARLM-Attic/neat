@@ -49,7 +49,7 @@ namespace Neat
             if (HasConsole)
             {
                 if (IsTapped(ConsoleKey))
-                    Console.isActive = !Console.isActive;
+                    Console.IsActive = !Console.IsActive;
                 Console.Update(gameTime);
             }
 #endif

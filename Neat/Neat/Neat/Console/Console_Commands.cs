@@ -72,9 +72,10 @@ namespace Neat.Console
 
                 //engine
                 {"e_activatepart"       ,e_activatepart},
-                {"activatepart"         ,e_activatepart},
                 {"ap"                   ,e_activatepart},
+#if XLIVE
                 {"e_xliveguide"         ,e_xliveguide},
+#endif
                 {"e_freeze"             ,e_freeze},
                 {"fr"                   ,e_freeze},
 

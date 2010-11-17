@@ -22,7 +22,7 @@ using Neat.Graphics;
 
 namespace Neat.GUI
 {
-    public class TypeWriter : Label 
+    public class TypeWriter : Label
     {
 
         int frame = 0;
@@ -35,16 +35,15 @@ namespace Neat.GUI
             frame = 0;
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            frame++;
+            if (frame % Speed == 0) cursor++;
+            if (cursor >= Caption.Length) cursor = Caption.Length;
 
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-        frame++;
-        if (frame % Speed == 0) cursor++;
-        if (cursor >= Caption.Length) cursor = Caption.Length;
+        }
 
-    }
-        
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (DrawShadow)
@@ -59,6 +58,22 @@ namespace Neat.GUI
                     (IsMouseHovered ? MouseHoverColor :
                     ForeColor)));
             }
+        }
+
+        public override void AttachToConsole()
+        {
+            base.AttachToConsole();
+            game.Console.AddCommand("fo_speed", fo_speed);
+        }
+
+        void fo_speed(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [int]");
+                return;
+            }
+            Speed = int.Parse(args[1]);
         }
     }
 }

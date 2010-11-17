@@ -40,5 +40,32 @@ namespace Neat.GUI
             else TintColor = NormalTintColor;
             base.Update(gameTime);
         }
+
+        public override void AttachToConsole()
+        {
+            base.AttachToConsole();
+            game.Console.AddCommand("fo_hovertintcolor", fo_hovertintcolor);
+            game.Console.AddCommand("fo_tintcolor", fo_tintcolor);
+        }
+
+        void fo_hovertintcolor(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            HoverTintColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+        }
+
+        void fo_tintcolor(IList<string> args)
+        {
+            if (args.Count < 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                return;
+            }
+            NormalTintColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+        }
     }
 }
