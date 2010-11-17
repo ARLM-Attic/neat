@@ -39,12 +39,19 @@ namespace Neat.GUI
         {
             Checked = !Checked;
             if (Checked)
-            { if (OnChecked != null) OnChecked(); }
+            {
+                if (OnCheckedRun != null) game.Console.Run(OnCheckedRun);
+                if (OnChecked != null) OnChecked(); 
+            }
             else
-            { if (OnUnchecked != null) OnUnchecked(); }
-
+            {
+                if (OnUncheckedRun != null) game.Console.Run(OnUncheckedRun);
+                if (OnUnchecked != null) OnUnchecked(); }
+        
             base.Released();
         }
+
+        public string OnCheckedRun, OnUncheckedRun;
 
         public event XEventHandler OnChecked;
         public event XEventHandler OnUnchecked;
@@ -82,6 +89,18 @@ namespace Neat.GUI
             game.Console.AddCommand("fo_drawshadow", fo_drawshadow);
             game.Console.AddCommand("fo_checkedimg", fo_checkedimg);
             game.Console.AddCommand("fo_uncheckedimg", fo_uncheckedimg);
+            game.Console.AddCommand("fo_onchecked", fo_onchecked);
+            game.Console.AddCommand("fo_onunchecked", fo_onunchecked);
+        }
+
+        void fo_onchecked(IList<string> args)
+        {
+            OnCheckedRun = game.Console.Args2Str(args, 1);
+        }
+
+        void fo_onunchecked(IList<string> args)
+        {
+            OnUncheckedRun = game.Console.Args2Str(args, 1);
         }
 
         void fo_checked(IList<string> args)

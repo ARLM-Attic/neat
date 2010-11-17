@@ -57,13 +57,19 @@ namespace Neat.GUI
         public event XEventHandler OnHover;
         public event XEventHandler OnRelease;
 
+        public string OnPressRun, OnReleaseRun;
+
         public virtual void Pressed()
         {
             if (!Enabled) return;
-            
+            if (OnPressRun != null) game.Console.Run(OnPressRun);
             if (OnPress != null) OnPress();
         }
-        public virtual void Released() { if (!Enabled) return; game.GetSound(PushSound).Play(1f,0f,0f); if (OnRelease != null)  OnRelease(); }
+        public virtual void Released() { 
+            if (!Enabled) return; game.GetSound(PushSound).Play(1f, 0f, 0f); if (OnRelease != null)  OnRelease();
+            if (OnReleaseRun != null) game.Console.Run(OnReleaseRun);
+        }
+
         public virtual void Holded() { if (!Enabled) return; if (OnHold != null)  OnHold(); }
         public virtual void Hovered() { if (!Enabled) return; if (OnHover != null)  OnHover(); }
         public virtual void Initialize() { }
@@ -152,6 +158,18 @@ namespace Neat.GUI
             game.Console.AddCommand("fo_hovercolor", fo_hovercolor);
             game.Console.AddCommand("fo_holdcolor", fo_holdcolor);
             game.Console.AddCommand("fo_disabledcolor", fo_disabledcolor);
+            game.Console.AddCommand("fo_onpress", fo_onpress);
+            game.Console.AddCommand("fo_onrelease", fo_onrelease);
+        }
+
+        void fo_onpress(IList<string> args)
+        {
+            OnPressRun = game.Console.Args2Str(args, 1);
+        }
+
+        void fo_onrelease(IList<string> args)
+        {
+            OnReleaseRun = game.Console.Args2Str(args, 1);
         }
 
         void fo_enabled(IList<string> args)
