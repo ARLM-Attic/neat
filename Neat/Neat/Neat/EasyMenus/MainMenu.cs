@@ -46,7 +46,7 @@ namespace Neat.EasyMenus
 #elif WINDOWS
             if (game.IsTapped(Keys.Escape))
 #endif
-                game.ActivatePart("quitconfirm");
+                game.ActivateScreen("quitconfirm");
 #if ZUNE
             if (game.IsTapped( Buttons.A))
 #elif WINDOWS
@@ -59,10 +59,10 @@ namespace Neat.EasyMenus
                         game.Console.Run("g_start");
                         break;
                     case 1: //opt
-                        game.Console.Run("ap optionsmenu");
+                        game.Console.Run("sh optionsmenu");
                         break;
                     case 2: //quit
-                        game.Console.Run("ap quitconfirm");
+                        game.Console.Run("sh quitconfirm");
                         break;
                 }
             }

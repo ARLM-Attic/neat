@@ -24,7 +24,7 @@ using Neat.Graphics;
 
 namespace Neat
 {
-    public class CollisionTest : GamePart
+    public class CollisionTest : Screen
     {
         public CollisionTest(NeatGame Game)
             : base(Game)

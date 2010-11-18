@@ -106,7 +106,7 @@ namespace Neat.EasyMenus
 #elif WINDOWS
             if (game.IsTapped(Keys.Escape))
 #endif
-                game.ActivatePart("mainmenu");
+                game.Console.Run("sh mainmenu");
 
 #if ZUNE
             if (game.IsTapped(Buttons.A))
@@ -150,7 +150,7 @@ namespace Neat.EasyMenus
 #endif
                     break;
                 case 4:
-                    game.Console.Run("ap mainmenu");
+                    game.Console.Run("sh mainmenu");
                     break;
             }
         }

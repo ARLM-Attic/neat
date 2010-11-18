@@ -21,7 +21,7 @@ using Neat.MenuSystem;
 
 namespace Neat
 {
-    public class Menu : GamePart
+    public class Menu : Screen
     {
         public Menu(NeatGame G)
             : base(G)

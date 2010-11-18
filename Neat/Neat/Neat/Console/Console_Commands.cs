@@ -72,9 +72,9 @@ namespace Neat.Components
                 {"a_songinfo"           ,a_songinfo},
 
                 //engine
-                {"e_activatepart"       ,e_activatepart},
+                {"e_show"               ,e_show},
                 {"e_framerate"          ,e_framerate},
-                {"ap"                   ,e_activatepart},
+                {"sh"                   ,e_show},
 #if XLIVE
                 {"e_xliveguide"         ,e_xliveguide},
 #endif

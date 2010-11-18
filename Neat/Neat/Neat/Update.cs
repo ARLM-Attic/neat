@@ -133,7 +133,7 @@ namespace Neat
         public Vector2 mousePosition = Vector2.Zero;
         protected virtual void Behave(GameTime gameTime)
         {
-            if (!IsPaused && ActivePart != null) Parts[ActivePart].Update(gameTime);
+            if (!IsPaused && ActiveScreen != null) Screens[ActiveScreen].Update(gameTime);
         }
     }
 }

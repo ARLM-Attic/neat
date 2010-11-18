@@ -22,7 +22,7 @@ using Neat.GUI;
 
 namespace Neat
 {
-    public class GamePart
+    public class Screen
     {
 #region Fields
         protected SpriteBatch SpriteBatch { get { return game.SpriteBatch; } set { game.SpriteBatch = value; } }
@@ -33,7 +33,7 @@ namespace Neat
 #endregion
 
 #region Initialize
-        public GamePart(NeatGame Game)
+        public Screen(NeatGame Game)
         {
             game = Game;
         }

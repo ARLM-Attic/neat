@@ -13,12 +13,12 @@ namespace Neat.Components
     public partial class Console : GameComponent
     {
         //////////////////////////////////////////////ENGINE
-        /* e_activatepart [partname]
-         * Activates a gamepart
+        /* e_show [screenname]
+         * Activates a Screen
          */
-        void e_activatepart(IList<string> args)
+        void e_show(IList<string> args)
         {
-            try { game.ActivatePart(Args2Str(args, 1)); }
+            try { game.ActivateScreen(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 

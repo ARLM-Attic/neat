@@ -48,7 +48,7 @@ namespace Neat.EasyMenus
 #elif WINDOWS
             if (game.IsTapped(Keys.Escape))
 #endif
-                game.Console.Run("ap game");
+                game.Console.Run("sh game");
 #if ZUNE
             if (game.IsTapped(Buttons.A))
 #elif WINDOWS
@@ -65,17 +65,17 @@ namespace Neat.EasyMenus
             switch (System.SelectedItem)
             {
                 case 0:
-                    game.Console.Run("ap game");
+                    game.Console.Run("sh game");
                     break;
                 case 1:
                     game.Console.Run("g_restart");
-                    game.Console.Run("ap game");
+                    game.Console.Run("sh game");
                     break;
                 case 2:
                     // Seperator
                     break;
                 case 3:
-                    game.Console.Run("ap mainmenu");
+                    game.Console.Run("sh mainmenu");
                     break;
                 case 4:
                     game.Console.Run("quit");

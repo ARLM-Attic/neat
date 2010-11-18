@@ -21,7 +21,7 @@ using Neat.MenuSystem;
 
 namespace Neat
 {
-    public enum GamePartNames
+    public enum GameScreenNames
     {
         MainMenu = 0,
         QuitConfirm = 1,
@@ -57,8 +57,8 @@ namespace Neat
         public NetworkHelper networkHelper;
 #endif
 
-        public Dictionary<string,GamePart> Parts;
-        public string ActivePart;
+        public Dictionary<string,Screen> Screens;
+        public string ActiveScreen;
 
 #if WINDOWS_PHONE
         public int GameWidth
@@ -132,8 +132,8 @@ namespace Neat
 
             SetFrameRate(60);
 
-            Parts = new Dictionary<string, GamePart>();
-            AddParts();
+            Screens = new Dictionary<string, Screen>();
+            AddScreens();
         }
 
         public void SetFrameRate(double f)
@@ -148,10 +148,10 @@ namespace Neat
         public uint Frame = 0;
         public const uint MaxFrame = uint.MaxValue - 2;
 
-        public void ActivatePart(string part)
+        public void ActivateScreen(string screen)
         {
-            Parts[part].Activate();
-            ActivePart = part;
+            Screens[screen].Activate();
+            ActiveScreen = screen;
         }
 
         public SpriteFont NormalFont;
@@ -159,8 +159,8 @@ namespace Neat
         protected override void BeginRun()
         {
             
-            InitializeParts();
-            ActivatePart("mainmenu");
+            InitializeScreens();
+            ActivateScreen("mainmenu");
             FirstTime();
             base.BeginRun();
         }
@@ -185,9 +185,9 @@ namespace Neat
 
         }
 
-        public virtual void InitializeParts()
+        public virtual void InitializeScreens()
         {
-            foreach (var p in Parts)
+            foreach (var p in Screens)
                 p.Value.Initialize();
         }
     }

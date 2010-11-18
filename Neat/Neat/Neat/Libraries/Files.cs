@@ -69,16 +69,16 @@ namespace Neat
             LoadEffect("Effects\\ColorFilter");
             LoadEffect("Effects\\ColorAdder");
 
-            foreach (var p in Parts)
+            foreach (var p in Screens)
                 p.Value.LoadContent();
         }
 
-        public virtual void AddParts()
+        public virtual void AddScreens()
         {
-            Parts.Add("mainmenu", new EasyMenus.MainMenu(this));
-            Parts.Add("quitconfirm", new EasyMenus.QuitConfirmationMenu(this));
-            Parts.Add("optionsmenu", new EasyMenus.OptionsMenu(this));
-            Parts.Add("ingamemenu", new EasyMenus.InGameMenu(this));
+            Screens.Add("mainmenu", new EasyMenus.MainMenu(this));
+            Screens.Add("quitconfirm", new EasyMenus.QuitConfirmationMenu(this));
+            Screens.Add("optionsmenu", new EasyMenus.OptionsMenu(this));
+            Screens.Add("ingamemenu", new EasyMenus.InGameMenu(this));
         }
 
         protected override void UnloadContent()

@@ -130,7 +130,7 @@
     <Compile Include="EasyMenus\MainMenu.cs" />
     <Compile Include="EasyMenus\OptionsMenu.cs" />
     <Compile Include="EasyMenus\QuitConfirmation.cs" />
-    <Compile Include="GamePart.cs" />
+    <Compile Include="Screen.cs" />
     <Compile Include="Game\CollisionTest.cs" />
     <Compile Include="Game\CollisionResolution.cs" />
     <Compile Include="Game\Game1.cs" />

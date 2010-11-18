@@ -63,7 +63,7 @@ namespace Neat.EasyMenus
             switch (System.SelectedItem)
             {
                 case 1: //back
-                    game.ActivatePart("mainmenu");
+                    game.Console.Run("sh mainmenu");
                     break;
                 case 2: //quit
                     game.Exit();

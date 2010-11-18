@@ -61,10 +61,10 @@ namespace Neat
             base.Render(gameTime);
         }
 
-        public override void AddParts()
+        public override void AddScreens()
         {
-            base.AddParts();
-            Parts["mainmenu"] = new StartScreen(this);
+            base.AddScreens();
+            Screens["mainmenu"] = new StartScreen(this);
         }
     }
 }

@@ -121,7 +121,7 @@ namespace Neat
         }
         protected virtual void Render(GameTime gameTime)
         {
-            Parts[ActivePart].Render(gameTime);
+            Screens[ActiveScreen].Render(gameTime);
         }
         
         public void Write(string text, Vector2 position)

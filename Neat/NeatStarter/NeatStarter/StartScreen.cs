@@ -24,7 +24,7 @@ using Neat.Graphics;
 
 namespace NeatStarter
 {
-    public class StartScreen : GamePart
+    public class StartScreen : Screen
     {
         float alpha ;
         float fadeRate = 0.01f;
