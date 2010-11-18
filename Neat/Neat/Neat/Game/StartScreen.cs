@@ -50,7 +50,7 @@ namespace Neat
         {
             alpha += fadeRate;
             if (alpha > 2.0f && NextScreen.Trim().Length > 0)
-                game.Console.Run("ap " + NextScreen);
+                game.Console.Run("sh " + NextScreen);
             base.Behave(gameTime);
         }
 

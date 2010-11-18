@@ -166,7 +166,7 @@
     <Compile Include="MenuSystem.cs" />
     <Compile Include="Messaging.cs" />
     <Compile Include="NetworkHelper.cs" />
-    <Compile Include="NetworkHUD.cs" />
+    <Compile Include="Components\NetworkHUD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RAM.cs" />

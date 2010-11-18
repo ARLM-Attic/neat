@@ -122,11 +122,33 @@ namespace Neat.GUI
         public void AttachToConsole()
         {
             if (game.Console == null) return;
-            
+
+            game.Console.AddCommand("f_hasmouse", f_hasmouse);
+            game.Console.AddCommand("f_mousespeed", f_mousespeed);
             game.Console.AddCommand("f_newcontrol", f_newcontrol);
             game.Console.AddCommand("f_delcontrol", f_delcontrol);
             game.Console.AddCommand("f_selcontrol", f_selcontrol);
             game.Console.AddCommand("f_listcontrols", f_listobjects);
+        }
+
+        void f_hasmouse(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                return;
+            }
+            HasMouse = bool.Parse(args[1]);
+        }
+
+        void f_mousespeed(IList<string> args)
+        {
+            if (args.Count != 2)
+            {
+                game.Console.WriteLine("syntax: " + args[0] + " [int]");
+                return;
+            }
+            MouseSpeed = int.Parse(args[1]);
         }
 
         void f_newcontrol(IList<string> args)

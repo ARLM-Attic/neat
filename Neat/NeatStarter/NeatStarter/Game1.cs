@@ -21,6 +21,7 @@ namespace NeatStarter
         {
             GameWidth = 800;
             GameHeight = 600;
+            BackGroundColor = Color.CornflowerBlue;
             FullScreen = false;
         }
 
@@ -30,7 +31,7 @@ namespace NeatStarter
             HasConsole = true;
             ConsoleKey = Keys.OemTilde;
             Graphics.ApplyChanges();
-            Window.Title = "THIS IS NEAT.";
+            Window.Title = "NeatStarter";
         }
 
         protected override void LoadContent()
