@@ -126,7 +126,7 @@ namespace Neat.Components
             if (alpha > 0)
             {
                 game.SpriteBatch.Begin();
-                game.SpriteBatch.Draw(game.getTexture("mediaHUD"),
+                game.SpriteBatch.Draw(game.GetTexture("mediaHUD"),
                     DrawPosition, GraphicsHelper.GetColorWithAlpha(Color.White, alpha));
 
                 //text

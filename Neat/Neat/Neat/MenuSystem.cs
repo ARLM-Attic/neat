@@ -305,7 +305,7 @@ namespace Neat
                 }
 
                 game.SpriteBatch.Draw(
-                    game.getTexture("menuFocus"),
+                    game.GetTexture("menuFocus"),
                     itemSelector,
                     Color.White);
             }
@@ -326,18 +326,16 @@ namespace Neat
             }
             public void RecalculateSizes()
             {
-                try
+                if (font == null) return;
+                foreach (MenuItem item in Items)
                 {
-                    foreach (MenuItem item in Items)
+                    if (item.Caption.Trim().Length > 0)
                     {
-                        if (font.MeasureString(item.Caption).X > longestItem) longestItem = font.MeasureString(item.Caption).X;
+                        var s = font.MeasureString(item.Caption).X;
+                        if (s > longestItem) longestItem = s;
                     }
-                    centerOffset = new Vector2(longestItem / 2, ((Items.Count - 1) * ItemsOffset.Y + font.MeasureString("|").Y) / 2);
                 }
-                catch (Exception e)
-                {
-                    game.Console.WriteLine("MenuSystem.RecalculateSizes(): " + e.Message);
-                }
+                centerOffset = new Vector2(longestItem / 2, ((Items.Count - 1) * ItemsOffset.Y + font.MeasureString("|").Y) / 2);
             }
             
         }

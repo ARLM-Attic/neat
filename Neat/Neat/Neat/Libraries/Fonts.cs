@@ -16,18 +16,19 @@ namespace Neat
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
         Dictionary<string, SpriteFont> fonts;
-        public void LoadFont(string spath)
+        public SpriteFont LoadFont(string spath)
         {
-            LoadFont(getNameFromPath(spath), Content.Load<SpriteFont>(spath));
+            return LoadFont(getNameFromPath(spath), Content.Load<SpriteFont>(spath));
         }
-        public void LoadFont(string spath, string sname)
+        public SpriteFont LoadFont(string spath, string sname)
         {
-            LoadFont(sname, Content.Load<SpriteFont>(spath));
+            return LoadFont(sname, Content.Load<SpriteFont>(spath));
         }
-        public void LoadFont(string name, SpriteFont data)
+        public SpriteFont LoadFont(string name, SpriteFont data)
         {
             name = name.ToLower();
             fonts.Add(name, data);
+            return data;
         }
 
         public SpriteFont GetFont(string name)
@@ -39,7 +40,7 @@ namespace Neat
             }
             catch
             {
-                return GetFont("Normal");
+                return fonts["normal"];
             }
         }
     }

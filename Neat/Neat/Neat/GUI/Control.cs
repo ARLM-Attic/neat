@@ -22,8 +22,7 @@ using Neat.Graphics;
 using Neat.Mathematics;
 namespace Neat.GUI
 {
-   // public delegate void XEventHandler();
-    public class FormObject
+    public class Control
     {
         public NeatGame game;
 
@@ -47,7 +46,7 @@ namespace Neat.GUI
         public bool IsMouseHold = false;
         public bool IsMouseHovered = false;
 
-        public FormObject()
+        public Control()
         {
             Initialize();
         }
@@ -77,7 +76,7 @@ namespace Neat.GUI
         public virtual void Draw(GameTime gameTime,SpriteBatch spriteBatch)
         {
             Rectangle bounds = new Rectangle((int)(Position.X), (int)(Position.Y), (int)(Size.X), (int)(Size.Y));
-            spriteBatch.Draw(game.getTexture(BackgroundImage), bounds, TintColor); // Draw Background
+            spriteBatch.Draw(game.GetTexture(BackgroundImage), bounds, TintColor); // Draw Background
             
             Vector2 textsize = game.GetFont(Font).MeasureString(Caption);
             GraphicsHelper.DrawShadowedString(spriteBatch,game.GetFont(Font), Caption, Position + new Vector2(Size.X / 2 - textsize.X / 2, Size.Y / 2 - textsize.Y / 2),
@@ -144,35 +143,35 @@ namespace Neat.GUI
 
         public virtual void AttachToConsole()
         {
-            game.Console.AddCommand("fo_enabled", fo_enabled);
-            game.Console.AddCommand("fo_selectable", fo_selectable);
-            game.Console.AddCommand("fo_visible", fo_visible);
-            game.Console.AddCommand("fo_position", fo_position);
-            game.Console.AddCommand("fo_size", fo_size);
-            game.Console.AddCommand("fo_caption", fo_caption);
-            game.Console.AddCommand("fo_bgimg", fo_bgimg);
-            game.Console.AddCommand("fo_pushsound", fo_pushsound);
-            game.Console.AddCommand("fo_font", fo_font);
-            game.Console.AddCommand("fo_tint", fo_tint);
-            game.Console.AddCommand("fo_forecolor", fo_forecolor);
-            game.Console.AddCommand("fo_hovercolor", fo_hovercolor);
-            game.Console.AddCommand("fo_holdcolor", fo_holdcolor);
-            game.Console.AddCommand("fo_disabledcolor", fo_disabledcolor);
-            game.Console.AddCommand("fo_onpress", fo_onpress);
-            game.Console.AddCommand("fo_onrelease", fo_onrelease);
+            game.Console.AddCommand("fc_enabled", fc_enabled);
+            game.Console.AddCommand("fc_selectable", fc_selectable);
+            game.Console.AddCommand("fc_visible", fc_visible);
+            game.Console.AddCommand("fc_position", fc_position);
+            game.Console.AddCommand("fc_size", fc_size);
+            game.Console.AddCommand("fc_caption", fc_caption);
+            game.Console.AddCommand("fc_bgimg", fc_bgimg);
+            game.Console.AddCommand("fc_pushsound", fc_pushsound);
+            game.Console.AddCommand("fc_font", fc_font);
+            game.Console.AddCommand("fc_tint", fc_tint);
+            game.Console.AddCommand("fc_forecolor", fc_forecolor);
+            game.Console.AddCommand("fc_hovercolor", fc_hovercolor);
+            game.Console.AddCommand("fc_holdcolor", fc_holdcolor);
+            game.Console.AddCommand("fc_disabledcolor", fc_disabledcolor);
+            game.Console.AddCommand("fc_onpress", fc_onpress);
+            game.Console.AddCommand("fc_onrelease", fc_onrelease);
         }
 
-        void fo_onpress(IList<string> args)
+        void fc_onpress(IList<string> args)
         {
             OnPressRun = game.Console.Args2Str(args, 1);
         }
 
-        void fo_onrelease(IList<string> args)
+        void fc_onrelease(IList<string> args)
         {
             OnReleaseRun = game.Console.Args2Str(args, 1);
         }
 
-        void fo_enabled(IList<string> args)
+        void fc_enabled(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -182,7 +181,7 @@ namespace Neat.GUI
             Enabled = bool.Parse(args[1]);
         }
 
-        void fo_selectable(IList<string> args)
+        void fc_selectable(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -192,7 +191,7 @@ namespace Neat.GUI
             Selectable = bool.Parse(args[1]);
         }
 
-        void fo_visible(IList<string> args)
+        void fc_visible(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -202,7 +201,7 @@ namespace Neat.GUI
             Visible = bool.Parse(args[1]);
         }
 
-        void fo_position(IList<string> args)
+        void fc_position(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -212,7 +211,7 @@ namespace Neat.GUI
             Position = GeometryHelper.String2Vector(args[1]);
         }
 
-        void fo_size(IList<string> args)
+        void fc_size(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -222,7 +221,7 @@ namespace Neat.GUI
             Size = GeometryHelper.String2Vector(args[1]);
         }
 
-        void fo_caption(IList<string> args)
+        void fc_caption(IList<string> args)
         {
             if (args.Count < 2)
             {
@@ -232,7 +231,7 @@ namespace Neat.GUI
             Caption = game.Console.Args2Str(args,1);
         }
 
-        void fo_bgimg(IList<string> args)
+        void fc_bgimg(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -242,7 +241,7 @@ namespace Neat.GUI
             BackgroundImage = args[1];
         }
 
-        void fo_pushsound(IList<string> args)
+        void fc_pushsound(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -252,7 +251,7 @@ namespace Neat.GUI
             PushSound = args[1];
         }
 
-        void fo_font(IList<string> args)
+        void fc_font(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -262,7 +261,7 @@ namespace Neat.GUI
             Font = args[1];
         }
 
-        void fo_tint(IList<string> args)
+        void fc_tint(IList<string> args)
         {
             if (args.Count < 2)
             {
@@ -272,7 +271,7 @@ namespace Neat.GUI
             TintColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
         }
 
-        void fo_forecolor(IList<string> args)
+        void fc_forecolor(IList<string> args)
         {
             if (args.Count < 2)
             {
@@ -282,7 +281,7 @@ namespace Neat.GUI
             ForeColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
         }
 
-        void fo_hovercolor(IList<string> args)
+        void fc_hovercolor(IList<string> args)
         {
             if (args.Count < 2)
             {
@@ -292,7 +291,7 @@ namespace Neat.GUI
             MouseHoverColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
         }
 
-        void fo_holdcolor(IList<string> args)
+        void fc_holdcolor(IList<string> args)
         {
             if (args.Count < 2)
             {
@@ -302,7 +301,7 @@ namespace Neat.GUI
             MouseHoldColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
         }
 
-        void fo_disabledcolor(IList<string> args)
+        void fc_disabledcolor(IList<string> args)
         {
             if (args.Count < 2)
             {

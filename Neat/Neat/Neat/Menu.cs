@@ -60,6 +60,7 @@ namespace Neat
 
         public override void LoadContent()
         {
+            Font = game.GetFont("menuFont");
             base.LoadContent();
         }
 

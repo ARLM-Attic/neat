@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
-namespace Neat.Console
+namespace Neat.Components
 {
-    public partial class Console
+    public partial class Console : GameComponent
     {
         /* g_res [width] [height]
              * Changes the screen boundaries
@@ -114,10 +114,10 @@ namespace Neat.Console
             try
             {
                 if (args.Count > 4)
-                    game.SpriteBatch.Draw(game.getTexture(Args2Str(args, 5)),
+                    game.SpriteBatch.Draw(game.GetTexture(Args2Str(args, 5)),
                         new Rectangle(int.Parse(args[1]), int.Parse(args[2]), int.Parse(args[3]), int.Parse(args[4])), Color.White);
                 else
-                    game.SpriteBatch.Draw(game.getTexture(args[3]), //game.getTexture(Args2Str(args, 3)),
+                    game.SpriteBatch.Draw(game.GetTexture(args[3]), //game.getTexture(Args2Str(args, 3)),
                         new Vector2(float.Parse(args[1]), float.Parse(args[2])), Color.White);
             }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
@@ -127,7 +127,7 @@ namespace Neat.Console
          */
         void g_saymessage(IList<string> args)
         {
-            SayMessage(Args2Str(args, 1));
+            ShoutText(Args2Str(args, 1));
         }
 
         /* g_messagecolor [color]

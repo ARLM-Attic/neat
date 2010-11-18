@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
-namespace Neat.Console
+namespace Neat.Components
 {
-    public partial class Console
+    public partial class Console : GameComponent
     {
 #if XLIVE
         void net_create(IList<string> args)

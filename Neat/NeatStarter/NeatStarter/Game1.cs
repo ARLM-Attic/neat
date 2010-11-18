@@ -61,9 +61,9 @@ namespace NeatStarter
             base.Render(gameTime);
         }
 
-        public override void CreateParts()
+        public override void AddParts()
         {
-            base.CreateParts();
+            base.AddParts();
             Parts["mainmenu"] = new StartScreen(this);
         }
     }

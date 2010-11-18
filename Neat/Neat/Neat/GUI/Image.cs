@@ -21,7 +21,7 @@ using Neat.EasyMenus;
 
 namespace Neat.GUI
 {
-    public class Image:FormObject 
+    public class Image:Control 
     {
         public override void Initialize()
         {
@@ -41,11 +41,11 @@ namespace Neat.GUI
 
         public void CenterX()
         {
-            Position.X = game.GameWidth / 2 - game.getTexture(BackgroundImage).Width / 2;
+            Position.X = game.GameWidth / 2 - game.GetTexture(BackgroundImage).Width / 2;
         }
         public void CenterY()
         {
-            Position.Y = game.GameHeight / 2 - game.getTexture(BackgroundImage).Height / 2;
+            Position.Y = game.GameHeight / 2 - game.GetTexture(BackgroundImage).Height / 2;
         }
         public void Center()
         {
@@ -62,13 +62,13 @@ namespace Neat.GUI
         {
             if (AutoSize)
             {
-                spriteBatch.Draw(game.getTexture(BackgroundImage),
+                spriteBatch.Draw(game.GetTexture(BackgroundImage),
                     Position,
                     TintColor);
             }
             else
             {
-                spriteBatch.Draw(game.getTexture(BackgroundImage),
+                spriteBatch.Draw(game.GetTexture(BackgroundImage),
                     new Rectangle((int)(Position.X), (int)(Position.Y), (int)(Size.X), (int)(Size.Y)),
                     TintColor);
             }
@@ -77,13 +77,13 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fo_autosize", fo_autosize);
-            game.Console.AddCommand("fo_color", fo_color);
-            game.Console.AddCommand("fo_center", fo_center);
-            game.Console.AddCommand("fo_stretch", fo_stretch);
+            game.Console.AddCommand("fc_autosize", fc_autosize);
+            game.Console.AddCommand("fc_color", fc_color);
+            game.Console.AddCommand("fc_center", fc_center);
+            game.Console.AddCommand("fc_stretch", fc_stretch);
         }
 
-        void fo_autosize(IList<string> args)
+        void fc_autosize(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -93,7 +93,7 @@ namespace Neat.GUI
             AutoSize = bool.Parse(args[1]);
         }
 
-        void fo_color(IList<string> args)
+        void fc_color(IList<string> args)
         {
             if (args.Count < 2)
             {
@@ -103,7 +103,7 @@ namespace Neat.GUI
             SetColor( game.Console.ParseColor(game.Console.Args2Str(args, 1)));
         }
 
-        void fo_center(IList<string> args)
+        void fc_center(IList<string> args)
         {
             if (args.Count == 1)
             {
@@ -127,7 +127,7 @@ namespace Neat.GUI
             }
         }
 
-        void fo_stretch(IList<string> args)
+        void fc_stretch(IList<string> args)
         {
             StretchToScreen();
             return;

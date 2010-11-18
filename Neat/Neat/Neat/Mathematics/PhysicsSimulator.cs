@@ -123,7 +123,7 @@ namespace Neat.Mathematics
 
         public NeatGame game;
 
-        Neat.Console.Console console { get { return game.Console; } set { game.Console = value; } }
+        Neat.Components.Console console { get { return game.Console; } set { game.Console = value; } }
 
         public PhysicsSimulator(NeatGame i_game)
         {

@@ -44,12 +44,6 @@ namespace Neat.EasyMenus
             base.CreateMenu();
         }
 
-        public override void LoadContent()
-        {
-            Font = game.Content.Load<SpriteFont>("menuFont");
-            base.LoadContent();
-        }
-
         public override void HandleInput(GameTime gameTime)
         {
             //if (game.IsTapped(Keys.Escape)) game.Exit();
@@ -79,8 +73,8 @@ namespace Neat.EasyMenus
 
         public override void Render(GameTime gameTime)
         {
-            game.SpriteBatch.Draw(game.getTexture("menuBackground"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.White);
-            game.SpriteBatch.Draw(game.getTexture("transparent"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.Black);
+            game.SpriteBatch.Draw(game.GetTexture("menuBackground"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.White);
+            game.SpriteBatch.Draw(game.GetTexture("transparent"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.Black);
             base.Render(gameTime);
         }
     }

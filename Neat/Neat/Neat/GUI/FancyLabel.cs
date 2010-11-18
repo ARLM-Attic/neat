@@ -98,10 +98,10 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fo_speed", fo_speed);
+            game.Console.AddCommand("fc_speed", fc_speed);
         }
 
-        void fo_speed(IList<string> args)
+        void fc_speed(IList<string> args)
         {
             if (args.Count != 2)
             {

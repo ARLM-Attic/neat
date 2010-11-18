@@ -24,22 +24,22 @@ namespace Neat.GUI
 {
     public class Form
     {
-        public Dictionary<String, FormObject> Objects;
-        public string SelectedObject;
-        public int SelectedObjectNo=0;
+        public Dictionary<String, Control> Controls;
+        public string SelectedControl;
+        public int SelectedControlNo=0;
         public bool HasMouse = false;
-        public NeatGame game;
+        protected NeatGame game;
         public int MouseSpeed = 7;
         public Form(NeatGame g)
         {
-            Objects = new Dictionary<string, FormObject>();
+            Controls = new Dictionary<string, Control>();
             game = g;
             HasMouse = game.ShowMouse;
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            foreach (var item in Objects )
+            foreach (var item in Controls )
             {
                 if (item.Value.Visible)
                     item.Value.Update(gameTime);
@@ -62,7 +62,7 @@ namespace Neat.GUI
 
                 if (game.IsPressed(Keys.Space))
                 {
-                    foreach (var item in Objects)
+                    foreach (var item in Controls)
                     {
                         if (GeometryHelper.Vectors2Rectangle(item.Value.Position, item.Value.Size).Intersects(
                             new Rectangle(Mouse.GetState().X, Mouse.GetState().Y,1, 1)))
@@ -74,7 +74,7 @@ namespace Neat.GUI
 
                 if (game.IsTapped(Keys.Space))
                 {
-                    foreach (var item in Objects)
+                    foreach (var item in Controls)
                     {
                         if (GeometryHelper.Vectors2Rectangle(item.Value.Position, item.Value.Size).Intersects(
                             new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 2, 2)))
@@ -100,97 +100,97 @@ namespace Neat.GUI
 
         public virtual void Draw(GameTime gameTime)
         {
-            foreach (var item in Objects)
+            foreach (var item in Controls)
             {
                 if (item.Value.Visible)
                     item.Value.Draw(gameTime, game.SpriteBatch);
             }
         }
 
-        public void NewObject(string name, FormObject item)
+        public void NewControl(string name, Control item)
         {
             name = name.ToLower();
-            Objects.Add(name, item);
-            Objects[name].game = game;
+            Controls.Add(name, item);
+            Controls[name].game = game;
         }
 
-        public FormObject GetObject(string name)
+        public Control GetControl(string name)
         {
-            return Objects[name.ToLower()];
+            return Controls[name.ToLower()];
         }
 
         public void AttachToConsole()
         {
             if (game.Console == null) return;
             
-            game.Console.AddCommand("f_newobject", f_newobject);
-            game.Console.AddCommand("f_delobject", f_delobject);
-            game.Console.AddCommand("f_selobject", f_selobject);
-            game.Console.AddCommand("f_listobjects", f_listobjects);
+            game.Console.AddCommand("f_newcontrol", f_newcontrol);
+            game.Console.AddCommand("f_delcontrol", f_delcontrol);
+            game.Console.AddCommand("f_selcontrol", f_selcontrol);
+            game.Console.AddCommand("f_listcontrols", f_listobjects);
         }
 
-        void f_newobject(IList<string> args)
+        void f_newcontrol(IList<string> args)
         {
             if (args.Count != 3)
             {
-                game.Console.WriteLine("syntax: f_newobject [objectname] [objecttype]");
+                game.Console.WriteLine("syntax: f_newcontrol [controlname] [controltype]");
                 return;
             }
             switch (args[2].ToLower())
             {
                 case "box":
-                    NewObject(args[1], new Box());
+                    NewControl(args[1], new Box());
                     break;
                 case "button":
-                    NewObject(args[1], new Button());
+                    NewControl(args[1], new Button());
                     break;
                 case "checkbox":
-                    NewObject(args[1], new CheckBox());
+                    NewControl(args[1], new CheckBox());
                     break;
                 case "fancylabel":
-                    NewObject(args[1], new FancyLabel());
+                    NewControl(args[1], new FancyLabel());
                     break;
                 case "formobject":
-                    NewObject(args[1], new FormObject());
+                    NewControl(args[1], new Control());
                     break;
                 case "image":
-                    NewObject(args[1], new Image());
+                    NewControl(args[1], new Image());
                     break;
                 case "label":
-                    NewObject(args[1], new Label());
+                    NewControl(args[1], new Label());
                     break;
                 case "typewriter":
-                    NewObject(args[1], new TypeWriter());
+                    NewControl(args[1], new TypeWriter());
                     break;
                 default:
-                    game.Console.WriteLine("Invalid Object type.");
+                    game.Console.WriteLine("Invalid Control type.");
                     return;
             }
         }
 
-        void f_delobject(IList<string> args)
+        void f_delcontrol(IList<string> args)
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: f_delobject [objectname]");
+                game.Console.WriteLine("syntax: f_delcontrol [objectname]");
                 return;
             }
-            if (Objects.ContainsKey(args[1].ToLower())) Objects.Remove(args[1].ToLower());
+            if (Controls.ContainsKey(args[1].ToLower())) Controls.Remove(args[1].ToLower());
         }
 
-        void f_selobject(IList<string> args)
+        void f_selcontrol(IList<string> args)
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: f_selobject [objectname]");
+                game.Console.WriteLine("syntax: f_selcontrol [objectname]");
                 return;
             }
-            if (Objects.ContainsKey(args[1].ToLower())) GetObject(args[1]).AttachToConsole();
+            if (Controls.ContainsKey(args[1].ToLower())) GetControl(args[1]).AttachToConsole();
         }
 
         void f_listobjects(IList<string> args)
         {
-            foreach (var item in Objects.Keys)
+            foreach (var item in Controls.Keys)
             {
                 game.Console.WriteLine(item);
             }

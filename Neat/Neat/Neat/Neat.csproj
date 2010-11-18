@@ -142,7 +142,7 @@
     <Compile Include="GUI\CheckBox.cs" />
     <Compile Include="GUI\FancyLabel.cs" />
     <Compile Include="GUI\Form.cs" />
-    <Compile Include="GUI\FormObject.cs" />
+    <Compile Include="GUI\Control.cs" />
     <Compile Include="GUI\Image.cs" />
     <Compile Include="GUI\Label.cs" />
     <Compile Include="GUI\TypeWriter.cs" />

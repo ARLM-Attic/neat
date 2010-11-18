@@ -8,14 +8,14 @@ using Microsoft.Xna.Framework.Input;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
 using Neat.Graphics;
-namespace Neat.Console
+namespace Neat.Components
 {
-    public partial class Console
+    public partial class Console : GameComponent
     {
         public void Draw(int _hoffset, int _lines)
         {
             fx_Update();
-            if (!IsActive) return;
+            //if (!IsActive) return;
 
             string messages = GetMessages(_lines);
 
@@ -23,7 +23,7 @@ namespace Neat.Console
 
             //Draw Rectangle
             game.SpriteBatch.Draw(
-                game.getTexture(BackTexture),
+                game.GetTexture(BackTexture),
                 new Rectangle(0, _hoffset, game.GameWidth, height),
                 BackColor);
 
@@ -52,7 +52,7 @@ namespace Neat.Console
         Color fx_Color = Color.White;
 
 
-        public void SayMessage(string message)
+        public void ShoutText(string message)
         {
             messages.Add(message);
         }

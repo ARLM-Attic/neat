@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
-namespace Neat.Console
+namespace Neat.Components
 {
-    public partial class Console
+    public partial class Console : GameComponent 
     {
         private const char eval_open = '(';
         private const char eval_close= ')';
@@ -27,7 +27,7 @@ namespace Neat.Console
         public Keys ConsoleKey = Keys.OemTilde;
         public string BackTexture = "solid";
         public bool Echo = true;
-        public Console(NeatGame _game)
+        public Console(NeatGame _game) : base(_game)
         {
             game = _game;
             ram = game.Ram;
@@ -38,11 +38,12 @@ namespace Neat.Console
             WriteLine("Neat Console Initialized.");
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             UpdateMessages();
             if (!IsActive) return;
             HandleInput(gameTime);
+            base.Update(gameTime);
         }
     }
 }

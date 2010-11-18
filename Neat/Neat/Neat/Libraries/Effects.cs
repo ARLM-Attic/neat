@@ -27,18 +27,19 @@ namespace Neat
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
         Dictionary<string, Effect> effects = new Dictionary<string,Effect>();
-        public void LoadEffect(string spath)
+        public Effect LoadEffect(string spath)
         {
-            LoadEffect(getNameFromPath(spath), Content.Load<Effect>(spath));
+            return LoadEffect(getNameFromPath(spath), Content.Load<Effect>(spath));
         }
-        public void LoadEffect(string spath, string sname)
+        public Effect LoadEffect(string spath, string sname)
         {
-            LoadEffect(sname, Content.Load<Effect>(spath));
+            return LoadEffect(sname, Content.Load<Effect>(spath));
         }
-        public void LoadEffect(string name, Effect data)
+        public Effect LoadEffect(string name, Effect data)
         {
             name = name.ToLower();
             effects.Add(name, data);
+            return data;
         }
         /***********************************************/
         public Effect GetEffect(string name)
@@ -77,68 +78,6 @@ namespace Neat
             SpriteBatch.End();
             SpriteBatch.Begin();
         }
-#if TODO
-        /***********************************************/
-        public void TurnOnEffect(string effect)
-        {
-            TurnOnEffect(GetEffect(effect));
-        }
-        public void TurnOffEffect(string effect)
-        {
-            TurnOffEffect(GetEffect(effect));
-        }
-        public void TurnOnEffect(Effect effect)
-        {
-            UseEffect(effect);
-            BeginEffectPass(effect, 0);
-        }
-        public void TurnOffEffect(Effect effect)
-        {
-            EndEffectPass(effect, 0);
-            EndEffect(effect);
-        }
-        /***********************************************/
-        public void UseEffect(string effect)
-        {
-            UseEffect(GetEffect(effect));
-        }
-        public void EndEffect(string effect)
-        {
-            EndEffect(GetEffect(effect));
-        }
-        public void UseEffect(Effect effect)
-        {
-            if (autoDraw) spriteBatch.End();
-            spriteBatch.Begin(
-                SpriteSortMode.Immediate,
-                BlendState.AlphaBlend);
-            effect.Begin();
-        }
-        public void EndEffect(Effect effect)
-        {
-            effect.End();
-            spriteBatch.End();
-            if (autoDraw) spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
-        }
-        /***********************************************/
-        public void BeginEffectPass(string effect, int pass)
-        {
-            BeginEffectPass(GetEffect(effect), pass);
-        }
-        public void EndEffectPass(string effect, int pass)
-        {
-            EndEffectPass(GetEffect(effect), pass);
-        }
-        public void BeginEffectPass(Effect effect, int pass)
-        {
-            effect.CurrentTechnique.Passes[pass].Begin();
-        }
-        public void EndEffectPass(Effect effect, int pass)
-        {
-            effect.CurrentTechnique.Passes[pass].End();
-        }
-        /***********************************************/
-#endif
     }
 }
 

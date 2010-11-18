@@ -39,12 +39,6 @@ namespace Neat.EasyMenus
             base.CreateMenu();
         }
 
-        public override void LoadContent()
-        {
-            Font = game.Content.Load<SpriteFont>("menuFont");
-            base.LoadContent();
-        }
-
         public override void HandleInput(GameTime gameTime)
         {
 #if ZUNE
@@ -77,7 +71,7 @@ namespace Neat.EasyMenus
 
         public override void Render(GameTime gameTime)
         {
-            game.SpriteBatch.Draw(game.getTexture("menuBackground"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.White);
+            game.SpriteBatch.Draw(game.GetTexture("menuBackground"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.White);
             base.Render(gameTime);
         } 
     }

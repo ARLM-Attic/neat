@@ -27,11 +27,10 @@ namespace Neat
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             LoadSong("Sounds\\blank");
-#if !WINDOWS_PHONE
+            
             LoadVideo("Videos\\errorvideo","error");
-
             videoPlayers.Add(new VideoPlayer());
-#endif
+            
             LoadSound("Sounds\\mute");
             LoadSound("Sounds\\BLEEP10");
             LoadSound("Sounds\\BLEEP3");
@@ -56,39 +55,30 @@ namespace Neat
             LoadTexture("Sprites\\icon");
             LoadTexture("Sprites\\neatlogo");
 
-            LoadFont("smallFont", "smallFont");
-            LoadFont("menuFont", "menuFont");
-            LoadFont("Cambria", "Cambria");
-            LoadFont("Calibri", "Calibri");
-            LoadFont("messageBoxTitleFont", "messageBoxTitleFont");
-            LoadFont("messageBoxTextFont", "messageBoxTextFont");
-            LoadFont("consolefont", "consolefont");
-            LoadFont("fxFont", "fxFont");
-            NormalFont = Content.Load<SpriteFont>("normal");
+            NormalFont = Content.Load<SpriteFont>("Fonts\\normal");
             LoadFont("Normal", NormalFont);
+            LoadFont("Fonts\\smallFont");
+            LoadFont("Fonts\\menuFont");
+            LoadFont("Fonts\\Cambria");
+            LoadFont("Fonts\\Calibri");
+            LoadFont("Fonts\\messageBoxTitleFont");
+            LoadFont("Fonts\\messageBoxTextFont");
+            LoadFont("Fonts\\consolefont");
+            LoadFont("Fonts\\fxFont");
 
             LoadEffect("Effects\\ColorFilter");
             LoadEffect("Effects\\ColorAdder");
 
-            InitializeParts0();
-        }
-
-        void InitializeParts0()
-        {
-            Parts = new Dictionary<string, GamePart>();
-
-            CreateParts();
-            LoadPartsFiles();
-            InitializeParts();
-            ActivatePart("mainmenu");
-        }
-
-        void LoadPartsFiles()
-        {
             foreach (var p in Parts)
-            {
                 p.Value.LoadContent();
-            }
+        }
+
+        public virtual void AddParts()
+        {
+            Parts.Add("mainmenu", new EasyMenus.MainMenu(this));
+            Parts.Add("quitconfirm", new EasyMenus.QuitConfirmationMenu(this));
+            Parts.Add("optionsmenu", new EasyMenus.OptionsMenu(this));
+            Parts.Add("ingamemenu", new EasyMenus.InGameMenu(this));
         }
 
         protected override void UnloadContent()

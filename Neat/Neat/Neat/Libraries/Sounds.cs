@@ -25,18 +25,19 @@ namespace Neat
         #region SFX
         Dictionary<string, SoundEffect> sounds;
         public bool muteAllSounds = false;
-        public void LoadSound(string spath)
+        public SoundEffect LoadSound(string spath)
         {
-            LoadSound(getNameFromPath(spath), Content.Load<SoundEffect>(spath));
+            return LoadSound(getNameFromPath(spath), Content.Load<SoundEffect>(spath));
         }
-        public void LoadSound(string spath, string sname)
+        public SoundEffect LoadSound(string spath, string sname)
         {
-            LoadSound(sname, Content.Load<SoundEffect>(spath));
+            return LoadSound(sname, Content.Load<SoundEffect>(spath));
         }
-        public void LoadSound(string name, SoundEffect data)
+        public SoundEffect LoadSound(string name, SoundEffect data)
         {
             name = name.ToLower();
             sounds.Add(name, data);
+            return data;
         }
 
         public void PlaySound(string name)
@@ -56,7 +57,6 @@ namespace Neat
                 return sounds["mute"];
             }
 
-            
             try
             {
                 name = name.ToLower();
@@ -70,18 +70,19 @@ namespace Neat
         #endregion
         #region Songs
         Dictionary<string, Song> songs;
-        public void LoadSong(string spath)
+        public Song LoadSong(string spath)
         {
-            LoadSong(getNameFromPath(spath), Content.Load<Song>(spath));
+            return LoadSong(getNameFromPath(spath), Content.Load<Song>(spath));
         }
-        public void LoadSong(string spath, string sname)
+        public Song LoadSong(string spath, string sname)
         {
-            LoadSong(sname, Content.Load<Song>(spath));
+            return LoadSong(sname, Content.Load<Song>(spath));
         }
-        public void LoadSong(string name, Song data)
+        public Song LoadSong(string name, Song data)
         {
             name = name.ToLower();
             songs.Add(name, data);
+            return data;
         }
 
         public Song GetSong(string name)

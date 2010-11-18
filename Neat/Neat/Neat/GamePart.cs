@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
+using Neat.GUI;
  
 
 namespace Neat
@@ -25,23 +26,26 @@ namespace Neat
     {
 #region Fields
         protected SpriteBatch SpriteBatch { get { return game.SpriteBatch; } set { game.SpriteBatch = value; } }
-        public NeatGame game;
+        protected NeatGame game;
         public GameTime gamesTime;
-        public uint frame { get { return game.Frame; }}
+        public uint Frame { get { return game.Frame; }}
+        public Form Form;
 #endregion
 
 #region Initialize
         public GamePart(NeatGame Game)
         {
             game = Game;
-            //spriteBatch = game.spriteBatch;
         }
+
         public virtual void Initialize()
         {
-            //frame = game.frame;
+            Form = new Form(game);
         }
+
         public virtual void Activate()
         {
+            if (game.HasConsole && Form != null) Form.AttachToConsole();
         }
 #endregion
 
@@ -56,6 +60,7 @@ namespace Neat
         {
             HandleInput(gameTime);
             Behave(gameTime);
+            Form.Update(gameTime);
         }
 
         public virtual void Behave(GameTime gameTime)
@@ -66,7 +71,7 @@ namespace Neat
 #region Render
         public virtual void Render(GameTime gameTime)
         {
-            
+            Form.Draw(gameTime);
         }
 #endregion
 

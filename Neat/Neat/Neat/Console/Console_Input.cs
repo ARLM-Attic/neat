@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Input;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
 using Neat.Mathematics;
-namespace Neat.Console
+namespace Neat.Components
 {
-    public partial class Console
+    public partial class Console : GameComponent
     {
         Keys lastkey = Keys.None;
         bool IsPressed(Keys key)

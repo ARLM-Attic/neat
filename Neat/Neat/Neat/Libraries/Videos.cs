@@ -62,15 +62,9 @@ namespace Neat
             }
             catch
             {
-                return GetVideo("error");
+                return videos["error"];
             }
         }
-#if XNA_4_FINAL
-        public Texture2D GetVideoTexture(int playerID)
-        {
-            return videoPlayers[playerID].GetTexture();
-        }
-#endif
     }
 #endif
 }

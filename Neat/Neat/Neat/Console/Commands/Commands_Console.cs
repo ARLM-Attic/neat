@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
-namespace Neat.Console
+namespace Neat.Components
 {
-    public partial class Console
+    public partial class Console : GameComponent
     {
         /* c_textcolor, c_inputcolor, c_backcolor [ ]
              * changes console's colors

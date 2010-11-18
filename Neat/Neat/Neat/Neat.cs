@@ -33,7 +33,7 @@ namespace Neat
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
 
-        public Neat.Console.Console Console;
+        public Neat.Components.Console Console;
         public bool HasConsole = true;
         public Keys ConsoleKey = Keys.OemTilde;
 #if WINDOWS
@@ -110,32 +110,41 @@ namespace Neat
         public NeatGame()
         {
             Ram = new RAM(this);
-#if !WINDOWS_PHONE
-            
+
             videos = new Dictionary<string, Video>();
             videoPlayers = new List<VideoPlayer>();
-#endif
+
             sounds = new Dictionary<string, SoundEffect>() ;
             songs = new Dictionary<string, Song>();
             effects = new Dictionary<string, Effect>();
             fonts = new Dictionary<string, SpriteFont>();
 
-            Console = new Neat.Console.Console(this);
+            Console = new Neat.Components.Console(this);
+            Components.Add(Console);
+
 #if XLIVE
             Components.Add(new GamerServicesComponent(this));
 #endif
+
             Graphics = new GraphicsDeviceManager(this);
             RandomGenerator = new Random();
             Content.RootDirectory = "Content";
 
+            SetFrameRate(60);
 
-            TargetElapsedTime = TimeSpan.FromSeconds(1 / 30.0);
+            Parts = new Dictionary<string, GamePart>();
+            AddParts();
         }
+
+        public void SetFrameRate(double f)
+        {
+            TargetElapsedTime = TimeSpan.FromSeconds(1 / f);
+        }
+
         public virtual void FirstTime()
         {
         }
 
-        bool isFirstTime = true;
         public uint Frame = 0;
         public const uint MaxFrame = uint.MaxValue - 2;
 
@@ -147,7 +156,15 @@ namespace Neat
 
         public SpriteFont NormalFont;
 
-        #region Logic
+        protected override void BeginRun()
+        {
+            
+            InitializeParts();
+            ActivatePart("mainmenu");
+            FirstTime();
+            base.BeginRun();
+        }
+
         protected override void Initialize()
         {
             Frame = 0;
@@ -163,27 +180,16 @@ namespace Neat
             SayMessage("ClientBounds: " + Window.ClientBounds.Width.ToString() + "x" + Window.ClientBounds.Height.ToString());
             SayMessage("Display Mode: " + Graphics.GraphicsDevice.DisplayMode.Width.ToString() + "x" + Graphics.GraphicsDevice.DisplayMode.Height.ToString());
             SayMessage("Aspect Ratio: " + Graphics.GraphicsDevice.DisplayMode.AspectRatio.ToString());
-
+            
             base.Initialize();
+
         }
 
-        public virtual void CreateParts()
-        {
-            Parts.Add("mainmenu", new EasyMenus.MainMenu(this));
-            Parts.Add("quitconfirm", new EasyMenus.QuitConfirmationMenu(this));
-            Parts.Add("optionsmenu", new EasyMenus.OptionsMenu(this));
-            Parts.Add("ingamemenu", new EasyMenus.InGameMenu(this));
-        }
-
-        void InitializeParts()
+        public virtual void InitializeParts()
         {
             foreach (var p in Parts)
-            {
                 p.Value.Initialize();
-            }
         }
-
-        #endregion
     }
 
 

@@ -25,7 +25,7 @@ namespace Neat
         protected GameTime gamesTime;
         Dictionary<String, Sprite> textures = new Dictionary<string, Sprite>();
 
-        public virtual void LoadTexture(string path)
+        public void LoadTexture(string path)
         {
             string textureName = getNameFromPath(path).ToLower();
             try
@@ -39,7 +39,7 @@ namespace Neat
                 SayMessage("Cannot Load {" + path + "}");
             }
         }
-        public virtual void LoadTexture(string path, string name)
+        public void LoadTexture(string path, string name)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace Neat
             }
         }
 
-        public virtual void AssignTexture(string Sourcename, string Destname)
+        public void AssignTexture(string Sourcename, string Destname)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Neat
                 SayMessage("Cannot assign {" + Destname + "} to {" + Sourcename + "}");
             }
         }
-        public virtual void LoadTexture(string name, double frameRate, params string[] paths)
+        public void LoadTexture(string name, double frameRate, params string[] paths)
         {
             List<Texture2D> frames = new List<Texture2D>();
             foreach (string path in paths)
@@ -78,19 +78,18 @@ namespace Neat
                 frames, frameRate));
         }
         
-        public virtual Texture2D getTexture(string name)
+        public Texture2D GetTexture(string name)
         {
             try
             {
                 return textures[name.ToLower()].GetTexture(Frame);
-                //return textures[name.ToLower()].getTexture(gamesTime);
             }
             catch
             {
-                return getTexture("error");
+                return textures["error"].GetTexture(Frame);
             }
         } //Texture using default time
-        public virtual Texture2D getTexture(string name, GameTime gt)
+        public Texture2D GetTexture(string name, GameTime gt)
         {
             try
             {
@@ -98,18 +97,10 @@ namespace Neat
             }
             catch
             {
-                //try to load the file
-                try
-                {
-                    LoadTexture(name);
-                    return getTexture(name, gt);
-                }
-                catch
-                {
-                    return getTexture("error");
-                }
+                return textures["error"].GetTexture(gt);
             }
         }
+
         protected string getNameFromPath(string path)
         {
             int bs = 0;

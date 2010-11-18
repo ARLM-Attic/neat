@@ -57,9 +57,7 @@ namespace Neat
             gamestime = gameTime;
 
             if (Landscape)
-            {
                 GraphicsDevice.SetRenderTarget(_renderTarget);
-            }
 
             if (AutoClear)
                 Graphics.GraphicsDevice.Clear(BackGroundColor);
@@ -71,9 +69,7 @@ namespace Neat
 #if XLIVE
             if (SignedInGamer.SignedInGamers.Count > 0 || !needSignIn || !forceSignIn)
 #endif
-            {
-                Render(gameTime);
-            }
+            Render(gameTime);
 
             if (ShowMouse
 #if XLIVE
@@ -85,17 +81,18 @@ namespace Neat
                 DrawMouse(mousePosition);
 #endif
             }
-#if WINDOWS
-            if (HasConsole)
-            {
-                if (!AutoDraw) SpriteBatch.Begin();
-                Console.Draw(0, 10);
-                if (!AutoDraw) SpriteBatch.End();
-            }
-#endif
+            
             if (AutoDraw)
                 SpriteBatch.End();
-
+#if WINDOWS
+            if (HasConsole && Console.IsActive)
+            {
+                SpriteBatch.Begin();
+                Console.Draw(0, 10);
+                SpriteBatch.End();
+            }
+#endif
+            
             if (Landscape)
             {
                 GraphicsDevice.SetRenderTarget(null);
@@ -119,7 +116,7 @@ namespace Neat
         }
         protected virtual void DrawMouse(Vector2 pos)
         {
-            SpriteBatch.Draw(getTexture("mousePointer"),
+            SpriteBatch.Draw(GetTexture("mousePointer"),
                 pos, Color.White);
         }
         protected virtual void Render(GameTime gameTime)

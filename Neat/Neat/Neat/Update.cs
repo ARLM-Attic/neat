@@ -25,9 +25,8 @@ namespace Neat
 #if XLIVE
         public bool needSignIn = true;
 #endif
-        //public int updateCPS = 0;
-        //public int drawCPS = 0;
         public bool IsPaused = false;
+        
         void UpdateGame(GameTime gameTime)
         {
             if (MediaPlayer.State == MediaState.Playing && muteAllSounds)
@@ -38,19 +37,17 @@ namespace Neat
             {
                 MediaPlayer.Resume();
             }
+
             gamestime = gameTime;
 #if XLIVE
             networkHelper.Update();
 #endif
             GetInputState();
 
-            if (isFirstTime) { FirstTime(); isFirstTime = false; }
 #if WINDOWS
-            if (HasConsole)
+            if (HasConsole && IsTapped(ConsoleKey))
             {
-                if (IsTapped(ConsoleKey))
-                    Console.IsActive = !Console.IsActive;
-                Console.Update(gameTime);
+                Console.IsActive = !Console.IsActive;
             }
 #endif
             if (!Freezed)
@@ -65,6 +62,7 @@ namespace Neat
                     GetSound("bleep6").Play();
 #endif
             }
+            base.Update(gameTime);
             SaveInputState();
         }
         protected override void Update(GameTime gameTime)
@@ -102,7 +100,6 @@ namespace Neat
                 
 #endif
             }
-            base.Update(gameTime);
         }
 #if ZUNE
         public Vector2 mouseSens = new Vector2(6f,6f);

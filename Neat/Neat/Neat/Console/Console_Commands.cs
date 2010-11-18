@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
-namespace Neat.Console
+namespace Neat.Components
 {
-    public partial class Console
+    public partial class Console : GameComponent
     {
         public virtual void Run(string c)
         {
@@ -49,6 +49,7 @@ namespace Neat.Console
                 {"g_showmouse"          ,g_showmouse},
                 {"g_saymessage"         ,g_saymessage},
                 {"g_messagecolor"       ,g_messagecolor},
+
                 //console
                 {"c_textcolor"          ,c_textcolor},
                 {"c_inputcolor"         ,c_inputcolor},
@@ -72,6 +73,7 @@ namespace Neat.Console
 
                 //engine
                 {"e_activatepart"       ,e_activatepart},
+                {"e_framerate"          ,e_framerate},
                 {"ap"                   ,e_activatepart},
 #if XLIVE
                 {"e_xliveguide"         ,e_xliveguide},

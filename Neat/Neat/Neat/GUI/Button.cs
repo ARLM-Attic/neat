@@ -21,7 +21,7 @@ using Neat.EasyMenus;
 
 namespace Neat.GUI
 {
-    public class Button : FormObject 
+    public class Button : Control 
     {
         public Button() : base()
         {
@@ -44,11 +44,11 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fo_hovertintcolor", fo_hovertintcolor);
-            game.Console.AddCommand("fo_tintcolor", fo_tintcolor);
+            game.Console.AddCommand("fc_hovertintcolor", fc_hovertintcolor);
+            game.Console.AddCommand("fc_tintcolor", fc_tintcolor);
         }
 
-        void fo_hovertintcolor(IList<string> args)
+        void fc_hovertintcolor(IList<string> args)
         {
             if (args.Count < 2)
             {
@@ -58,7 +58,7 @@ namespace Neat.GUI
             HoverTintColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
         }
 
-        void fo_tintcolor(IList<string> args)
+        void fc_tintcolor(IList<string> args)
         {
             if (args.Count < 2)
             {

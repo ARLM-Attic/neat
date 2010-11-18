@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
-namespace Neat.Console
+namespace Neat.Components
 {
-    public partial class Console
+    public partial class Console : GameComponent
     {
         //////////////////////////////////////////////ENGINE
         /* e_activatepart [partname]
@@ -44,5 +44,16 @@ namespace Neat.Console
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
+        /* e_framerate [integer]
+         * changes the frame rate. tested values are 30 and 60
+         */
+        void e_framerate(IList<string> args)
+        {
+            try
+            {
+                game.SetFrameRate(double.Parse(args[1]));
+            }
+            catch { WriteLine("Error in " + Args2Str(args, 0)); }
+        }
     }
 }

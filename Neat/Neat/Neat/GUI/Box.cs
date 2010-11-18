@@ -21,7 +21,7 @@ using Neat.EasyMenus;
 
 namespace Neat.GUI
 {
-    public class Box:FormObject 
+    public class Box:Control 
     {
         public override void Initialize()
         {
@@ -41,7 +41,7 @@ namespace Neat.GUI
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(game.getTexture("solid"),
+            spriteBatch.Draw(game.GetTexture("solid"),
                 new Rectangle((int)(Position.X), (int)(Position.Y), (int)(Size.X), (int)(Size.Y)),
                 TintColor);
         }

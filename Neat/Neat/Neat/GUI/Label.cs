@@ -22,7 +22,7 @@ using Neat.Graphics;
 
 namespace Neat.GUI
 {
-    public class Label : FormObject 
+    public class Label : Control 
     {
         public override void Initialize()
         {
@@ -76,18 +76,18 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fo_center", fo_center);
-            game.Console.AddCommand("fo_color", fo_color);
-            game.Console.AddCommand("fo_drawshadow", fo_drawshadow);
-            game.Console.AddCommand("fo_shadowcolor", fo_shadowcolor);
+            game.Console.AddCommand("fc_center", fc_center);
+            game.Console.AddCommand("fc_color", fc_color);
+            game.Console.AddCommand("fc_drawshadow", fc_drawshadow);
+            game.Console.AddCommand("fc_shadowcolor", fc_shadowcolor);
         }
 
-        void fo_center(IList<string> args)
+        void fc_center(IList<string> args)
         {
             Center();
         }
 
-        void fo_color(IList<string> args)
+        void fc_color(IList<string> args)
         {
             if (args.Count < 2)
             {
@@ -97,7 +97,7 @@ namespace Neat.GUI
             SetColor(game.Console.ParseColor(game.Console.Args2Str(args, 1)));
         }
 
-        void fo_drawshadow(IList<string> args)
+        void fc_drawshadow(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -107,7 +107,7 @@ namespace Neat.GUI
             DrawShadow = bool.Parse(args[1]);
         }
 
-        void fo_shadowcolor(IList<string> args)
+        void fc_shadowcolor(IList<string> args)
         {
             if (args.Count < 2)
             {

@@ -22,7 +22,7 @@ using Neat.Graphics;
 
 namespace Neat.GUI
 {
-    public class CheckBox : FormObject 
+    public class CheckBox : Control 
     {
         public bool Checked = false;
         public string CheckedPicture = "checkedBox";
@@ -59,7 +59,7 @@ namespace Neat.GUI
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             //Rectangle bounds = new Rectangle((int)(position.X), (int)(position.Y), (int)(size.X), (int)(size.Y));
-            Texture2D t = game.getTexture(Checked ? CheckedPicture : UncheckedPicture);
+            Texture2D t = game.GetTexture(Checked ? CheckedPicture : UncheckedPicture);
             spriteBatch.Draw(t, 
                 new Rectangle((int)(Position.X),(int)(Position.Y),32,32) , TintColor); // Draw Background
 
@@ -85,25 +85,25 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fo_checked", fo_checked);
-            game.Console.AddCommand("fo_drawshadow", fo_drawshadow);
-            game.Console.AddCommand("fo_checkedimg", fo_checkedimg);
-            game.Console.AddCommand("fo_uncheckedimg", fo_uncheckedimg);
-            game.Console.AddCommand("fo_onchecked", fo_onchecked);
-            game.Console.AddCommand("fo_onunchecked", fo_onunchecked);
+            game.Console.AddCommand("fc_checked", fc_checked);
+            game.Console.AddCommand("fc_drawshadow", fc_drawshadow);
+            game.Console.AddCommand("fc_checkedimg", fc_checkedimg);
+            game.Console.AddCommand("fc_uncheckedimg", fc_uncheckedimg);
+            game.Console.AddCommand("fc_onchecked", fc_onchecked);
+            game.Console.AddCommand("fc_onunchecked", fc_onunchecked);
         }
 
-        void fo_onchecked(IList<string> args)
+        void fc_onchecked(IList<string> args)
         {
             OnCheckedRun = game.Console.Args2Str(args, 1);
         }
 
-        void fo_onunchecked(IList<string> args)
+        void fc_onunchecked(IList<string> args)
         {
             OnUncheckedRun = game.Console.Args2Str(args, 1);
         }
 
-        void fo_checked(IList<string> args)
+        void fc_checked(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -113,7 +113,7 @@ namespace Neat.GUI
             Checked = bool.Parse(args[1]);
         }
 
-        void fo_drawshadow(IList<string> args)
+        void fc_drawshadow(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -123,7 +123,7 @@ namespace Neat.GUI
             DrawShadow = bool.Parse(args[1]);
         }
 
-        void fo_checkedimg(IList<string> args)
+        void fc_checkedimg(IList<string> args)
         {
             if (args.Count != 2)
             {
@@ -133,7 +133,7 @@ namespace Neat.GUI
             CheckedPicture = args[1];
         }
 
-        void fo_uncheckedimg(IList<string> args)
+        void fc_uncheckedimg(IList<string> args)
         {
             if (args.Count != 2)
             {
