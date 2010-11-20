@@ -109,6 +109,7 @@ namespace Neat.Mathematics
             return r.Contains(Vector2Point(vector));
         }
 
+        //Depricated
         public static bool IsVectorInside(Vector3 point, List<Vector3> polygon)
         {
             int i, j = 0;
