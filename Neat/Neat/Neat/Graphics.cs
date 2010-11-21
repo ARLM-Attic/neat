@@ -4,7 +4,9 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+#if LIVE
 using Microsoft.Xna.Framework.GamerServices;
+#endif
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -66,13 +68,13 @@ namespace Neat
             if (AutoDraw)
                 SpriteBatch.Begin();
 
-#if XLIVE
+#if LIVE
             if (SignedInGamer.SignedInGamers.Count > 0 || !needSignIn || !forceSignIn)
 #endif
             Render(gameTime);
 
             if (ShowMouse
-#if XLIVE
+#if LIVE
                 && !Guide.IsVisible
 #endif
                 )

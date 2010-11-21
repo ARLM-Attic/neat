@@ -7,7 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
+#if LIVE
 using Microsoft.Xna.Framework.GamerServices;
+#endif
 namespace Neat.Components
 {
     public partial class Console : GameComponent
@@ -76,7 +78,7 @@ namespace Neat.Components
                 {"e_show"               ,e_show},
                 {"e_framerate"          ,e_framerate},
                 {"sh"                   ,e_show},
-#if XLIVE
+#if LIVE
                 {"e_xliveguide"         ,e_xliveguide},
 #endif
                 {"e_freeze"             ,e_freeze},
@@ -86,7 +88,7 @@ namespace Neat.Components
                 {"load"                 ,f_load},
 
                 //network
-#if XLIVE
+#if LIVE
                 {"net_create"           ,net_create},
                 {"net_join"             ,net_join},
                 {"net_find"             ,net_find},

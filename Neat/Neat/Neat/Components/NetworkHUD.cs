@@ -4,7 +4,9 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+#if LIVE
 using Microsoft.Xna.Framework.GamerServices;
+#endif
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
@@ -21,7 +23,7 @@ using Neat.MenuSystem;
 
 namespace Neat
 {
-#if XLIVE && TODO
+#if LIVE && TODO
     public class NetworkHUD
     {
         public NetworkHelper networkHelper;

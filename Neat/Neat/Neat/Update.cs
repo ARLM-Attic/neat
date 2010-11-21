@@ -4,7 +4,9 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+#if LIVE
 using Microsoft.Xna.Framework.GamerServices;
+#endif
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
@@ -22,7 +24,7 @@ namespace Neat
 {
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
-#if XLIVE
+#if LIVE
         public bool needSignIn = true;
 #endif
         public bool IsPaused = false;
@@ -39,7 +41,7 @@ namespace Neat
             }
 
             gamestime = gameTime;
-#if XLIVE
+#if LIVE
             networkHelper.Update();
 #endif
             GetInputState();
@@ -67,7 +69,7 @@ namespace Neat
         }
         protected override void Update(GameTime gameTime)
         {
-#if XLIVE
+#if LIVE
             if (!needSignIn && !Guide.IsVisible)
             {
                 UpdateGame(gameTime);

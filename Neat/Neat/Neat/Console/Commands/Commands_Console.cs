@@ -7,7 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
+#if LIVE
 using Microsoft.Xna.Framework.GamerServices;
+#endif
 namespace Neat.Components
 {
     public partial class Console : GameComponent

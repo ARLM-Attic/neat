@@ -4,7 +4,9 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+#if LIVE
 using Microsoft.Xna.Framework.GamerServices;
+#endif
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
@@ -45,7 +47,7 @@ namespace Neat
 #endif
 
         public bool Freezed = false;
-#if XLIVE
+#if LIVE
         public bool ForceSignIn = true;
 #endif
         public RAM Ram;
@@ -54,7 +56,7 @@ namespace Neat
         public SpriteBatch SpriteBatch;
         public Random RandomGenerator;
 
-#if XLIVE
+#if LIVE
         public NetworkHelper networkHelper;
 #endif
 
@@ -124,7 +126,7 @@ namespace Neat
             Components.Add(Console);
             if (File.Exists("options.nsc")) Console.Run("call options.nsc");
 
-#if XLIVE
+#if LIVE
             Components.Add(new GamerServicesComponent(this));
 #endif
 
@@ -171,7 +173,7 @@ namespace Neat
         {
             Frame = 0;
 
-#if XLIVE
+#if LIVE
             networkHelper = new NetworkHelper(this,gamestime);
 #endif
 

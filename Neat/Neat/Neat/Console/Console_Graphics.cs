@@ -6,7 +6,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
+#if LIVE
 using Microsoft.Xna.Framework.GamerServices;
+#endif
 using Neat.Graphics;
 namespace Neat.Components
 {

@@ -6,12 +6,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
+#if LIVE
 using Microsoft.Xna.Framework.GamerServices;
+#endif
 namespace Neat.Components
 {
     public partial class Console : GameComponent
     {
-#if XLIVE
+#if LIVE
         void net_create(IList<string> args)
         {
             game.networkHelper.CreateSession();

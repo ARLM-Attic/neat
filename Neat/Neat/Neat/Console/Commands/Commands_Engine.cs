@@ -7,7 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
+#if LIVE
 using Microsoft.Xna.Framework.GamerServices;
+#endif
 namespace Neat.Components
 {
     public partial class Console : GameComponent
@@ -22,6 +24,7 @@ namespace Neat.Components
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
+#if LIVE
         /* e_xliveguide
              * Shows Games for Windows - LIVE Guide
              */
@@ -30,6 +33,7 @@ namespace Neat.Components
             try { Guide.ShowGamerCard(PlayerIndex.One, (Gamer)Gamer.SignedInGamers[0]); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
+#endif
 
         /* e_freeze
          * freezes the game
