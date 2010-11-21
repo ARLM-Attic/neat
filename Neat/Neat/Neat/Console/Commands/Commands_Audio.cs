@@ -21,6 +21,14 @@ namespace Neat.Components
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
+        /* a_mutesounds [bool]
+         * Toggles game.muteallsounds
+         */
+        void a_mutesounds(IList<string> args)
+        {
+            game.muteAllSounds = bool.Parse(args[1]);
+        }
+
         /* a_medianext
              * Plays next track
              */

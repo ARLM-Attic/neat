@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
+using System.IO;
  
 
 namespace Neat
@@ -121,6 +122,7 @@ namespace Neat
 
             Console = new Neat.Components.Console(this);
             Components.Add(Console);
+            if (File.Exists("settings.nsc")) Console.Run("call settings.nsc");
 
 #if XLIVE
             Components.Add(new GamerServicesComponent(this));

@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
 using Neat.EasyMenus;
+using System.IO;
 
 namespace Neat.EasyMenus
 {
@@ -142,6 +143,11 @@ namespace Neat.EasyMenus
                     break;
                 case 3:
 #if WINDOWS
+                    StreamWriter sw = new StreamWriter("options.nsc");
+                    sw.WriteLine("g_res " + resolutions[selectedResolution].X.ToString() + " " + resolutions[selectedResolution].Y.ToString());
+                    sw.WriteLine("g_fullscreen " + fullscreen2.ToString());
+                    sw.WriteLine("a_mutesounds " + game.muteAllSounds.ToString());
+                    sw.Close();
                     game.GameWidth = resolutions[selectedResolution].X;
                     game.GameHeight = resolutions[selectedResolution].Y;
                     game.FullScreen = fullscreen2;

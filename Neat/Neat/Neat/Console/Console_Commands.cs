@@ -70,6 +70,7 @@ namespace Neat.Components
                 {"a_mediaresume"        ,a_mediaresume},
                 {"a_mediaplay"          ,a_mediaplay},
                 {"a_songinfo"           ,a_songinfo},
+                {"a_mutesounds"         ,a_mutesounds},
 
                 //engine
                 {"e_show"               ,e_show},
