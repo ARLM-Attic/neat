@@ -147,6 +147,7 @@ namespace Neat.EasyMenus
                     sw.WriteLine("g_res " + resolutions[selectedResolution].X.ToString() + " " + resolutions[selectedResolution].Y.ToString());
                     sw.WriteLine("g_fullscreen " + fullscreen2.ToString());
                     sw.WriteLine("a_mutesounds " + game.muteAllSounds.ToString());
+                    sw.WriteLine("g_reinit");
                     sw.Close();
                     game.GameWidth = resolutions[selectedResolution].X;
                     game.GameHeight = resolutions[selectedResolution].Y;

@@ -68,8 +68,7 @@ namespace Neat.EasyMenus
                     game.Console.Run("sh game");
                     break;
                 case 1:
-                    game.Console.Run("g_restart");
-                    game.Console.Run("sh game");
+                    game.Console.Run("g_start");
                     break;
                 case 2:
                     // Seperator

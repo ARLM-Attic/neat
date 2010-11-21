@@ -122,7 +122,7 @@ namespace Neat
 
             Console = new Neat.Components.Console(this);
             Components.Add(Console);
-            if (File.Exists("settings.nsc")) Console.Run("call settings.nsc");
+            if (File.Exists("options.nsc")) Console.Run("call options.nsc");
 
 #if XLIVE
             Components.Add(new GamerServicesComponent(this));
