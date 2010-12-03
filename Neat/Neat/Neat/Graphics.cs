@@ -24,7 +24,7 @@ namespace Neat
         public bool AutoDraw = true;
         public bool AutoClear = true;
         public bool ShowMouse = false;
-
+        public bool ShowConsoleOnBottom = false;
         bool _landscape = false;
 
         RenderTarget2D _renderTarget;
@@ -90,7 +90,7 @@ namespace Neat
             if (HasConsole && Console.IsActive)
             {
                 SpriteBatch.Begin();
-                Console.Draw(0, 10);
+                Console.Draw(ShowConsoleOnBottom);
                 SpriteBatch.End();
             }
 #endif

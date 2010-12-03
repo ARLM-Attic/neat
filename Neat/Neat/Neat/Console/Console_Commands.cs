@@ -42,6 +42,11 @@ namespace Neat.Components
                 {"call"                 ,s_call},
                 {"log"                  ,s_log},
                 {"loop"                 ,l_loop},
+                {"set"                  ,s_set},
+                {"free"                 ,s_free},
+                {"on"                   ,s_on},
+                {"if"                   ,s_on},
+                {"inc"                  ,s_inc},
 
                 //graphics
                 {"g_res"                ,g_res},
@@ -61,7 +66,10 @@ namespace Neat.Components
                 {"c_texture"            ,c_texture},
                 {"c_font"               ,c_font},
                 {"c_clear"              ,c_clear},
-                {"c_size"               ,c_size},
+                {"c_lines"              ,c_lines},
+                {"c_showonbottom"       ,c_showonbottom},
+                {"c_openspeed"          ,c_curtainspeed},
+                {"c_keydelay"           ,c_keydelay},
 
                 //audio
                 {"a_sfx"                ,a_sfx},
@@ -114,9 +122,9 @@ namespace Neat.Components
                 {
                     Commands[args[0]](args);
                 }
-                catch
+                catch (Exception e)
                 {
-                    WriteLine("#ERROR IN "+Args2Str(args,0));
+                    WriteLine("#ERROR IN "+Args2Str(args,0)+":" + e.Message);
                 }
             }
             else // no match

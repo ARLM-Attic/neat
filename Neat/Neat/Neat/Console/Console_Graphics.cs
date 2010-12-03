@@ -14,32 +14,62 @@ namespace Neat.Components
 {
     public partial class Console : GameComponent
     {
-        public void Draw(int _hoffset, int _lines)
+        public int LinesCount = 10;
+        int yCurtain = 0;
+        public int CurtainSpeed = 10;
+        int mOffset = 0;
+
+        public void Draw(int _hoffset, int _lines, bool showOnBottom)
         {
             fx_Update();
-            //if (!IsActive) return;
 
-            string messages = GetMessages(_lines);
+            if (yCurtain >= 0) yCurtain = 0;
+            else yCurtain += CurtainSpeed;
+
+            string messages = GetMessages(_lines, ref mOffset);
 
             int height = MeasureHeight(_lines);
 
             //Draw Rectangle
             game.SpriteBatch.Draw(
                 game.GetTexture(BackTexture),
-                new Rectangle(0, _hoffset, game.GameWidth, height),
+                new Rectangle(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain), game.GameWidth, height),
                 BackColor);
 
             //Write Text
             game.SpriteBatch.DrawString(
                 game.GetFont(Font),
-                "> " + command + "_",
-                new Vector2(0, _hoffset),
+                "> " + command + ( ((int)(game.Frame / 20)) % 2 == 0 ? "_" : " "),
+                new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain)),
                 InputColor);
-            game.SpriteBatch.DrawString(
-                game.GetFont(Font),
-                messages,
-                new Vector2(0, _hoffset + game.GetFont(Font).MeasureString("Z\n").Y),
-                TextColor);
+            try
+            {
+                game.SpriteBatch.DrawString(
+                    game.GetFont(Font),
+                    messages,
+                    new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + game.GetFont(Font).MeasureString("Z").Y),
+                    TextColor);
+            }
+            catch (Exception e)
+            {
+                Clear();
+                WriteLine("Error: " + e.Message);
+                WriteLine("Console cleared to fix the problem.");
+            }
+            if (lb == null)
+            {
+                lb = new LineBrush(game.GraphicsDevice, 1);
+            }
+            else
+            {
+                lb.Draw(game.SpriteBatch, new Vector2(0, _hoffset - 1 + (showOnBottom ? -yCurtain : yCurtain)), new Vector2(game.GameWidth, _hoffset - 1 + (showOnBottom ? -yCurtain : yCurtain)), InputColor);
+                lb.Draw(game.SpriteBatch, new Vector2(0, _hoffset + 1 + height + (showOnBottom ? -yCurtain : yCurtain)), new Vector2(game.GameWidth, _hoffset + height + (showOnBottom ? -yCurtain : yCurtain)), InputColor);
+            }
+        }
+
+        public void Draw(bool showOnBottom)
+        {
+            Draw(showOnBottom ? game.GameHeight - MeasureHeight(LinesCount) : 0, LinesCount,showOnBottom);
         }
 
         #region Special Effects

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 #if LIVE
+using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.GamerServices;
 #endif
 using Microsoft.Xna.Framework.Graphics;
@@ -13,7 +14,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 #endif
 #if WINDOWS
-using Microsoft.Xna.Framework.Net;
+
 using Microsoft.Xna.Framework.Storage;
 #endif
 using Microsoft.Xna.Framework.Media;

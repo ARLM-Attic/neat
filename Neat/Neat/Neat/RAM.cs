@@ -78,7 +78,7 @@ namespace Neat
             if (ContainsKey(key))
                 return this[key].ReturnString();
             else
-                return "#ERROR";
+                return key; // "False"; // "#ERROR";
         }
     }
 }

@@ -13,16 +13,37 @@ namespace Neat.Components
 {
     public partial class Console : GameComponent
     {
+        int lc = 0;
+        Dictionary<string, int> labels= new Dictionary<string,int>();
+        Stack<Dictionary<string, int>> labelsStack = new Stack<Dictionary<string, int>>();
+        Stack<int> lcStack = new Stack<int>();
+
         public void LoadBatch(string path)
         {
-            try
+            if (!File.Exists(path))
             {
-                StreamReader r = new StreamReader(path);
-                while (!r.EndOfStream)
+                WriteLine("File " + path + " does not exist.");
+                return;
+            }
+            var batch = File.ReadAllLines(path);
+
+            labelsStack.Push(labels);
+            labels = new Dictionary<string, int>();
+            AddCommand("goto", b_goto);
+            //PASS I: Find Addresses
+            for (int i = 0; i < batch.Length; i++)
+                if ((batch[i].Trim())[0] == ':') labels.Add(batch[i].Trim().Substring(1), i);
+
+            //PASS II: Interpret
+            lcStack.Push(lc);
+            for (lc = 0; lc < batch.Length;
+                lc++)
+            {
+                if ((batch[lc].Trim())[0] != ':')
                 {
-                    command = r.ReadLine();
                     try
                     {
+                        command = batch[lc];
                         ParseCommand();
                     }
                     catch
@@ -30,12 +51,17 @@ namespace Neat.Components
                         WriteLine("Error running " + command);
                     }
                 }
-                r.Close();
             }
-            catch
-            {
-                WriteLine("Error running batch file " + path);
-            }
+
+            if (lcStack.Count > 0) lc = lcStack.Pop();
+            if (labelsStack.Count > 0) labels = labelsStack.Pop();
+        }
+
+        void b_goto(IList<string> args)
+        {
+            if (labels.ContainsKey(args[1]))
+                lc = labels[args[1]];
+            else WriteLine("Label " + args[1] + " not found.");
         }
 
         public void SaveLog(string path)

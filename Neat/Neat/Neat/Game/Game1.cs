@@ -67,6 +67,7 @@ namespace Neat
         {
             base.AddScreens();
             Screens["mainmenu"] = new StartScreen(this);
+            Screens.Add("cr", new CollisionResolution(this));
         }
     }
 }

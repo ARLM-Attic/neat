@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
+using Neat.Graphics;
 #if LIVE
 using Microsoft.Xna.Framework.GamerServices;
 #endif
@@ -20,12 +21,25 @@ namespace Neat.Components
         List<string> buffer;
         string command;
         RAM ram;
-
-        public bool IsActive = false;
+        LineBrush lb;
+        bool _isActive = false;
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set
+            {
+                _isActive = value;
+                try
+                {
+                    yCurtain = -MeasureHeight(LinesCount);
+                }
+                catch { }
+            }
+        }
         public string Font = "consolefont";
         public Color TextColor = Color.White;
-        public Color InputColor = Color.Yellow;
-        public Color BackColor = Color.DarkBlue;
+        public Color InputColor = Color.Orange;
+        public Color BackColor = Color.DarkSlateGray;
         public Keys ConsoleKey = Keys.OemTilde;
         public string BackTexture = "solid";
         public bool Echo = true;
@@ -35,9 +49,11 @@ namespace Neat.Components
             ram = game.Ram;
             Clear();
             InitCommands();
+            InitExpressionEvaluation();
             command = "";
             commandsbuffer = new List<string>();
-            WriteLine("Neat Console Initialized.");
+            
+            WriteLine("Neat Console Initialized. [http://neat.codeplex.com]");
         }
 
         public override void Update(GameTime gameTime)

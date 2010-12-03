@@ -76,13 +76,31 @@ namespace Neat.Components
             Clear();
         }
 
-        /* c_size [int]
+        /* c_lines [int]
              * changes console's size (in lines)
              */
-        void c_size(IList<string> args)
+        void c_lines(IList<string> args)
         {
-            //try { 
-            //TODO: write c_size
+            if (args.Count == 1) WriteLine(LinesCount.ToString());
+            else LinesCount = int.Parse(args[1]);
+        }
+
+        void c_showonbottom(IList<string> args)
+        {
+            if (args.Count ==1) WriteLine(game.ShowConsoleOnBottom.ToString());
+            else game.ShowConsoleOnBottom = bool.Parse(args[1]);
+        }
+
+        void c_curtainspeed(IList<string> args)
+        {
+            if (args.Count == 1) WriteLine(CurtainSpeed.ToString());
+            else CurtainSpeed = int.Parse(args[1]);
+        }
+
+        void c_keydelay(IList<string> args)
+        {
+            if (args.Count == 1) WriteLine(KeyboardRepeatDelay.ToString());
+            else KeyboardRepeatDelay = int.Parse(args[1]);
         }
     }
 }

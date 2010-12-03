@@ -13,10 +13,38 @@ using Microsoft.Xna.Framework.GamerServices;
 namespace Neat.Components
 {
     public partial class Console : GameComponent
-    {
+    {   
         void s_rem(IList<string> args)
         {
             //eh?
+        }
+
+        void s_set(IList<string> args)
+        {
+            for (int i = 1; i < args.Count; i++)
+                ram.Add(args[i], "True");
+        }
+
+        void s_free(IList<string> args)
+        {
+            for (int i = 1; i < args.Count; i++)
+                if (ram.ContainsKey(args[i])) ram.Remove(args[i]);
+        }
+
+        void s_on(IList<string> args)
+        {
+            bool b;
+            float i;
+            if (bool.TryParse(args[1], out b) && b) Run(Args2Str(args, 2));
+            else if (float.TryParse(args[1], out i)) { if (i != 0) Run(Args2Str(args, 2)); }
+            else throw new Exception("Invalid Boolean Expression");
+        }
+
+        void s_inc(IList<string> args)
+        {
+            if (args.Count == 2) ram.Add(args[1], (float.Parse(ram.GetValue(args[1])) + 1).ToString());
+            else if (args.Count == 3) ram.Add(args[1], (float.Parse(ram.GetValue(args[1])) + float.Parse(args[2])).ToString());
+            else throw new Exception("Error in ~inc");
         }
 
         void s_quit(IList<string> args)

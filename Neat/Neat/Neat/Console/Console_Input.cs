@@ -15,10 +15,13 @@ namespace Neat.Components
     public partial class Console : GameComponent
     {
         Keys lastkey = Keys.None;
+        int lastKeyTime = 0;
+        public int KeyboardRepeatDelay = 15;
         bool IsPressed(Keys key)
         {
-            if ((game.Frame % 20 == 0 && lastkey == key && game.IsPressed(key)) || game.IsReleased(key))
+            if ((lastKeyTime > KeyboardRepeatDelay && lastkey == key && game.IsPressed(key)) || game.IsTapped(key))
             {
+                lastKeyTime = 0;
                 lastkey = key;
                 return true;
             }
@@ -27,6 +30,7 @@ namespace Neat.Components
 
         void HandleInput(GameTime gameTime)
         {
+            lastKeyTime++;
             //if (game.frame % 10 ==0)
             {
                 bool shift = (game.IsPressed(Keys.LeftShift) || game.IsPressed(Keys.RightShift));
@@ -67,6 +71,41 @@ namespace Neat.Components
                 if (IsPressed(Keys.Back)) command =
                     (command.Length != 0 ? command.Substring(0, command.Length - 1) : "");
             }
+
+            if (IsPressed(Keys.PageUp))
+            {
+                mOffset--;
+            }
+            else if (IsPressed(Keys.PageDown))
+            {
+                mOffset ++;
+            }
+            else if (IsPressed(Keys.Tab))
+            {
+                List<string> s = new List<string>();
+                foreach (var item in Commands.Keys)
+                {
+                    if (item.StartsWith(command.Trim())) s.Add(item);
+                }
+                if (s.Count == 0)
+                {
+                    WriteLine("No commands found.");
+                }
+                else if (s.Count == 1)
+                {
+                    command += s[0].Substring(command.Trim().Length);
+                }
+                else
+                {
+                    for (int i = 0; i < s.Count; i++)
+                    {
+                        Write(s[i] + "   ");
+                        if (i > 0 && i % 5 == 0) WriteLine("");
+                    }
+                    WriteLine("");
+                }
+            }
+
             if (game.IsTapped(Keys.Enter, Buttons.A))
             {
                 commandsbuffer.Add(command);
@@ -75,7 +114,7 @@ namespace Neat.Components
                 command = "";
             }
             else if (game.IsTapped(Keys.Escape, Buttons.Back)) command = "";
-
+            
             if (commandsbuffer.Count > 0)
             {
                 if (game.IsTapped(Keys.Up)) GetNextCommand();

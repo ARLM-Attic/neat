@@ -32,13 +32,22 @@ namespace Neat.Components
 
         public string GetMessages(int n)
         {
+            int o = 0;
+            return GetMessages(n, ref o);
+        }
+
+        public string GetMessages(int count, ref int offset)
+        {
+            if (offset > 0) offset = 0;
+            else if (buffer.Count - 1 <= offset) 
+                offset = -(buffer.Count - 1);
             if (buffer.Count == 0) return "";
             string result = "";
-            for (int i = buffer.Count - 1, a = 0; i >= 0 && a!=n; i--,a++)
+            for (int i = buffer.Count - 1 + offset, a = 0; i >= 0 && a < count; i--, a++)
             {
-                result = buffer[i] + '\n' + result;
+                result = (offset != 0 ? "  "+(buffer.Count - i).ToString()+"~ ":"")+ buffer[i] + '\n' + result;
             }
-            return result;
+            return result.Trim();
         }
     }
 }
