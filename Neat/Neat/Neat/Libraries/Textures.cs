@@ -103,6 +103,18 @@ namespace Neat
             }
         }
 
+        public Sprite GetSprite(string name)
+        {
+            try
+            {
+                return textures[name.ToLower()];
+            }
+            catch
+            {
+                return textures["error"];
+            }
+        }
+
         protected string getNameFromPath(string path)
         {
             int bs = 0;

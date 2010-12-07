@@ -47,6 +47,7 @@ namespace Neat.Components
                 {"on"                   ,s_on},
                 {"if"                   ,s_on},
                 {"inc"                  ,s_inc},
+                {"type"                 ,s_type},
 
                 //graphics
                 {"g_res"                ,g_res},

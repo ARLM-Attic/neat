@@ -17,7 +17,7 @@ namespace Neat.Components
         Dictionary<string, int> labels= new Dictionary<string,int>();
         Stack<Dictionary<string, int>> labelsStack = new Stack<Dictionary<string, int>>();
         Stack<int> lcStack = new Stack<int>();
-
+        bool batchEnd = false;
         public void LoadBatch(string path)
         {
             if (!File.Exists(path))
@@ -30,6 +30,7 @@ namespace Neat.Components
             labelsStack.Push(labels);
             labels = new Dictionary<string, int>();
             AddCommand("goto", b_goto);
+            AddCommand("end", b_end);
             //PASS I: Find Addresses
             for (int i = 0; i < batch.Length; i++)
                 if ((batch[i].Trim())[0] == ':') labels.Add(batch[i].Trim().Substring(1), i);
@@ -45,6 +46,11 @@ namespace Neat.Components
                     {
                         command = batch[lc];
                         ParseCommand();
+                        if (batchEnd)
+                        {
+                            batchEnd = false;
+                            break;
+                        }
                     }
                     catch
                     {
@@ -62,6 +68,11 @@ namespace Neat.Components
             if (labels.ContainsKey(args[1]))
                 lc = labels[args[1]];
             else WriteLine("Label " + args[1] + " not found.");
+        }
+
+        void b_end(IList<string> args)
+        {
+            batchEnd = true;
         }
 
         public void SaveLog(string path)

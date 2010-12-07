@@ -85,7 +85,7 @@ namespace Neat
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            //Unload any non ContentManager content here
         }
     }
 }

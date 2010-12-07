@@ -26,6 +26,8 @@ namespace Neat.Mathematics
         public float InverseMass = 0;
         public float Elasticity = 0; //[0=no elasticity, 1]
         public float FrictionCoef = 0.1f; //[0=no friction, 1]
+        public Vector2 MaxSpeed = new Vector2(-1);
+        public Vector2 MaxAcceleration = new Vector2(-1);
         float _mass = 0;
         public float Mass
         {
@@ -47,6 +49,12 @@ namespace Neat.Mathematics
         public object entity;
         public PhysicsSimulator simulator;
         public NeatGame game;
+
+        public void AttachToConsole()
+        {
+            if (game == null) return;
+            //TODO: Write Body.AttachToConsole with DVars
+        }
 
         public Polygon Mesh;
 
@@ -119,6 +127,7 @@ namespace Neat.Mathematics
         const float _allowedPenetrationDepth = -0.1f;
         const float _bigNumber = 100f;
         const float _dampingCoEf = 0.95f;
+        Vector2 negativeOne = new Vector2(-1);
         public Vector2 Gravity = new Vector2(0, -0.98f);
         public List<Body> Bodies = new List<Body>();
         public float Speed = 0.7f;
@@ -193,6 +202,17 @@ namespace Neat.Mathematics
                 v += movedDistance / Speed;
                 body.Velocity = v*_dampingCoEf;
                 body.Acceleration = a;
+                
+                if (body.MaxSpeed.X >= 0 && Math.Abs(body.Velocity.X) > body.MaxSpeed.X)
+                    body.Velocity.X = body.MaxSpeed.X * Math.Sign(body.Velocity.X);
+                if (body.MaxSpeed.Y >= 0 && Math.Abs(body.Velocity.Y) > body.MaxSpeed.Y)
+                    body.Velocity.Y = body.MaxSpeed.Y * Math.Sign(body.Velocity.Y);
+
+                if (body.MaxAcceleration.X >= 0 && Math.Abs(body.Acceleration.X) > body.MaxAcceleration.X)
+                    body.Acceleration.X = body.MaxAcceleration.X * Math.Sign(body.Acceleration.X);
+                if (body.MaxAcceleration.Y >= 0 && Math.Abs(body.Velocity.Y) > body.MaxAcceleration.Y)
+                    body.Acceleration.Y = body.MaxAcceleration.Y * Math.Sign(body.Acceleration.Y);
+
                 body.Force = Vector2.Zero;
             }
         }

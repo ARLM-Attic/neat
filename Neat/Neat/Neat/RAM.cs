@@ -16,6 +16,8 @@ namespace Neat
         public string ReturnString() { return value; }
         public float ReturnFloat() { return float.Parse(value); }
         public bool ReturnBool() { return bool.Parse(value); }
+
+        //TODO: Implement Get/Set for the value: _value = Set(input); return Get(input)
     };
 
     public class RAM : Dictionary<string,DVar>

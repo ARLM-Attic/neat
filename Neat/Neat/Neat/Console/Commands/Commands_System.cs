@@ -35,8 +35,9 @@ namespace Neat.Components
         {
             bool b;
             float i;
-            if (bool.TryParse(args[1], out b) && b) Run(Args2Str(args, 2));
+            if (args[1].ToLower() == bool.TrueString.ToLower() || (bool.TryParse(args[1], out b) && b)) Run(Args2Str(args, 2));
             else if (float.TryParse(args[1], out i)) { if (i != 0) Run(Args2Str(args, 2)); }
+            else if (args[1].ToLower() == bool.FalseString.ToLower()) ; // do nothing
             else throw new Exception("Invalid Boolean Expression");
         }
 
@@ -102,7 +103,20 @@ namespace Neat.Components
             catch { WriteLine("Error in log"); }
         }
 
-
+        void s_type(IList<string> args)
+        {
+            var filename = Args2Str(args, 1);
+            if (!File.Exists(filename))
+            {
+                WriteLine("Error: File " + filename + " does not exist");
+                return;
+            }
+            var f = File.ReadAllLines(filename);
+            foreach (var item in f)
+            {
+                WriteLine(item);
+            }
+        }
 
         ////////Logics
         /* loop [count] [command]

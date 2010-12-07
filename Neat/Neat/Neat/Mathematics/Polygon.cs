@@ -53,6 +53,15 @@ namespace Neat.Mathematics
             AutoTriangulate = source.AutoTriangulate;
         }
 
+        public Polygon(Polygon source, Vector2 offset)
+        {
+            Vertices = new List<Vector2>();
+            foreach (var item in source.Vertices)
+                Vertices.Add(item+offset);
+            AutoTriangulate = source.AutoTriangulate;
+            Triangulate();
+        }
+
         public static Polygon BuildRectangle(Rectangle r)
         {
             return BuildRectangle(r.X, r.Y, r.Width, r.Height);
