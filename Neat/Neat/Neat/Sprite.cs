@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Neat
 {
-    class Sprite
+    public class Sprite
     {
         List<Texture2D> textures;
         int frames;

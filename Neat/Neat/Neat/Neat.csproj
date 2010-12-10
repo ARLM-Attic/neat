@@ -111,6 +111,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\SideScroller\Entity.cs" />
+    <Compile Include="Game\SideScroller\Projectile.cs" />
+    <Compile Include="Game\SideScroller\State.cs" />
+    <Compile Include="Game\SideScroller\StateMachine.cs" />
+    <Compile Include="Game\SideScroller\World2d.cs" />
     <Compile Include="Graphics\LineBrush.cs" />
     <Compile Include="Console\Commands\Commands_Audio.cs" />
     <Compile Include="Console\Commands\Commands_Console.cs" />
