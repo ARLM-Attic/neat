@@ -53,11 +53,8 @@ namespace Neat.Components
                 {"c_backcolor"          ,c_backcolor},
                 {"c_show"               ,c_show},
                 {"c_hide"               ,c_hide},
-                {"c_texture"            ,c_texture},
-                {"c_font"               ,c_font},
                 {"c_clear"              ,c_clear},
                 {"c_lines"              ,c_lines},
-                {"c_showonbottom"       ,c_showonbottom},
                 {"c_openspeed"          ,c_curtainspeed},
                 {"c_keydelay"           ,c_keydelay}};
             }

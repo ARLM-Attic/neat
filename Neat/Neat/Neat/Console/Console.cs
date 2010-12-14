@@ -50,7 +50,7 @@ namespace Neat.Components
         {
             game = _game;
             ram = game.Ram;
-            Initialize();
+            //Initialize();
         }
 
         public Console(Game _game)
@@ -69,11 +69,17 @@ namespace Neat.Components
             command = "";
             commandsbuffer = new List<string>();
 
-            WriteLine("Neat " + (standAlone ? "Stand-Alone " : "") +"Console Initialized. [http://neat.codeplex.com]");
+            WriteLine("Neat " + (standAlone ? "stand alone " : "") +"Console Initialized. [http://neat.codeplex.com]");
 
+
+            StandAloneTexture = new Texture2D(base.Game.GraphicsDevice, 1, 1);
+            Color[] pixmap = new Color[1];
+            pixmap[0] = Color.White;
+            StandAloneTexture.SetData(pixmap);
             base.Initialize();
         }
 
+        
         public override void Update(GameTime gameTime)
         {
             UpdateMessages();
