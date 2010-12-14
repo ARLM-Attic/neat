@@ -115,7 +115,7 @@ namespace Neat.Components
             rulerHelper += "Z";
 
             return
-                (int)(game.GetFont(Font).MeasureString(rulerHelper).Y) + 1;
+                (int)((standAlone ? StandAloneFont : game.GetFont(Font)).MeasureString(rulerHelper).Y) + 1;
         }
     }
 }

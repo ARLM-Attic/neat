@@ -23,33 +23,42 @@ namespace Neat
     public class RAM : Dictionary<string,DVar>
     {
         NeatGame _game;
+        bool standAlone = false;
         public RAM(NeatGame game) : base()
         {
             _game = game;
         }
+        public RAM()
+            : base()
+        {
+            standAlone = true;
+        }
         public void Add(string key, string value)
         {
             key = key.Trim().ToLower();
-            // check internal dvars
-            try
+            if (!standAlone)
             {
-                // GRAPHICS
-                if (key == "g_width") _game.GameWidth = int.Parse(value);
-                else if (key == "g_height") _game.GameHeight = int.Parse(value);
-                else if (key == "g_fullscreen") _game.FullScreen = bool.Parse(value);
-                else if (key == "g_autoclear") _game.AutoClear = bool.Parse(value);
+                // check internal dvars
+                try
+                {
+                    // GRAPHICS
+                    if (key == "g_width") _game.GameWidth = int.Parse(value);
+                    else if (key == "g_height") _game.GameHeight = int.Parse(value);
+                    else if (key == "g_fullscreen") _game.FullScreen = bool.Parse(value);
+                    else if (key == "g_autoclear") _game.AutoClear = bool.Parse(value);
 
-                // SFX/ MUSIC
-                else if (key == "a_mediavolume") MediaPlayer.Volume = float.Parse(value);
-                else if (key == "a_mediamute") MediaPlayer.IsMuted = bool.Parse(value);
-                else if (key == "a_mediashuffle") MediaPlayer.IsShuffled = bool.Parse(value);
-                else if (key == "a_mediarepeat") MediaPlayer.IsRepeating = bool.Parse(value);
-                else if (key == "a_mute") _game.muteAllSounds = bool.Parse(value);
+                    // SFX/ MUSIC
+                    else if (key == "a_mediavolume") MediaPlayer.Volume = float.Parse(value);
+                    else if (key == "a_mediamute") MediaPlayer.IsMuted = bool.Parse(value);
+                    else if (key == "a_mediashuffle") MediaPlayer.IsShuffled = bool.Parse(value);
+                    else if (key == "a_mediarepeat") MediaPlayer.IsRepeating = bool.Parse(value);
+                    else if (key == "a_mute") _game.muteAllSounds = bool.Parse(value);
 
-                // ENGINE
-                else if (key == "e_freeze") _game.Freezed = bool.Parse(value);
+                    // ENGINE
+                    else if (key == "e_freeze") _game.Freezed = bool.Parse(value);
+                }
+                catch { }
             }
-            catch { }
             DVar v = new DVar();
             v.value = value;
             if (ContainsKey(key)) this[key] = v;
@@ -57,25 +66,28 @@ namespace Neat
         }
         public string GetValue(string key)
         {
-            try
+            if (!standAlone)
             {
-                // GRAPHICS
-                if (key == "g_width") return _game.GameWidth.ToString();
-                else if (key == "g_height") return _game.GameHeight.ToString();
-                else if (key == "g_fullscreen") return _game.FullScreen.ToString();
-                else if (key == "g_autoclear") return _game.AutoClear.ToString();
+                try
+                {
+                    // GRAPHICS
+                    if (key == "g_width") return _game.GameWidth.ToString();
+                    else if (key == "g_height") return _game.GameHeight.ToString();
+                    else if (key == "g_fullscreen") return _game.FullScreen.ToString();
+                    else if (key == "g_autoclear") return _game.AutoClear.ToString();
 
-                // SFX/ MUSIC
-                else if (key == "a_mediavolume") return MediaPlayer.Volume.ToString();
-                else if (key == "a_mediamute") return MediaPlayer.IsMuted.ToString();
-                else if (key == "a_mediashuffle") return MediaPlayer.IsShuffled.ToString();
-                else if (key == "a_mediarepeat") return MediaPlayer.IsRepeating.ToString();
-                else if (key == "a_mute") return _game.muteAllSounds.ToString();
+                    // SFX/ MUSIC
+                    else if (key == "a_mediavolume") return MediaPlayer.Volume.ToString();
+                    else if (key == "a_mediamute") return MediaPlayer.IsMuted.ToString();
+                    else if (key == "a_mediashuffle") return MediaPlayer.IsShuffled.ToString();
+                    else if (key == "a_mediarepeat") return MediaPlayer.IsRepeating.ToString();
+                    else if (key == "a_mute") return _game.muteAllSounds.ToString();
 
-                // ENGINE
-                else if (key == "e_freeze") return _game.Freezed.ToString();
+                    // ENGINE
+                    else if (key == "e_freeze") return _game.Freezed.ToString();
+                }
+                catch { return "#ERROR"; }
             }
-            catch { return "#ERROR"; }
             key = key.Trim().ToLower();
             if (ContainsKey(key))
                 return this[key].ReturnString();

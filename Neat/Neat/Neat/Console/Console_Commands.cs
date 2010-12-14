@@ -30,7 +30,40 @@ namespace Neat.Components
         }
         void InitCommands()
         {
-            Commands = new Dictionary<string, Action<IList<string>>>
+            if (standAlone)
+            {
+                Commands = new Dictionary<string, Action<IList<string>>>
+                {
+                {"rem"                  ,s_rem},
+                {"clear"                ,c_clear},
+                {"dvar"                 ,s_dvar},
+                {"dv"                   ,s_dvar},
+                {"echo"                 ,s_echo},
+                {"call"                 ,s_call},
+                {"log"                  ,s_log},
+                {"loop"                 ,l_loop},
+                {"set"                  ,s_set},
+                {"free"                 ,s_free},
+                {"on"                   ,s_on},
+                {"if"                   ,s_on},
+                {"inc"                  ,s_inc},
+                {"type"                 ,s_type},
+                {"c_textcolor"          ,c_textcolor},
+                {"c_inputcolor"         ,c_inputcolor},
+                {"c_backcolor"          ,c_backcolor},
+                {"c_show"               ,c_show},
+                {"c_hide"               ,c_hide},
+                {"c_texture"            ,c_texture},
+                {"c_font"               ,c_font},
+                {"c_clear"              ,c_clear},
+                {"c_lines"              ,c_lines},
+                {"c_showonbottom"       ,c_showonbottom},
+                {"c_openspeed"          ,c_curtainspeed},
+                {"c_keydelay"           ,c_keydelay}};
+            }
+            else
+            {
+                Commands = new Dictionary<string, Action<IList<string>>>
             {
                 //system
                 {"rem"                  ,s_rem},
@@ -113,6 +146,7 @@ namespace Neat.Components
 #endif
 
             };
+            }
         }
         public virtual void Run(List<string> args)
         {

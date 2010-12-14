@@ -109,7 +109,7 @@ namespace Neat
         }
 #endif
         //public GameWindow window { get { return Window; } }
-
+        bool standAlone = true;
         public NeatGame()
         {
             Ram = new RAM(this);
@@ -138,6 +138,11 @@ namespace Neat
 
             Screens = new Dictionary<string, Screen>();
             AddScreens();
+        }
+
+        public NeatGame(Game parent)
+        {
+            standAlone = false;
         }
 
         public void SetFrameRate(double f)
@@ -172,21 +177,21 @@ namespace Neat
         protected override void Initialize()
         {
             Frame = 0;
-
+            InitializeInput();
+            if (standAlone)
+            {
 #if LIVE
             networkHelper = new NetworkHelper(this,gamestime);
 #endif
+                InitializeMessages();
+                InitializeGraphics();
 
-            InitializeInput();
-            InitializeMessages();
-            InitializeGraphics();
+                SayMessage("ClientBounds: " + Window.ClientBounds.Width.ToString() + "x" + Window.ClientBounds.Height.ToString());
+                SayMessage("Display Mode: " + Graphics.GraphicsDevice.DisplayMode.Width.ToString() + "x" + Graphics.GraphicsDevice.DisplayMode.Height.ToString());
+                SayMessage("Aspect Ratio: " + Graphics.GraphicsDevice.DisplayMode.AspectRatio.ToString());
 
-            SayMessage("ClientBounds: " + Window.ClientBounds.Width.ToString() + "x" + Window.ClientBounds.Height.ToString());
-            SayMessage("Display Mode: " + Graphics.GraphicsDevice.DisplayMode.Width.ToString() + "x" + Graphics.GraphicsDevice.DisplayMode.Height.ToString());
-            SayMessage("Aspect Ratio: " + Graphics.GraphicsDevice.DisplayMode.AspectRatio.ToString());
-            
-            base.Initialize();
-
+                base.Initialize();
+            }
         }
 
         public virtual void InitializeScreens()

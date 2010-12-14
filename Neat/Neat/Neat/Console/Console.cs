@@ -43,24 +43,52 @@ namespace Neat.Components
         public Keys ConsoleKey = Keys.OemTilde;
         public string BackTexture = "solid";
         public bool Echo = true;
+
+        bool standAlone = false;
+
         public Console(NeatGame _game) : base(_game)
         {
             game = _game;
             ram = game.Ram;
+            Initialize();
+        }
+
+        public Console(Game _game)
+            : base(_game)
+        {
+            game = new NeatGame(game);
+            ram = new RAM();
+            standAlone = true;
+        }
+
+        public override void Initialize()
+        {
             Clear();
             InitCommands();
             InitExpressionEvaluation();
             command = "";
             commandsbuffer = new List<string>();
-            
-            WriteLine("Neat Console Initialized. [http://neat.codeplex.com]");
+
+            WriteLine("Neat " + (standAlone ? "Stand-Alone " : "") +"Console Initialized. [http://neat.codeplex.com]");
+
+            base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
             UpdateMessages();
-            if (!IsActive) return;
-            HandleInput(gameTime);
+            if (standAlone)
+            {
+                game.UpdateManually(gameTime);
+                game.GetInputState();
+                if (game.IsTapped(ConsoleKey)) IsActive = !IsActive;
+                if (IsActive) HandleInput(gameTime);
+                game.SaveInputState();
+            }
+            else
+            {
+                if (IsActive) HandleInput(gameTime);
+            }
             base.Update(gameTime);
         }
     }

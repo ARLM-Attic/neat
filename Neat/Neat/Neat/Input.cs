@@ -154,13 +154,13 @@ namespace Neat
             lastMouseState = currentMouseState;
         }
 
-        protected void SaveInputState()
+        public void SaveInputState()
         {
             lastKeyboardState = currentKeyboardState;
             lastGamePadState = currentGamePadState;
             lastMouseState = currentMouseState;
         }
-        protected void GetInputState()
+        public void GetInputState()
         {
             currentKeyboardState = Keyboard.GetState();
             currentGamePadState = GamePad.GetState(PlayerIndex.One);

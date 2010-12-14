@@ -31,6 +31,13 @@ namespace Neat
         
         void UpdateGame(GameTime gameTime)
         {
+            gamestime = gameTime;
+
+#if LIVE
+            networkHelper.Update();
+#endif
+            GetInputState();
+
             if (MediaPlayer.State == MediaState.Playing && muteAllSounds)
             {
                 MediaPlayer.Pause();
@@ -39,12 +46,6 @@ namespace Neat
             {
                 MediaPlayer.Resume();
             }
-
-            gamestime = gameTime;
-#if LIVE
-            networkHelper.Update();
-#endif
-            GetInputState();
 
 #if WINDOWS
             if (HasConsole && IsTapped(ConsoleKey))
@@ -67,8 +68,16 @@ namespace Neat
             base.Update(gameTime);
             SaveInputState();
         }
+        public void UpdateManually(GameTime gameTime)
+        {
+            Update(gameTime);
+        }
+
         protected override void Update(GameTime gameTime)
         {
+            Frame++;
+            if (Frame > MaxFrame) Frame = 0;
+            if (!standAlone) return;
 #if LIVE
             if (!needSignIn && !Guide.IsVisible)
             {
@@ -91,8 +100,7 @@ namespace Neat
 #else
             UpdateGame(gameTime);
 #endif
-            Frame++;
-            if (Frame > MaxFrame) Frame = 0;
+            
             if (ShowMouse)
             {
 #if WINDOWS

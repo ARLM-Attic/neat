@@ -19,8 +19,18 @@ namespace Neat.Components
         public int CurtainSpeed = 10;
         int mOffset = 0;
 
+        public Texture2D StandAloneTexture;
+        public SpriteFont StandAloneFont;
+
         public void Draw(int _hoffset, int _lines, bool showOnBottom)
         {
+            if (standAlone) return;
+            else Draw( game.SpriteBatch,_hoffset, _lines, showOnBottom);
+        }
+
+        public void Draw(SpriteBatch spriteBatch,int _hoffset, int _lines, bool showOnBottom)
+        {
+            if (standAlone && !IsActive) return;
             fx_Update();
 
             if (yCurtain >= 0) yCurtain = 0;
@@ -29,25 +39,27 @@ namespace Neat.Components
             string messages = GetMessages(_lines, ref mOffset);
 
             int height = MeasureHeight(_lines);
-
+            var width = standAlone ? spriteBatch.GraphicsDevice.DisplayMode.Width : game.GameWidth;
             //Draw Rectangle
-            game.SpriteBatch.Draw(
-                game.GetTexture(BackTexture),
-                new Rectangle(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain), game.GameWidth, height),
+            spriteBatch.Draw(
+                standAlone ? StandAloneTexture : game.GetTexture(BackTexture),
+                new Rectangle(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain), 
+                    width, height),
                 BackColor);
 
+            var font = standAlone ? StandAloneFont : game.GetFont(Font);
             //Write Text
-            game.SpriteBatch.DrawString(
-                game.GetFont(Font),
+            spriteBatch.DrawString(
+                font,
                 "> " + command + ( ((int)(game.Frame / 20)) % 2 == 0 ? "_" : " "),
                 new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain)),
                 InputColor);
             try
             {
-                game.SpriteBatch.DrawString(
-                    game.GetFont(Font),
+                spriteBatch.DrawString(
+                    font,
                     messages,
-                    new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + game.GetFont(Font).MeasureString("Z").Y),
+                    new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + font.MeasureString("Z").Y),
                     TextColor);
             }
             catch (Exception e)
@@ -58,12 +70,12 @@ namespace Neat.Components
             }
             if (lb == null)
             {
-                lb = new LineBrush(game.GraphicsDevice, 1);
+                lb = new LineBrush(spriteBatch.GraphicsDevice, 1);
             }
             else
             {
-                lb.Draw(game.SpriteBatch, new Vector2(0, _hoffset - 1 + (showOnBottom ? -yCurtain : yCurtain)), new Vector2(game.GameWidth, _hoffset - 1 + (showOnBottom ? -yCurtain : yCurtain)), InputColor);
-                lb.Draw(game.SpriteBatch, new Vector2(0, _hoffset + 1 + height + (showOnBottom ? -yCurtain : yCurtain)), new Vector2(game.GameWidth, _hoffset + height + (showOnBottom ? -yCurtain : yCurtain)), InputColor);
+                lb.Draw(spriteBatch, new Vector2(0, _hoffset - 1 + (showOnBottom ? -yCurtain : yCurtain)), new Vector2(width, _hoffset - 1 + (showOnBottom ? -yCurtain : yCurtain)), InputColor);
+                lb.Draw(spriteBatch, new Vector2(0, _hoffset + 1 + height + (showOnBottom ? -yCurtain : yCurtain)), new Vector2(width, _hoffset + height + (showOnBottom ? -yCurtain : yCurtain)), InputColor);
             }
         }
 
@@ -72,6 +84,12 @@ namespace Neat.Components
             Draw(showOnBottom ? game.GameHeight - MeasureHeight(LinesCount) : 0, LinesCount,showOnBottom);
         }
 
+        public void Draw(SpriteBatch spriteBatch, bool showOnBottom)
+        {
+            Draw( spriteBatch,showOnBottom ? 
+                (standAlone ? spriteBatch.GraphicsDevice.DisplayMode.Height : game.GameHeight)
+                - MeasureHeight(LinesCount) : 0, LinesCount, showOnBottom);
+        }
         #region Special Effects
 
         List<string> messages = new List<string>();

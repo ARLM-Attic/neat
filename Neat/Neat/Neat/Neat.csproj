@@ -111,11 +111,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game\SideScroller\Entity.cs" />
-    <Compile Include="Game\SideScroller\Projectile.cs" />
-    <Compile Include="Game\SideScroller\State.cs" />
-    <Compile Include="Game\SideScroller\StateMachine.cs" />
-    <Compile Include="Game\SideScroller\World2d.cs" />
     <Compile Include="Graphics\LineBrush.cs" />
     <Compile Include="Console\Commands\Commands_Audio.cs" />
     <Compile Include="Console\Commands\Commands_Console.cs" />
@@ -151,7 +146,6 @@
     <Compile Include="GUI\Image.cs" />
     <Compile Include="GUI\Label.cs" />
     <Compile Include="GUI\TypeWriter.cs" />
-    <Compile Include="Sprite.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Libraries\Effects.cs" />
     <Compile Include="Libraries\Files.cs" />
@@ -177,6 +171,7 @@
     <Compile Include="RAM.cs" />
     <Compile Include="Neat.cs" />
     <Compile Include="Components\TrackHUD.cs" />
+    <Compile Include="Sprite.cs" />
     <Compile Include="Update.cs" />
   </ItemGroup>
   <ItemGroup>
