@@ -24,9 +24,7 @@ namespace Neat.Components
 
         public void Draw(int _hoffset, int _lines, bool showOnBottom)
         {
-            //if (standAlone) return;
-            //else 
-            Draw( game.SpriteBatch,_hoffset, _lines, showOnBottom);
+            Draw(game.SpriteBatch,_hoffset, _lines, showOnBottom);
         }
 
         public void Draw(SpriteBatch spriteBatch,int _hoffset, int _lines, bool showOnBottom)
