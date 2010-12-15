@@ -60,7 +60,8 @@ namespace Neat
             else if (StretchMode == StretchModes.Fit)
             {
                 var ar = (float)GameWidth/(float)GameHeight;
-                if (ar >= 1.0)
+                var aro = (float)OutputResolution.X/(float)OutputResolution.Y;
+                if (ar > aro)
                 {
                     _vecSize.X = OutputResolution.X;
                     _vecSize.Y = OutputResolution.X / ar;
