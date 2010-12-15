@@ -81,6 +81,8 @@ namespace Neat.Components
 
                 //graphics
                 {"g_res"                ,g_res},
+                {"g_size"               ,g_size},
+                {"g_stretchmode"        ,g_stretchmode},
                 {"g_reinit"             ,g_reinit},
                 {"g_fullscreen"         ,g_fullscreen},
                 {"g_autoclear"          ,g_autoclear},

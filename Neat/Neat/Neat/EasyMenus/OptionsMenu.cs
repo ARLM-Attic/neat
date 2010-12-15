@@ -41,12 +41,18 @@ namespace Neat.EasyMenus
         {
             gameWidth2 = game.GameWidth;
             gameHeight2 = game.GameHeight;
+            if (game.StretchMode != NeatGame.StretchModes.None)
+            {
+                gameWidth2 = game.OutputResolution.X;
+                gameHeight2 = game.OutputResolution.Y;
+            }
             fullscreen2 = game.FullScreen;
             System.Items[0].Caption = ("Fullscreen: " + (fullscreen2 ? "ON" : "OFF"));
             System.Items[1].Caption = ("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
 
             resolutions = new List<Point>();
             resolutions.Add(new Point(800, 600));
+            resolutions.Add(new Point(1024, 600));
             resolutions.Add(new Point(1024, 768));
             resolutions.Add(new Point(1280, 720));
             resolutions.Add(new Point(1280, 800));
@@ -54,7 +60,7 @@ namespace Neat.EasyMenus
             resolutions.Add(new Point(1920, 1080));
             resolutions.Add(new Point(1920, 1200));
 
-            Point currentRes = new Point(game.GameWidth, game.GameHeight);
+            Point currentRes = new Point(gameWidth2, gameHeight2);
             bool found = false;
             for (int i = 0; i < resolutions.Count; i++)
             {
@@ -83,6 +89,11 @@ namespace Neat.EasyMenus
         {
             gameWidth2 = game.GameWidth;
             gameHeight2 = game.GameHeight;
+            if (game.StretchMode != NeatGame.StretchModes.None)
+            {
+                gameWidth2 = game.OutputResolution.X;
+                gameHeight2 = game.OutputResolution.Y;
+            }
             fullscreen2 = game.FullScreen;
             System.AddItem("Fullscreen: " + (fullscreen2 ? "ON" : "OFF"));
 #if !WINDOWS
@@ -91,7 +102,7 @@ namespace Neat.EasyMenus
             System.AddItem("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
             System.AddItem("Resolution: ", true);
             resolutionItem = System.GetLastMenuItem();
-            resolutionItem.Caption += game.GameWidth.ToString() + "x" + game.GameHeight.ToString();
+            resolutionItem.Caption += gameWidth2.ToString() + "x" + gameHeight2.ToString();
             System.AddItem("Apply Settings", true);
             System.AddItem("Back");
 #if !WINDOWS
@@ -151,8 +162,15 @@ namespace Neat.EasyMenus
                     sw.WriteLine("a_mutesounds " + game.muteAllSounds.ToString());
                     sw.WriteLine("g_reinit");
                     sw.Close();
-                    game.GameWidth = resolutions[selectedResolution].X;
-                    game.GameHeight = resolutions[selectedResolution].Y;
+                    if (game.StretchMode == NeatGame.StretchModes.None)
+                    {
+                        game.GameWidth = resolutions[selectedResolution].X;
+                        game.GameHeight = resolutions[selectedResolution].Y;
+                    }
+                    else
+                    {
+                        game.OutputResolution = resolutions[selectedResolution];
+                    }
                     game.FullScreen = fullscreen2;
                     game.InitializeGraphics();
                     Reset();

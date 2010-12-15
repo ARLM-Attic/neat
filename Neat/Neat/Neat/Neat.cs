@@ -85,12 +85,20 @@ namespace Neat
         public virtual void InitializeGraphics()
         {
             GraphicsDevice.Reset();
-            
-            Graphics.PreferredBackBufferWidth = GameWidth;
-            Graphics.PreferredBackBufferHeight = GameHeight;
-            
+
+            if (StretchMode == StretchModes.None)
+            {
+                Graphics.PreferredBackBufferWidth = GameWidth;
+                Graphics.PreferredBackBufferHeight = GameHeight;
+            }
+            else
+            {
+                Graphics.PreferredBackBufferWidth = OutputResolution.X;
+                Graphics.PreferredBackBufferHeight = OutputResolution.Y;
+                ResetRenderTarget();
+            }
+
             Graphics.IsFullScreen = FullScreen;
-            
             Graphics.ApplyChanges();
         }
 
@@ -113,7 +121,7 @@ namespace Neat
         public NeatGame()
         {
             Ram = new RAM(this);
-
+            OutputResolution = new Point(GameWidth, GameHeight);
             videos = new Dictionary<string, Video>();
             videoPlayers = new List<VideoPlayer>();
 

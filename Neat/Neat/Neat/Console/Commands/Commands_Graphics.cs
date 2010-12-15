@@ -15,9 +15,35 @@ namespace Neat.Components
     public partial class Console : GameComponent
     {
         /* g_res [width] [height]
-             * Changes the screen boundaries
+             * Changes the screen resolution
              */
         void g_res(IList<string> args)
+        {
+            try
+            {
+                int _w = int.Parse(args[1]);
+                int _h = int.Parse(args[2]);
+                if (game.StretchMode == NeatGame.StretchModes.None)
+                {
+                    game.GameWidth = _w;
+                    game.GameHeight = _h;
+                }
+                else
+                {
+                    game.OutputResolution.X = _w;
+                    game.OutputResolution.Y = _h;
+                }
+            }
+            catch
+            {
+                WriteLine("Error in " + Args2Str(args, 0));
+            }
+        }
+
+        /*g_size [width] [height]
+         * Changes game's boundaries
+         */
+        void g_size(IList<string> args)
         {
             try
             {
@@ -30,6 +56,24 @@ namespace Neat.Components
             {
                 WriteLine("Error in " + Args2Str(args, 0));
             }
+        }
+
+        /* g_stretchmode {none|fit|stretch|center}
+         * Changes game's stretch mode
+         */
+        void g_stretchmode(IList<string> args)
+        {
+            if (args.Count == 1)
+            {
+                WriteLine("Stretch Mode = " + game.StretchMode.ToString());
+                return;
+            }
+            args[1] = args[1].ToLower();
+            if (args[1] == "none") game.StretchMode = NeatGame.StretchModes.None;
+            else if (args[1] == "fit") game.StretchMode = NeatGame.StretchModes.Fit;
+            else if (args[1] == "stretch") game.StretchMode = NeatGame.StretchModes.Stretch;
+            else if (args[1] == "center") game.StretchMode = NeatGame.StretchModes.Center;
+            else WriteLine("Invalid Mode.");
         }
 
         /* g_reinit
