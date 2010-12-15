@@ -146,7 +146,14 @@ namespace Neat.Components
              */
         void g_background(IList<string> args)
         {
-            try { game.BackGroundColor = ParseColor(Args2Str(args, 1)); }
+            try { game.GameBackGroundColor = ParseColor(Args2Str(args, 1)); }
+            catch { WriteLine("Error in " + Args2Str(args, 0)); }
+        }
+
+        /* g_outputcolor [color] */
+        void g_outputcolor(IList<string> args)
+        {
+            try { game.OutputBackGroundColor = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 

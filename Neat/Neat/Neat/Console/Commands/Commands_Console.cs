@@ -68,6 +68,12 @@ namespace Neat.Components
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
+        void cfx_color(IList<string> args)
+        {
+            try { fx_Color = ParseColor(Args2Str(args, 1)); }
+            catch { WriteLine("Error in " + Args2Str(args, 0)); }
+        }
+
         /* clear
          * clears the console
          */

@@ -24,15 +24,15 @@ namespace Neat.Components
 
         public void Draw(int _hoffset, int _lines, bool showOnBottom)
         {
-            if (standAlone) return;
-            else Draw( game.SpriteBatch,_hoffset, _lines, showOnBottom);
+            //if (standAlone) return;
+            //else 
+            Draw( game.SpriteBatch,_hoffset, _lines, showOnBottom);
         }
 
         public void Draw(SpriteBatch spriteBatch,int _hoffset, int _lines, bool showOnBottom)
         {
-            if (standAlone && !IsActive) return;
             fx_Update();
-
+            if (/*standAlone && */!IsActive) return;
             if (yCurtain >= 0) yCurtain = 0;
             else yCurtain += CurtainSpeed;
 

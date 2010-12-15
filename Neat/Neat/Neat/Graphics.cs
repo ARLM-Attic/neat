@@ -22,7 +22,8 @@ namespace Neat
     {
         public enum StretchModes { None, Stretch, Fit, Center };
 
-        public Color BackGroundColor = Color.Black;
+        public Color GameBackGroundColor = Color.Black;
+        public Color OutputBackGroundColor = Color.Black;
 
         public bool AutoDraw = true;
         public bool AutoClear = true;
@@ -115,7 +116,7 @@ namespace Neat
                 GraphicsDevice.SetRenderTarget(_renderTarget);
 
             if (AutoClear)
-                Graphics.GraphicsDevice.Clear(BackGroundColor);
+                Graphics.GraphicsDevice.Clear(GameBackGroundColor);
 
 
             if (AutoDraw)
@@ -140,7 +141,7 @@ namespace Neat
             if (AutoDraw)
                 SpriteBatch.End();
 #if WINDOWS
-            if (HasConsole && Console.IsActive)
+            if (HasConsole/* && Console.IsActive*/)
             {
                 SpriteBatch.Begin();
                 Console.Draw(ShowConsoleOnBottom);
@@ -169,6 +170,7 @@ namespace Neat
             else if (StretchMode != StretchModes.None)
             {
                 GraphicsDevice.SetRenderTarget(null);
+                Clear(OutputBackGroundColor);
                 SpriteBatch.Begin();
                 SpriteBatch.Draw(
                     _renderTarget,

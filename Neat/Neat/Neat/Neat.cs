@@ -121,7 +121,7 @@ namespace Neat
         public NeatGame()
         {
             Ram = new RAM(this);
-            OutputResolution = new Point(GameWidth, GameHeight);
+            
             videos = new Dictionary<string, Video>();
             videoPlayers = new List<VideoPlayer>();
 
@@ -175,7 +175,6 @@ namespace Neat
 
         protected override void BeginRun()
         {
-            
             InitializeScreens();
             ActivateScreen("mainmenu");
             FirstTime();
@@ -184,6 +183,11 @@ namespace Neat
 
         protected override void Initialize()
         {
+
+            OutputResolution =
+                new Point(
+                Graphics.GraphicsDevice.DisplayMode.Width,
+                Graphics.GraphicsDevice.DisplayMode.Height);
             Frame = 0;
             InitializeInput();
             if (standAlone)
