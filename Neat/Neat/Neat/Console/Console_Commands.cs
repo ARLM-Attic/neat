@@ -122,6 +122,7 @@ namespace Neat.Components
                 {"e_show"               ,e_show},
                 {"e_framerate"          ,e_framerate},
                 {"sh"                   ,e_show},
+                {"e_title"              ,e_title},
 #if LIVE
                 {"e_xliveguide"         ,e_xliveguide},
 #endif

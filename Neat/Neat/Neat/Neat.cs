@@ -132,7 +132,7 @@ namespace Neat
 
             Console = new Neat.Components.Console(this);
             Components.Add(Console);
-            if (File.Exists("options.nsc")) Console.Run("call options.nsc");
+            
 
 #if LIVE
             Components.Add(new GamerServicesComponent(this));
@@ -183,11 +183,6 @@ namespace Neat
 
         protected override void Initialize()
         {
-
-            OutputResolution =
-                new Point(
-                Graphics.GraphicsDevice.DisplayMode.Width,
-                Graphics.GraphicsDevice.DisplayMode.Height);
             Frame = 0;
             InitializeInput();
             if (standAlone)
@@ -195,6 +190,11 @@ namespace Neat
 #if LIVE
             networkHelper = new NetworkHelper(this,gamestime);
 #endif
+                OutputResolution =
+                    new Point(
+                    Graphics.GraphicsDevice.DisplayMode.Width,
+                    Graphics.GraphicsDevice.DisplayMode.Height);
+                if (File.Exists("options.nsc")) Console.Run("call options.nsc");
                 InitializeMessages();
                 InitializeGraphics();
 

@@ -59,5 +59,13 @@ namespace Neat.Components
             }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
+
+        /* e_title [string]
+         * changes window's title
+         */
+        void e_title(IList<string> args)
+        {
+            game.Window.Title = Args2Str(args, 1);
+        }
     }
 }
