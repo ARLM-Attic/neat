@@ -180,8 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NeatContent\NeatContent.contentproj">
-      <Name>NeatContent</Name>
+      <Name>NeatContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{6F005619-AD80-47AB-A975-061A4766F11C}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

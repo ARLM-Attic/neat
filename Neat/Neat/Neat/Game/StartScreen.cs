@@ -31,8 +31,8 @@ namespace Neat
     {
         float alpha ;
         float fadeRate = 0.01f;
-        public string NextScreen = "";
         bool fade = true;
+        bool finished = false;
         public StartScreen(NeatGame Game)
             : base(Game)
         {
@@ -52,14 +52,17 @@ namespace Neat
         public override void Behave(GameTime gameTime)
         {
             if (fade)
-            alpha += fadeRate;
+                alpha += fadeRate;
 
             if (alpha > 2.0f)
             {
-                fade = false;
-                alpha = 0f;
-                if (NextScreen.Trim().Length > 0)
-                    game.Console.Run("sh " + NextScreen);
+                if (!finished)
+                {
+                    fade = false;
+                    alpha = 0f;
+                    game.Console.Run("sh (nextscreen)");
+                    finished = true;
+                }
             }
             base.Behave(gameTime);
         }
