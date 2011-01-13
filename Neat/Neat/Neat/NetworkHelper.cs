@@ -4,86 +4,70 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-#if LIVE
-using Microsoft.Xna.Framework.GamerServices;
-#endif
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
 using Microsoft.Xna.Framework.Input.Touch;
 #endif
-#if WINDOWS
- 
- 
-#endif
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
- 
+
+#if LIVE
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Net;
+#endif
 
 namespace Neat
 {
-    //TODO: Uncomment whenever LIVE can actually be used.
     public delegate void XEventHandler();
-#if LIVE && TODO
+#if LIVE
     public class NetworkHelper
     {
         /// VARIABLES
-        public NetworkSession session = null;  //  The game session 
-        public int maximumGamers = 8;  // Only 2 will play 
-        public int maximumLocalPlayers = 4;  //  no split-screen, only remote players
+        public NetworkSession Session = null;  //  The game session 
+        public int maximumGamers = 8;  
+        public int maximumLocalPlayers = 4; 
 
         public event XEventHandler OnRecieve;
         public event XEventHandler OnSend;
         public event XEventHandler OnCreate;
         public event XEventHandler OnJoin;
 
-        public NeatGame parent; 
+        public NeatGame Game; 
         public NetworkHelper(NeatGame g, GameTime t )
         {
             gamestime = t;
-            parent = g;
+            Game = g;
             initializeMessages();
         }
 
-        /// <summary>
-        /// CREATE/JOIN METHODS
-        /// </summary>
         public virtual void CreateSession()
         {
-            if (session == null)
+            if (Session == null)
             {
-                session = NetworkSession.Create(NetworkSessionType.SystemLink,
+                Session = NetworkSession.Create(NetworkSessionType.SystemLink,
                 maximumLocalPlayers,
                 maximumGamers);
             }
 
             // If the host goes out, another machine will assume as a new host
-            session.AllowHostMigration = true;
+            Session.AllowHostMigration = true;
             // Allow players to join a game in progress
-            session.AllowJoinInProgress = true;
+            Session.AllowJoinInProgress = true;
 
-            #region BindEvents
-            session.GamerJoined +=
-            new EventHandler<GamerJoinedEventArgs>(session_GamerJoined);
-            session.GamerLeft +=
-            new EventHandler<GamerLeftEventArgs>(session_GamerLeft);
-            session.GameStarted +=
-            new EventHandler<GameStartedEventArgs>(session_GameStarted);
-            session.GameEnded +=
-            new EventHandler<GameEndedEventArgs>(session_GameEnded);
-            session.SessionEnded +=
-            new EventHandler<NetworkSessionEndedEventArgs>(session_SessionEnded);
-            session.HostChanged +=
-            new EventHandler<HostChangedEventArgs>(session_HostChanged);
-            #endregion
+            Session.GamerJoined += new EventHandler<GamerJoinedEventArgs>(session_GamerJoined);
+            Session.GamerLeft += new EventHandler<GamerLeftEventArgs>(session_GamerLeft);
+            Session.GameStarted += new EventHandler<GameStartedEventArgs>(session_GameStarted);
+            Session.GameEnded += new EventHandler<GameEndedEventArgs>(session_GameEnded);
+            Session.SessionEnded += new EventHandler<NetworkSessionEndedEventArgs>(session_SessionEnded);
+            Session.HostChanged += new EventHandler<HostChangedEventArgs>(session_HostChanged);
 
             if (OnCreate != null) OnCreate();
         }
 
         public virtual void FindSession()
         {
-
             // Search for sessions.
             using (AvailableNetworkSessionCollection availableSessions =
                         NetworkSession.Find(NetworkSessionType.SystemLink,
@@ -98,12 +82,13 @@ namespace Neat
                 {
                     sayMessage("Found an available session at host " +
                 availableSessions[0].HostGamertag);
-                    session = NetworkSession.Join(availableSessions[0]);
+                    Session = NetworkSession.Join(availableSessions[0]);
                 }
             }
 
             if (OnJoin != null) OnJoin();
         }
+
         IAsyncResult AsyncSessionFind = null;
         public virtual void AsyncFindSession()
         {
@@ -118,8 +103,8 @@ namespace Neat
 
         public virtual void Update()
         {
-            if (session != null)
-                session.Update();
+            if (Session != null)
+                Session.Update();
         }
 
         // Message regarding the session's current state 
@@ -131,29 +116,29 @@ namespace Neat
 
         public virtual void StartGame()
         {
-            session.StartGame();
+            Session.StartGame();
         }
 
         public int GetRecieveSpeed()
         {
-            if (session != null) return session.BytesPerSecondReceived;
+            if (Session != null) return Session.BytesPerSecondReceived;
             else return 0;
         }
         public int GetSendSpeed()
         {
-            if (session != null) return session.BytesPerSecondSent;
+            if (Session != null) return Session.BytesPerSecondSent;
             else return 0;
         }
 
         public virtual void CloseSession()
         {
-            session.Dispose();
-            session = null;
+            Session.Dispose();
+            Session = null;
         }
 
         public virtual void EndGame()
         {
-            session.EndGame();
+            Session.EndGame();
         }
 
         public virtual void SignInGamer()
@@ -187,7 +172,7 @@ namespace Neat
         public virtual void MessageBox(string title,string text,MessageBoxIcon icon)
         {
 #if WINDOWS
-            parent.freezed = true;
+            Game.Freezed = true;
            List<string> buttons = new List<string>();
             buttons.Add("OK");
             Guide.BeginShowMessageBox(PlayerIndex.One,title,text,buttons,0,icon,new AsyncCallback(message_done),null);
@@ -196,19 +181,19 @@ namespace Neat
         public virtual void message_done(IAsyncResult r)
         {
 #if WINDOWS
-            parent.freezed = false;
+            Game.Freezed = false;
 #endif
         }
 
         public virtual void SetPlayerReady()
         {
-            foreach (LocalNetworkGamer gamer in session.LocalGamers)
+            foreach (LocalNetworkGamer gamer in Session.LocalGamers)
                 gamer.IsReady = true;
         }
 
         public virtual void SetPlayerNotReady()
         {
-            foreach (LocalNetworkGamer gamer in session.LocalGamers)
+            foreach (LocalNetworkGamer gamer in Session.LocalGamers)
                 gamer.IsReady = false;
         }
 
@@ -232,7 +217,7 @@ namespace Neat
         {
             try
             {
-                return (session.IsHost);
+                return (Session.IsHost);
             }
             catch
             {
@@ -264,7 +249,7 @@ namespace Neat
                 {
                     sayMessage( "Found an available session at host" +
                     availableSession.HostGamertag);
-                    session = NetworkSession.Join(availableSession);
+                    Session = NetworkSession.Join(availableSession);
                 }
                 else
                     sayMessage( "No sessions found!");
@@ -328,10 +313,10 @@ try
         {
         get
             {
-                if (session == null)
+                if (Session == null)
                     return NetworkSessionState.Ended;
                 else
-                    return session.SessionState;
+                    return Session.SessionState;
             }
         }
 
@@ -341,7 +326,7 @@ try
         public virtual void SendMessage(string key)
         {
 
-            foreach (LocalNetworkGamer localPlayer in session.LocalGamers)
+            foreach (LocalNetworkGamer localPlayer in Session.LocalGamers)
             {
                 packetWriter.Write(key);
                 localPlayer.SendData(packetWriter, SendDataOptions.ReliableInOrder);
@@ -353,7 +338,7 @@ try
 
         public virtual void SendPackets()
         {
-            foreach (var localPlayer in session.LocalGamers)
+            foreach (var localPlayer in Session.LocalGamers)
             {
                 localPlayer.SendData(
                     packetWriter,
@@ -364,7 +349,7 @@ try
         public virtual void SendMessage()
         {
             if (OnSend != null)
-            foreach (LocalNetworkGamer localPlayer in session.LocalGamers)
+            foreach (LocalNetworkGamer localPlayer in Session.LocalGamers)
             {
                 OnSend();
             }
@@ -377,7 +362,7 @@ try
             if (OnRecieve != null)
             {
                 NetworkGamer remotePlayer;  // The sender of the message
-                foreach (LocalNetworkGamer localPlayer in session.LocalGamers)
+                foreach (LocalNetworkGamer localPlayer in Session.LocalGamers)
                 {
                     //  While there is data available for us, keep reading
                     while (localPlayer.IsDataAvailable)
@@ -410,7 +395,7 @@ try
         }
         public virtual void sayMessage(string msg)
         {
-            parent.console.WriteLine("NETWORK HELPER: " +msg);
+            Game.Console.WriteLine("NETWORK HELPER: " +msg);
             for (int i = 0; i < gameMessagesCount - 1; i++)
             {
                 gameMessages[i] = gameMessages[i + 1];

@@ -33,6 +33,7 @@ namespace Neat.Mathematics
 
             return GetIntersectionPoint(line1, line2);
         }
+
         public static bool IsNaN(Vector2 v)
         {
             return float.IsNaN(v.X);

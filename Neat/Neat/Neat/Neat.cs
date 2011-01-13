@@ -12,10 +12,6 @@ using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
 using Microsoft.Xna.Framework.Input.Touch;
 #endif
-#if WINDOWS
- 
- 
-#endif
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
@@ -47,6 +43,7 @@ namespace Neat
 #endif
 
         public bool Freezed = false;
+
 #if LIVE
         public bool ForceSignIn = true;
 #endif
@@ -76,8 +73,8 @@ namespace Neat
         }
 #else
         public int 
-            GameWidth = 1024,
-            GameHeight=768;
+            GameWidth   =   1024,
+            GameHeight  =   768;
 #endif
         public bool FullScreen = false;
 
@@ -116,7 +113,6 @@ namespace Neat
             fullscreen = graphics.IsFullScreen;
         }
 #endif
-        //public GameWindow window { get { return Window; } }
         bool standAlone = true;
         public NeatGame()
         {
@@ -124,7 +120,6 @@ namespace Neat
             
             videos = new Dictionary<string, Video>();
             videoPlayers = new List<VideoPlayer>();
-
             sounds = new Dictionary<string, SoundEffect>() ;
             songs = new Dictionary<string, Song>();
             effects = new Dictionary<string, Effect>();
@@ -133,7 +128,6 @@ namespace Neat
             Console = new Neat.Components.Console(this);
             Components.Add(Console);
             
-
 #if LIVE
             Components.Add(new GamerServicesComponent(this));
 #endif
@@ -194,7 +188,6 @@ namespace Neat
                     new Point(
                     Graphics.GraphicsDevice.DisplayMode.Width,
                     Graphics.GraphicsDevice.DisplayMode.Height);
-                if (File.Exists("options.nsc")) Console.Run("call options.nsc");
                 InitializeMessages();
                 InitializeGraphics();
 
@@ -203,6 +196,8 @@ namespace Neat
                 SayMessage("Aspect Ratio: " + Graphics.GraphicsDevice.DisplayMode.AspectRatio.ToString());
 
                 base.Initialize();
+
+                if (File.Exists("options.nsc")) Console.Run("call options.nsc");
             }
         }
 
@@ -212,6 +207,4 @@ namespace Neat
                 p.Value.Initialize();
         }
     }
-
-
 }

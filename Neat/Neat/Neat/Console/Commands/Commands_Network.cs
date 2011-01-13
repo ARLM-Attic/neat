@@ -40,7 +40,7 @@ namespace Neat.Components
             WriteLine("isHost: " + game.networkHelper.isHost().ToString());
             WriteLine("Bandwidth: " + game.networkHelper.GetRecieveSpeed().ToString() + "-recieve   " +
                 game.networkHelper.GetSendSpeed().ToString() + "-send");
-            foreach (var player in game.networkHelper.session.AllGamers)
+            foreach (var player in game.networkHelper.Session.AllGamers)
             {
                 Write(player.Id.ToString() + ": ");
                 Write(player.Gamertag + " - ");

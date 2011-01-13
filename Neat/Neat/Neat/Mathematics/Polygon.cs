@@ -162,6 +162,12 @@ namespace Neat.Mathematics
             size = big - pos;
         }
 
+        public List<LineSegment> GetEdges()
+        {
+            List<LineSegment> result = new List<LineSegment>();
+            for (int p = n - 1, q = 0; q < n; p = q++) result.Add(new LineSegment(Vertices[p], Vertices[q]));
+            return result;
+        }
 
         public float GetArea()
         {
