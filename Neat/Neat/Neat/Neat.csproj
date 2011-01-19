@@ -131,6 +131,7 @@
     <Compile Include="EasyMenus\MainMenu.cs" />
     <Compile Include="EasyMenus\OptionsMenu.cs" />
     <Compile Include="EasyMenus\QuitConfirmation.cs" />
+    <Compile Include="Mathematics\Triangle.cs" />
     <Compile Include="Screen.cs" />
     <Compile Include="Game\CollisionTest.cs" />
     <Compile Include="Game\CollisionResolution.cs" />

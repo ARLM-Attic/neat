@@ -67,7 +67,7 @@ namespace Neat.Mathematics
             EndPos = Vector2.Transform(ToVector2(), Matrix.CreateRotationZ(alpha)) + StartPos;
         }
 
-        public void Foreward(float distance)
+        public void Forward(float distance)
         {
             Translate(Vector2.Normalize(EndPos - StartPos) * distance);
         }
