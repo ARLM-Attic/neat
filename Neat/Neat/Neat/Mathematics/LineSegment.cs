@@ -46,6 +46,12 @@ namespace Neat.Mathematics
             EndPos = new Vector2(bx, by);
         }
 
+        public LineSegment(LineSegment l)
+        {
+            StartPos = l.StartPos;
+            EndPos = l.EndPos;
+        }
+
         public static LineSegment operator +(LineSegment l1, LineSegment l2)
         {
             return new LineSegment(l1.StartPos + l2.StartPos, l1.EndPos + l2.EndPos);

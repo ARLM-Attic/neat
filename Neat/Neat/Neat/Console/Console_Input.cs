@@ -93,10 +93,29 @@ namespace Neat.Components
                 }
                 else if (s.Count == 1)
                 {
-                    command += s[0].Substring(command.Trim().Length);
+                    command += s[0].Substring(command.Trim().Length)+" ";
                 }
                 else
                 {
+                    if (command.Length >= 2)
+                    {
+                        var sample = s[0];
+                        int cindex = command.Trim().Length;
+                        for (; cindex < sample.Length; cindex++)
+                        {
+                            bool done = false;
+                            for (int i = 1; i < s.Count; i++)
+                            {
+                                if (!s[i].StartsWith(sample.Substring(0,cindex)))
+                                {
+                                    done = true;
+                                    break;
+                                }
+                            }
+                            if (done) break;
+                        }
+                        command = sample.Substring(0,cindex-1);
+                    }
                     for (int i = 0; i < s.Count; i++)
                     {
                         Write(s[i] + "   ");

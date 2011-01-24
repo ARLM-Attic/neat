@@ -157,6 +157,13 @@ namespace Neat.Mathematics
 
         public static Vector2 String2Vector(String s)
         {
+            switch (s.Trim().ToLower())
+            {
+                case ("zero") : { return Vector2.Zero; }
+                case ("one")  : { return Vector2.One; }
+                case ("unitx"): { return Vector2.UnitX; }
+                case ("unity"): { return Vector2.UnitY;}
+            }
             Vector2 result = Vector2.Zero;
             string number = "";
             char d = '0';
@@ -173,9 +180,35 @@ namespace Neat.Mathematics
             result.Y = float.Parse(number);
             return result;
         }
+
+        public static Vector3 String2Vector3(string s)
+        {
+            switch (s.Trim().ToLower())
+            {
+                case ("zero"): { return Vector3.Zero; }
+                case ("one"): { return Vector3.One; }
+                case ("unitx"): { return Vector3.UnitX; }
+                case ("unity"): { return Vector3.UnitY; }
+                case ("unitz"): { return Vector3.UnitZ; }
+                case ("up"): { return Vector3.Up; }
+                case ("down"): { return Vector3.Down; }
+                case "forward": return Vector3.Forward;
+                case "backward": return Vector3.Backward;
+            }
+            var elements = s.Split(',');
+            Vector3 result = Vector3.Zero;
+            result.X = float.Parse(elements[0].Trim());
+            result.Y = float.Parse(elements[1].Trim());
+            result.Z = float.Parse(elements[2].Trim());
+            return result;
+        }
         public static string Vector2String(Vector2 v)
         {
             return v.X.ToString() + "," + v.Y.ToString();
+        }
+        public static string Vector2String(Vector3 v)
+        {
+            return v.X.ToString() + "," + v.Y.ToString() + "," + v.Z.ToString();
         }
         public static string Point2String(Point p)
         {
