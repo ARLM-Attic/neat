@@ -40,6 +40,13 @@ namespace Neat
         public Effect LoadEffect(string name, Effect data)
         {
             name = name.ToLower();
+            if (effects.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
+                    effects.Remove(name);
+                else
+                    return effects[name];
+            }
             effects.Add(name, data);
             return data;
         }

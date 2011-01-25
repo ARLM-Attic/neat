@@ -23,14 +23,6 @@ using Neat.MenuSystem;
 
 namespace Neat
 {
-#if !XNA_4_FINAL
-    public class Video
-    {
-    }
-    public class VideoPlayer
-    {
-    }
-#endif
 #if !WINDOWS_PHONE
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
@@ -39,19 +31,22 @@ namespace Neat
 
         public void LoadVideo(string path)
         {
-#if XNA_4_FINAL
             LoadVideo(getNameFromPath(path), Content.Load<Video>(path));
-#endif
         }
         public void LoadVideo(string path, string name)
         {
-#if XNA_4_FINAL
             LoadVideo(name, Content.Load<Video>(path));
-#endif
         }
         public void LoadVideo(string name, Video data)
         {
             name = name.ToLower();
+            if (videos.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
+                    videos.Remove(name);
+                else
+                    return;
+            }
             videos.Add(name, data);
         }
 

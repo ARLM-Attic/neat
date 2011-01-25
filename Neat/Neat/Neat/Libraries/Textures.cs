@@ -32,6 +32,13 @@ namespace Neat
             string textureName = getNameFromPath(path).ToLower();
             try
             {
+                if (textures.ContainsKey(textureName))
+                {
+                    if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
+                        textures.Remove(textureName);
+                    else
+                        return;
+                }
                 textures.Add(textureName,
                     new Sprite(textureName,
                     Content.Load<Texture2D>(path)));
@@ -43,9 +50,18 @@ namespace Neat
         }
         public void LoadTexture(string path, string name)
         {
+
             try
             {
-                textures.Add(name.ToLower(),
+                name = name.ToLower();
+                if (textures.ContainsKey(name))
+                {
+                    if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
+                        textures.Remove(name);
+                    else
+                        return;
+                }
+                textures.Add(name,
                     new Sprite(name,
                     Content.Load<Texture2D>(path)));
             }
@@ -69,13 +85,21 @@ namespace Neat
         }
         public void LoadTexture(string name, double frameRate, params string[] paths)
         {
+            name = name.ToLower();
             List<Texture2D> frames = new List<Texture2D>();
             foreach (string path in paths)
             {
                 frames.Add(
                     Content.Load<Texture2D>(path));
             }
-            textures.Add(name.ToLower(),
+            if (textures.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
+                    textures.Remove(name);
+                else
+                    return;
+            }
+            textures.Add(name,
                 new Sprite(name,
                 frames, frameRate));
         }

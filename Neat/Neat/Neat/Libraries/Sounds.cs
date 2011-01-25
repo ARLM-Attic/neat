@@ -37,6 +37,13 @@ namespace Neat
         }
         public SoundEffect LoadSound(string name, SoundEffect data)
         {
+            if (sounds.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
+                    sounds.Remove(name);
+                else
+                    return sounds[name];
+            }
             name = name.ToLower();
             sounds.Add(name, data);
             return data;
@@ -83,6 +90,14 @@ namespace Neat
         public Song LoadSong(string name, Song data)
         {
             name = name.ToLower();
+            if (songs.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
+                    songs.Remove(name);
+                else
+                    return songs[name];
+            }
+            
             songs.Add(name, data);
             return data;
         }

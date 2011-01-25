@@ -29,6 +29,14 @@ namespace Neat
         public SpriteFont LoadFont(string name, SpriteFont data)
         {
             name = name.ToLower();
+            if (fonts.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
+                    fonts.Remove(name);
+                else
+                    return fonts[name];
+            }
+            
             fonts.Add(name, data);
             return data;
         }

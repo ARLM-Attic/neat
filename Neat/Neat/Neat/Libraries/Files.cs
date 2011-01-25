@@ -24,13 +24,20 @@ namespace Neat
 {
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
+        public enum ContentDuplicateBehaviors
+        {
+            Replace,
+            Ignore
+        }
+        public ContentDuplicateBehaviors ContentDuplicateBehavior = 
+            ContentDuplicateBehaviors.Replace;
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             LoadSong("Sounds\\blank");
             
-            LoadVideo("Videos\\errorvideo","error");
+            //LoadVideo("Videos\\errorvideo","error");
             videoPlayers.Add(new VideoPlayer());
             
             LoadSound("Sounds\\mute");
