@@ -17,34 +17,53 @@ namespace Neat.Components
         Dictionary<string, int> labels= new Dictionary<string,int>();
         Stack<Dictionary<string, int>> labelsStack = new Stack<Dictionary<string, int>>();
         Stack<int> lcStack = new Stack<int>();
+        Dictionary<string, string[]> bufferedScripts = new Dictionary<string, string[]>();
         bool batchEnd = false;
         public void LoadBatch(string path)
         {
+            LoadBatch(path, Path.GetFileNameWithoutExtension(path), true);
+        }
+
+        public void LoadBatch(string path, string name, bool call)
+        {
+            if (call && (bufferedScripts.ContainsKey(path.ToLower())))
+            {
+                ExecuteBatch(bufferedScripts[path]);
+                return;
+            }
+
             if (!File.Exists(path))
             {
                 WriteLine("File " + path + " does not exist.");
                 return;
             }
+            
             var batch = File.ReadAllLines(path);
 
+            if (call) ExecuteBatch(batch);
+            else bufferedScripts.Add(name.ToLower(), batch);
+        }
+
+        public void ExecuteBatch(string[] script)
+        {
             labelsStack.Push(labels);
             labels = new Dictionary<string, int>();
             AddCommand("goto", b_goto);
             AddCommand("end", b_end);
             //PASS I: Find Addresses
-            for (int i = 0; i < batch.Length; i++)
-                if ((batch[i].Trim())[0] == ':') labels.Add(batch[i].Trim().Substring(1), i);
+            for (int i = 0; i < script.Length; i++)
+                if ((script[i].Trim())[0] == ':') labels.Add(script[i].Trim().Substring(1), i);
 
             //PASS II: Interpret
             lcStack.Push(lc);
-            for (lc = 0; lc < batch.Length;
+            for (lc = 0; lc < script.Length;
                 lc++)
             {
-                if ((batch[lc].Trim())[0] != ':')
+                if ((script[lc].Trim())[0] != ':')
                 {
                     try
                     {
-                        command = batch[lc];
+                        command = script[lc];
                         ParseCommand();
                         if (batchEnd)
                         {

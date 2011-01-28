@@ -103,6 +103,16 @@ namespace Neat.Components
             catch { WriteLine("Error in log"); }
         }
 
+        void s_dir(IList<string> args)
+        {
+            var c = 1;
+            foreach (var item in Directory.GetFiles(".\\", args[1]))
+            {
+                if (c++ % 5 == 0) WriteLine("");
+                Write(item);
+            }
+        }
+
         void s_type(IList<string> args)
         {
             var filename = Args2Str(args, 1);

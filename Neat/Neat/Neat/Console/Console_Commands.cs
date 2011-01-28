@@ -78,6 +78,7 @@ namespace Neat.Components
                 {"if"                   ,s_on},
                 {"inc"                  ,s_inc},
                 {"type"                 ,s_type},
+                {"dir"                  ,s_dir},
 
                 //graphics
                 {"g_res"                ,g_res},
@@ -167,7 +168,10 @@ namespace Neat.Components
             }
             else // no match
             {
-                WriteLine("Error: Bad Command.");
+                if (bufferedScripts.ContainsKey(args[0].ToLower()))
+                    ExecuteBatch(bufferedScripts[args[0].ToLower()]);
+                else
+                    WriteLine("Error: Bad Command.");
             }
         }
     }

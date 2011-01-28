@@ -108,7 +108,11 @@ namespace Neat
         {
             try
             {
-                return textures[name.ToLower()].GetTexture(Frame);
+                name = name.ToLower();
+                if (textures.ContainsKey(name))
+                    return textures[name].GetTexture(Frame);
+                else
+                    return textures["error"].GetTexture(Frame);
             }
             catch
             {
@@ -119,7 +123,11 @@ namespace Neat
         {
             try
             {
-                return textures[name.ToLower()].GetTexture(gt);
+                name = name.ToLower();
+                if (textures.ContainsKey(name))
+                    return textures[name].GetTexture(gt);
+                else
+                    return textures["error"].GetTexture(gt);
             }
             catch
             {
@@ -131,7 +139,10 @@ namespace Neat
         {
             try
             {
-                return textures[name.ToLower()];
+                name = name.ToLower();
+                if (textures.ContainsKey(name))
+                    return textures[name];
+                else return textures["error"];
             }
             catch
             {

@@ -28,6 +28,7 @@ namespace Neat.Components
                     else if (assetType == "fx") game.LoadEffect(assetPath, assetName);
                     else if (assetType == "font") game.LoadFont(assetPath, assetName);
                     else if (assetType == "song") game.LoadSong(assetPath, assetName);
+                    else if (assetType == "script") LoadBatch(assetPath, assetName, false);
 #if WINDOWS
                     else if (assetType == "video") game.LoadVideo(assetPath, assetName);
 #endif

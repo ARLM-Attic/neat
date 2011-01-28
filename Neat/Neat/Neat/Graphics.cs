@@ -29,6 +29,7 @@ namespace Neat
         public bool AutoClear = true;
         public bool ShowMouse = false;
         public bool ShowConsoleOnBottom = false;
+        public bool Disable2DRendering = false;
         StretchModes _stretchMode = StretchModes.None;
         public Point OutputResolution;
         
@@ -111,72 +112,78 @@ namespace Neat
 
         protected override void Draw(GameTime gameTime)
         {
-            gamestime = gameTime;
+            if (!Disable2DRendering)
+            {
+                gamestime = gameTime;
 
-            if (Landscape || StretchMode != StretchModes.None)
-                GraphicsDevice.SetRenderTarget(_renderTarget);
+                if (Landscape || StretchMode != StretchModes.None)
+                    GraphicsDevice.SetRenderTarget(_renderTarget);
 
-            if (AutoClear)
-                Graphics.GraphicsDevice.Clear(GameBackGroundColor);
+                if (AutoClear)
+                    Graphics.GraphicsDevice.Clear(GameBackGroundColor);
 
 
-            if (AutoDraw)
-                SpriteBatch.Begin();
+                if (AutoDraw)
+                    SpriteBatch.Begin();
+
+            }
 
 #if LIVE
             if (SignedInGamer.SignedInGamers.Count > 0 || !needSignIn || !forceSignIn)
 #endif
             Render(gameTime);
-
-            if (ShowMouse
+            if (!Disable2DRendering)
+            {
+                if (ShowMouse
 #if LIVE
                 && !Guide.IsVisible
 #endif
-                )
-            {
+)
+                {
 #if WINDOWS
-                DrawMouse(mousePosition);
+                    DrawMouse(mousePosition);
 #endif
-            }
-            
-            if (AutoDraw)
-                SpriteBatch.End();
+                }
+
+                if (AutoDraw)
+                    SpriteBatch.End();
 #if WINDOWS
-            if (HasConsole/* && Console.IsActive*/)
-            {
-                SpriteBatch.Begin();
-                Console.Draw(ShowConsoleOnBottom);
-                SpriteBatch.End();
-            }
+                if (HasConsole/* && Console.IsActive*/)
+                {
+                    SpriteBatch.Begin();
+                    Console.Draw(ShowConsoleOnBottom);
+                    SpriteBatch.End();
+                }
 #endif
-            
-            if (Landscape)
-            {
-                GraphicsDevice.SetRenderTarget(null);
 
-                SpriteBatch.Begin();
-                SpriteBatch.Draw(
-                    _renderTarget, 
-                    _vecDest, 
-                    null, 
-                    Color.White, 
-                    MathHelper.PiOver2, 
-                    _vecOrigin, 
-                    1f, 
-                    SpriteEffects.None, 
-                    0);
+                if (Landscape)
+                {
+                    GraphicsDevice.SetRenderTarget(null);
 
-                SpriteBatch.End();
-            }
-            else if (StretchMode != StretchModes.None)
-            {
-                GraphicsDevice.SetRenderTarget(null);
-                Clear(OutputBackGroundColor);
-                SpriteBatch.Begin();
-                SpriteBatch.Draw(
-                    _renderTarget,
-                    GeometryHelper.Vectors2Rectangle(_vecDest, _vecSize), Color.White);
-                SpriteBatch.End();
+                    SpriteBatch.Begin();
+                    SpriteBatch.Draw(
+                        _renderTarget,
+                        _vecDest,
+                        null,
+                        Color.White,
+                        MathHelper.PiOver2,
+                        _vecOrigin,
+                        1f,
+                        SpriteEffects.None,
+                        0);
+
+                    SpriteBatch.End();
+                }
+                else if (StretchMode != StretchModes.None)
+                {
+                    GraphicsDevice.SetRenderTarget(null);
+                    Clear(OutputBackGroundColor);
+                    SpriteBatch.Begin();
+                    SpriteBatch.Draw(
+                        _renderTarget,
+                        GeometryHelper.Vectors2Rectangle(_vecDest, _vecSize), Color.White);
+                    SpriteBatch.End();
+                }
             }
             base.Draw(gameTime);
         }

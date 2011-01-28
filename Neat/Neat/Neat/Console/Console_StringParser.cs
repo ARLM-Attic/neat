@@ -250,7 +250,7 @@ namespace Neat.Components
                 List<string> args = new List<string>();
                 string k = "";
                 string cmd = command;
-                for (int i = 0; i < cmd.Length; i++)
+                for (int i = 0; i < cmd.Length; i++) //Note to self: Maybe use Split(...) here next time, champ!
                 {
                     if (cmd[i] == ' ')
                     {
