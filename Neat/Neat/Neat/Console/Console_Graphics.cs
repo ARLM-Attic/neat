@@ -22,6 +22,27 @@ namespace Neat.Components
         public Texture2D StandAloneTexture;
         public SpriteFont StandAloneFont;
 
+        public bool EnableCharacterByCharacterDrawing = true;
+
+        public Dictionary<char, Color> ColorsTable = new Dictionary<char, Color>() {
+        {'0', Color.Black},    
+        {'1', Color.Blue},
+        {'2', Color.Green},
+        {'3', Color.Aqua},
+        {'4', Color.DarkRed},
+        {'5', Color.Purple},
+        {'6', Color.Yellow},
+        {'7', Color.WhiteSmoke},
+        {'8', Color.Gray},
+        {'9', Color.LightBlue},
+        {'A', Color.LightGreen},
+        {'B', Color.LightCyan},
+        {'C', Color.Red},
+        {'D', Color.LightPink},
+        {'E', Color.LightYellow},
+        {'F', Color.White}};
+        public char ColorChangeSpecialCharacter = '@';
+
         public void Draw(int _hoffset, int _lines, bool showOnBottom)
         {
             Draw(game.SpriteBatch,_hoffset, _lines, showOnBottom);
@@ -54,6 +75,42 @@ namespace Neat.Components
                 InputColor);
             try
             {
+                if (EnableCharacterByCharacterDrawing)
+                {
+                    int row = 0; int col = 0; Color c = TextColor;
+                    Vector2 charSize = font.MeasureString("Z");
+                    Vector2 startPoint = new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + font.MeasureString("Z").Y);
+                    int rowLength = (int)(width / charSize.X);
+                    for (int i = 0; i < messages.Length; i++)
+                    {
+                        if (messages[i] == ColorChangeSpecialCharacter && messages.Length > i+1 && ColorsTable.ContainsKey(messages[i+1]))
+                        {
+                            //change color
+                            c = ColorsTable[messages[i + 1]];
+                            i ++;
+                        }
+                        else if (messages[i] == '\n')
+                        {
+                            row++;
+                            col = 0;
+                        }
+                        else
+                        {
+                            spriteBatch.DrawString(
+                                font,
+                                messages[i].ToString(),
+                                new Vector2(col * charSize.X, row * charSize.Y) + startPoint,
+                                c);
+                            col++;
+                        }
+                        if (col > rowLength)
+                        {
+                            row++;
+                            col = 0;
+                        }
+                    }
+                }
+                else
                 spriteBatch.DrawString(
                     font,
                     messages,

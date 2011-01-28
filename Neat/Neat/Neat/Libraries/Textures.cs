@@ -83,6 +83,21 @@ namespace Neat
                 SayMessage("Cannot assign {" + Destname + "} to {" + Sourcename + "}");
             }
         }
+        public void AssignTexture(Texture2D source, string Destname)
+        {
+            try
+            {
+                Destname = Destname.ToLower();
+                if (textures.ContainsKey(Destname)) textures[Destname] = new Sprite(Destname, source);
+                else
+                    textures.Add(Destname.ToLower(),
+                        new Sprite(Destname, source));
+            }
+            catch
+            {
+                SayMessage("Cannot assign {" + Destname + "}");
+            }
+        }
         public void LoadTexture(string name, double frameRate, params string[] paths)
         {
             name = name.ToLower();

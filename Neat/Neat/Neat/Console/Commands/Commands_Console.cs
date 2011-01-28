@@ -28,11 +28,35 @@ namespace Neat.Components
             try { InputColor = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
-
         void c_backcolor(IList<string> args)
         {
             try { BackColor = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
+        }
+
+        void c_allowcolors(IList<string> args)
+        {
+            EnableCharacterByCharacterDrawing = bool.Parse(args[1]);
+        }
+
+        /* c_setcolorcode [char] [color] */
+        void c_setcolorcode(IList<string> args)
+        {
+            if (ColorsTable.ContainsKey(args[1][0]))
+                ColorsTable[args[1][0]] = ParseColor(Args2Str(args, 2));
+            else
+                ColorsTable.Add(args[1][0], ParseColor(Args2Str(args, 2)));
+        }
+
+        void c_removecolorcode(IList<string> args)
+        {
+            if (ColorsTable.ContainsKey(args[1][0]))
+                ColorsTable.Remove(args[1][0]);
+        }
+        
+        void c_setcolorchar(IList<string> args)
+        {
+            ColorChangeSpecialCharacter = args[1][0];
         }
 
         /* c_show/hide
