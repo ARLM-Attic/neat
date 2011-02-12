@@ -31,13 +31,13 @@ namespace Neat.Mathematics
             Triangles = new List<Triangle>();
 
             if (n < 3) return;
-            else if (n == 3)
+            var V = new Polygon( GetVerticesClockwise() ).Vertices;
+            
+            if (n == 3)
             {
-                Triangles.Add(new Triangle(this));
+                Triangles.Add(new Triangle(V[0],V[1],V[2]));
                 return;
             }
-
-            var V = new Polygon( GetVerticesClockwise() ).Vertices;
 
             int nv = n;
             int count = 2 * nv;

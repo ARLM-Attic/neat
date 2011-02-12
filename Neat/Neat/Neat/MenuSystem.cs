@@ -52,13 +52,19 @@ namespace Neat
                     _selectedItem = value;
                     try
                     {
-                        if (Items.Count > value) Items[value].Focused();
+                        if (Items.Count > value)
+                        {
+                            Items[value].Focused();
+                            if (Items[value].Enabled && !string.IsNullOrEmpty(Items[value].OnFocusScript))
+                                game.Console.Run(Items[value].OnFocusScript);
+                        }
                     }
                     catch { }
                 }
             }
             public bool Repeat = true;
             public bool EnableShortcuts = false ;
+            public bool EnableSoundEffects = true;
             public Vector2 ItemsOffset = new Vector2(0, 65f);
             public Vector2 SelectedItemOffset = new Vector2(5f, 0);
             public Color DefaultItemColor = Color.CornflowerBlue;
@@ -120,16 +126,16 @@ namespace Neat
 
                 foreach (MenuItem item in Items)
                 {
-                    item.alpha += item.alphaV;
-                    if (item.alpha > maxItemAlpha )
+                    item.Alpha += item.AlphaV;
+                    if (item.Alpha > maxItemAlpha )
                     {
-                        item.alphaV *= -1f;
-                        item.alpha = maxItemAlpha;
+                        item.AlphaV *= -1f;
+                        item.Alpha = maxItemAlpha;
                     }
-                    else if (item.alpha < minItemAlpha )
+                    else if (item.Alpha < minItemAlpha )
                     {
-                        item.alphaV *= -1f;
-                        item.alpha = minItemAlpha;
+                        item.AlphaV *= -1f;
+                        item.Alpha = minItemAlpha;
                     }
                 }
                 Vector3 c = SelectedItemForeground.ToVector3();
@@ -159,7 +165,10 @@ namespace Neat
                 if (game.IsTapped (Keys.Enter))
 #endif
                     { game.GetSound("bleep3").Play(1f,0,0); 
-                    Items[ SelectedItem].Selected();}
+                    Items[SelectedItem].Selected();
+                    if (Items[SelectedItem].Enabled && !string.IsNullOrEmpty(Items[SelectedItem].OnSelectScript))
+                        game.Console.Run(Items[SelectedItem].OnSelectScript);
+                }
 #if ZUNE
                  (IsTapped( Buttons.DPadDown)) 
 #elif WINDOWS || WINDOWS_PHONE
@@ -200,7 +209,8 @@ namespace Neat
             }
             void Bleep()
             {
-                game.GetSound("bleep10").Play(1f,0,0);
+                if (EnableSoundEffects)
+                    game.GetSound("bleep10").Play(1f,0,0);
             }
             void HandleShortcuts()
             {
@@ -280,14 +290,14 @@ namespace Neat
                     Color drawColor = Items[i].GetForeColor();
                     bool isSelected = (SelectedItem == i);
                     //if (selectedItem == i) drawColor = selectedItemForeground;
-                    if (!Items[i].Enabled) drawColor = GraphicsHelper.GetColorWithAlpha( DisabledItemForeground, Items[i].alpha);
+                    if (!Items[i].Enabled) drawColor = GraphicsHelper.GetColorWithAlpha( DisabledItemForeground, Items[i].Alpha);
 
                     GraphicsHelper.DrawShadowedString(game.SpriteBatch,
                         font,
                         (Items[i].Caption),
                         (Position-centerOffset)+i*ItemsOffset+(isSelected?SelectedItemOffset:Vector2.Zero),
                         (isSelected?SelectedItemForeground :drawColor),
-                        (isSelected ? Color.Black :GraphicsHelper.GetShadowColorFromAlpha(Items[i].alpha ))
+                        (isSelected ? Color.Black :GraphicsHelper.GetShadowColorFromAlpha(Items[i].Alpha ))
                         );
                     if (isSelected)
                     {
@@ -323,8 +333,8 @@ namespace Neat
                 Items.Add(new MenuItem(this, Caption, Enabled));
                 RecalculateSizes();
                 GetLastMenuItem().Forecolor = DefaultItemColor;
-                GetLastMenuItem().alpha = (float)Items.Count * 0.1f;
-                GetLastMenuItem().alphaV = itemAlphaRate;
+                GetLastMenuItem().Alpha = (float)Items.Count * 0.1f;
+                GetLastMenuItem().AlphaV = itemAlphaRate;
             }
             public void RecalculateSizes()
             {

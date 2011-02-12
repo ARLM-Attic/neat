@@ -31,7 +31,8 @@ namespace Neat
         }
         public MenuSystem.MenuSystem System;
         public SpriteFont Font;
-
+        public string BackgroundScreen;
+        public Color ShadeColor = new Color(255, 255, 255, 0);
         public override void Initialize()
         {
             Reset();
@@ -57,6 +58,7 @@ namespace Neat
         public override void Behave(GameTime gameTime)
         {
             System.Update(gameTime);
+            //System.RecalculateSizes();
             base.Behave(gameTime);
         }
 
@@ -68,6 +70,11 @@ namespace Neat
 
         public override void Render(GameTime gameTime)
         {
+            if (!string.IsNullOrEmpty(BackgroundScreen) && game.Screens.ContainsKey(BackgroundScreen.ToLower()))
+                game.Screens[BackgroundScreen.ToLower()].Render(gameTime);
+            if (ShadeColor.A > 0)
+                game.SpriteBatch.Draw(
+                    game.GetTexture("solid"), new Rectangle(0,0,game.GameWidth, game.GameHeight), ShadeColor);
             System.Draw(gameTime);
             base.Render(gameTime);
         }

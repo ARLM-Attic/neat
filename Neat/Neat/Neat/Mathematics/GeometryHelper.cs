@@ -69,7 +69,23 @@ namespace Neat.Mathematics
                 return new Vector2(float.NaN);
             }
         }
- 
+
+        public static Vector2 GetShortestVectorToLine(LineSegment line, Vector2 p)
+        {
+            return GetShortestVectorToLine(line, p, true);
+        }
+
+        public static Vector2 GetShortestVectorToLine(LineSegment line, Vector2 p, bool segment)
+        {
+            var u = ((p.X - line.StartPos.X) * (line.EndPos.X - line.StartPos.X) + (p.Y - line.StartPos.Y) * (line.EndPos.Y - line.StartPos.Y)) / line.LengthSquared();
+            if (!segment || (u >= 0 && u <= 1))
+                return new Vector2(
+                    line.StartPos.X + u * (line.EndPos.X - line.StartPos.X),
+                    line.StartPos.Y + u * (line.EndPos.Y - line.StartPos.Y));
+            else
+                return new Vector2(float.NaN);
+        }
+
         public static Vector2 MoveInCircle(GameTime gameTime, float speed)
         {
             double time = gameTime.TotalGameTime.TotalSeconds * speed;

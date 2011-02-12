@@ -92,6 +92,7 @@ namespace Neat.Components
                 {"g_showmouse"          ,g_showmouse},
                 {"g_saymessage"         ,g_saymessage},
                 {"g_messagecolor"       ,g_messagecolor},
+                {"g_assigntexture"      ,g_assigntexture},
 
                 //console
                 {"c_textcolor"          ,c_textcolor},

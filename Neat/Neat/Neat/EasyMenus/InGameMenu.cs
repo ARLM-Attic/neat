@@ -19,6 +19,7 @@ using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
 using Neat.EasyMenus;
+using Neat.Graphics;
 
 namespace Neat.EasyMenus
 {
@@ -31,6 +32,7 @@ namespace Neat.EasyMenus
 
         public override void CreateMenu()
         {
+            ShadeColor = GraphicsHelper.GetColorWithAlpha(Color.Gray, 0.3f);
             System.AddItem("Return to Game");
             System.AddItem("Restart the Game");
             System.AddItem("", false);
@@ -40,7 +42,13 @@ namespace Neat.EasyMenus
             System.Enable();
             System.ItemsOffset = new Vector2(0, 100);
             Activate();
+            game.Console.AddCommand("m_gamescreen", m_gamescreen);
             base.CreateMenu();
+        }
+
+        void m_gamescreen(IList<string> args)
+        {
+            BackgroundScreen = args[1];
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -84,10 +92,5 @@ namespace Neat.EasyMenus
             }
         }
 
-        public override void Render(GameTime gameTime)
-        {
-            game.SpriteBatch.Draw(game.GetTexture("transparent"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.Black); 
-            base.Render(gameTime);
-        }
     }
 }

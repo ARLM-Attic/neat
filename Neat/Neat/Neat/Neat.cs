@@ -116,18 +116,23 @@ namespace Neat
         bool standAlone = true;
         public NeatGame()
         {
+            Create();
+        }
+        
+        public void Create()
+        {
             Ram = new RAM(this);
-            
+
             videos = new Dictionary<string, Video>();
             videoPlayers = new List<VideoPlayer>();
-            sounds = new Dictionary<string, SoundEffect>() ;
+            sounds = new Dictionary<string, SoundEffect>();
             songs = new Dictionary<string, Song>();
             effects = new Dictionary<string, Effect>();
             fonts = new Dictionary<string, SpriteFont>();
 
             Console = new Neat.Components.Console(this);
             Components.Add(Console);
-            
+
 #if LIVE
             Components.Add(new GamerServicesComponent(this));
 #endif
@@ -147,6 +152,13 @@ namespace Neat
             standAlone = false;
         }
 
+        public static NeatGame NumbNeatGame
+        {
+            get
+            {
+                return new NeatGame(new Game());
+            }
+        }
         public void SetFrameRate(double f)
         {
             TargetElapsedTime = TimeSpan.FromSeconds(1 / f);

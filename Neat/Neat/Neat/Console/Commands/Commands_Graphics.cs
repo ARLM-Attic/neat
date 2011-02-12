@@ -190,5 +190,10 @@ namespace Neat.Components
             try { fx_Color = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
+
+        void g_assigntexture(IList<string> args)
+        {
+            game.AssignTexture(args[1], args[2]);
+        }
     }
 }

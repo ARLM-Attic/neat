@@ -90,7 +90,7 @@ namespace Neat
                 Destname = Destname.ToLower();
                 if (textures.ContainsKey(Destname)) textures[Destname] = new Sprite(Destname, source);
                 else
-                    textures.Add(Destname.ToLower(),
+                    textures.Add(Destname,
                         new Sprite(Destname, source));
             }
             catch

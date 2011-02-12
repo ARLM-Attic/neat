@@ -16,8 +16,8 @@ namespace Neat
             public bool Enabled = true;
             public string Tag;
             public Color Forecolor = Color.CornflowerBlue;
-            public float alpha = 0.5f;
-            public float alphaV = 0.001f;
+            public float Alpha = 0.5f;
+            public float AlphaV = 0.001f;
             //public Keys shortcut = Keys.OemTilde ;
             public MenuItem(MenuSystem System)
             {
@@ -32,7 +32,7 @@ namespace Neat
             {
                 Vector3 c = Forecolor.ToVector3();
 
-                return new Color(new Vector4(c,alpha));
+                return new Color(new Vector4(c,Alpha));
             }
 
             public MenuItem(MenuSystem System, string Caption, bool Enabled)
@@ -61,6 +61,8 @@ namespace Neat
 
             public event XEventHandler OnFocus;
             public event XEventHandler OnSelect;
+            public string OnFocusScript;
+            public string OnSelectScript;
         }
 
     }
