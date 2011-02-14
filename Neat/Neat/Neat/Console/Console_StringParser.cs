@@ -244,26 +244,8 @@ namespace Neat.Components
         {
             try
             {
-                command = command.Trim();
-                if (command.Length < 1) return;
-                command = ParseParenthesis(command);
-                List<string> args = new List<string>();
-                string k = "";
-                string cmd = command;
-                for (int i = 0; i < cmd.Length; i++) //Note to self: Maybe use Split(...) here next time, champ!
-                {
-                    if (cmd[i] == ' ')
-                    {
-                        cmd = (cmd.Substring(i)).Trim();
-                        i = -1;
-                        args.Add(k);
-                        k = "";
-                    }
-                    else k += cmd[i];
-                }
-                args.Add(k);
-
-                Run(args);
+                if (!string.IsNullOrWhiteSpace(command))
+                    Run(ParseParenthesis(command.Trim()).Split(' ').ToList());
             }
             catch (Exception e)
             {

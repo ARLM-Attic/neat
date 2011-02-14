@@ -20,6 +20,7 @@ using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
 using Neat.Graphics;
+using Neat.Mathematics;
  
 
 namespace Neat
@@ -162,9 +163,10 @@ namespace Neat
 #if ZUNE
                 if (IsTapped(Buttons.A)) 
 #elif WINDOWS || WINDOWS_PHONE
-                if (game.IsTapped (Keys.Enter))
+                if (game.IsTapped(Keys.Enter))
 #endif
-                    { game.GetSound("bleep3").Play(1f,0,0); 
+                { 
+                    game.PlaySound("bleep3");
                     Items[SelectedItem].Selected();
                     if (Items[SelectedItem].Enabled && !string.IsNullOrEmpty(Items[SelectedItem].OnSelectScript))
                         game.Console.Run(Items[SelectedItem].OnSelectScript);
@@ -205,6 +207,15 @@ namespace Neat
                         }
                 }
 
+#endif
+#if WINDOWS
+                /*if (game.IsMouseClicked())
+                {
+                    foreach (var item in Items)
+                    {
+                        //if (item.GetBounds()
+                    }
+                }*/
 #endif
             }
             void Bleep()

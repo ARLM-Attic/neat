@@ -32,7 +32,7 @@ namespace Neat.Components
                 return;
             }
 
-            if (!File.Exists(path))
+             if (!File.Exists(path))
             {
                 WriteLine("File " + path + " does not exist.");
                 return;
@@ -52,14 +52,14 @@ namespace Neat.Components
             AddCommand("end", b_end);
             //PASS I: Find Addresses
             for (int i = 0; i < script.Length; i++)
-                if ((script[i].Trim())[0] == ':') labels.Add(script[i].Trim().Substring(1), i);
+                if (!string.IsNullOrWhiteSpace(script[i]) && script[i].Length > 0 &&
+                    (script[i].Trim())[0] == ':') labels.Add(script[i].Trim().Substring(1), i);
 
             //PASS II: Interpret
             lcStack.Push(lc);
-            for (lc = 0; lc < script.Length;
-                lc++)
+            for (lc = 0; lc < script.Length; lc++)
             {
-                if ((script[lc].Trim())[0] != ':')
+                if (!String.IsNullOrWhiteSpace(script[lc]) && (script[lc].Trim())[0] != ':')
                 {
                     try
                     {
