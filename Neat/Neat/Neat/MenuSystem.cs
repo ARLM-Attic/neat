@@ -92,6 +92,7 @@ namespace Neat
             {
                 return Items[Items.Count - 1];
             }
+
             public void Enable()
             {
                 enabled = true;
@@ -221,7 +222,7 @@ namespace Neat
             void Bleep()
             {
                 if (EnableSoundEffects)
-                    game.GetSound("bleep10").Play(1f,0,0);
+                    game.PlaySound("bleep10");
             }
             void HandleShortcuts()
             {
@@ -359,9 +360,7 @@ namespace Neat
                     }
                 }
                 centerOffset = new Vector2(longestItem / 2, ((Items.Count - 1) * ItemsOffset.Y + font.MeasureString("|").Y) / 2);
-            }
-            
+            }   
         }
-
     }
 }
