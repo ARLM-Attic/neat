@@ -113,5 +113,10 @@ namespace Neat.Mathematics
         {
             lb.Draw(sb, StartPos + offset, EndPos + offset, color);
         }
+
+        public bool Contains(Vector2 p)
+        {
+            return GeometryHelper.IsPointOnLine(this, p) == GeometryHelper.PointOnLineStates.PointIsOnTheSegment;
+        }
     }
 }

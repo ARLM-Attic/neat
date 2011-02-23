@@ -62,7 +62,6 @@ namespace Neat.Mathematics
                 double y = firstLine.StartPos.Y + Ua * (firstLine.EndPos.Y - firstLine.StartPos.Y);
 
                 return new Vector2((float)x, (float)y);
-
             }
             else
             {
@@ -94,6 +93,33 @@ namespace Neat.Mathematics
             float y = (float)Math.Sin(time);
            
             return new Vector2(x, y);
+        }
+
+        public enum PointOnLineStates
+        {
+            PointIsNotOnTheInfiniteLine,
+            PointIsNotOnTheOpenRayP,
+            PointIsOnTheSegment,
+            PointIsNotOnTheOpenRayQ
+        }
+
+        public static PointOnLineStates IsPointOnLine(LineSegment pq, Vector2 t)
+        {
+            return IsPointOnLine(ref pq.StartPos, ref pq.EndPos, ref t);
+        }
+        public static PointOnLineStates IsPointOnLine(Vector2 p, Vector2 q, Vector2 t)
+        {
+            return IsPointOnLine(ref p, ref q, ref t);
+        }
+        public static PointOnLineStates IsPointOnLine(ref Vector2 p, ref Vector2 q, ref Vector2 t)
+        {
+            if ((Math.Abs(q.Y - p.Y) * (t.X - p.X) - (t.Y - p.Y) * (q.X - p.X)) >=
+                Math.Max(Math.Abs(q.X - p.X), Math.Abs(q.Y - p.Y))) return PointOnLineStates.PointIsNotOnTheInfiniteLine;
+            if ((q.X < p.X && p.X < t.X) || (q.Y < p.Y && p.Y < t.Y)) return PointOnLineStates.PointIsNotOnTheOpenRayP;
+            if ((t.X < p.X && p.X < q.X) || (t.Y < p.Y && p.Y < q.Y)) return PointOnLineStates.PointIsNotOnTheOpenRayP;
+            if ((p.X < q.X && q.X < t.X) || (p.Y < q.Y && q.Y < t.Y)) return PointOnLineStates.PointIsNotOnTheOpenRayQ;
+            if ((t.X < q.X && q.X < p.X) || (t.Y < q.Y && q.Y < p.Y)) return PointOnLineStates.PointIsNotOnTheOpenRayQ;
+            return PointOnLineStates.PointIsOnTheSegment;
         }
 
         public static Rectangle MoveRectangle(Rectangle r, Point offset)
