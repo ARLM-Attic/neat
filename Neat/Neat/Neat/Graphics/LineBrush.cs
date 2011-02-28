@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Neat.Mathematics;
 
 namespace Neat.Graphics
 {
@@ -82,6 +83,19 @@ namespace Neat.Graphics
                 0);
         }
 
-        
+        public void Draw(SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, Vector2 offset)
+        {
+            Draw(spriteBatch, point1 + offset, point2 + offset, color);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, LineSegment segment, Color color)
+        {
+            Draw(spriteBatch, segment.StartPos, segment.EndPos, color);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, LineSegment segment, Color color, Vector2 offset)
+        {
+            Draw(spriteBatch, segment.StartPos + offset, segment.EndPos + offset, color);
+        }
     }
 }
