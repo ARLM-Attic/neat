@@ -39,17 +39,13 @@ namespace Neat
 
         public void SayMessage(string msg)
         {
-            try
+            if (gamestime != null)
             {
                 msg = gamestime.TotalGameTime.Hours.ToString() + ":" +
                     gamestime.TotalGameTime.Minutes.ToString() + ":" +
                     gamestime.TotalGameTime.Seconds.ToString() + "," +
                     gamestime.TotalGameTime.Milliseconds.ToString() + " ->" +
                     msg;
-            }
-            catch
-            { 
-                // :-) Do nothing.
             }
             for (int i = 0; i < GameMessagesCount - 1; i++)
             {
