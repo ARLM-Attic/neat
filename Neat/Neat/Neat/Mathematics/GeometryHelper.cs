@@ -113,7 +113,7 @@ namespace Neat.Mathematics
         }
         public static PointOnLineStates IsPointOnLine(ref Vector2 p, ref Vector2 q, ref Vector2 t)
         {
-            if ((Math.Abs(q.Y - p.Y) * (t.X - p.X) - (t.Y - p.Y) * (q.X - p.X)) >=
+            if ((Math.Abs((q.Y - p.Y) * (t.X - p.X) - (t.Y - p.Y) * (q.X - p.X))) >=
                 Math.Max(Math.Abs(q.X - p.X), Math.Abs(q.Y - p.Y))) return PointOnLineStates.PointIsNotOnTheInfiniteLine;
             if ((q.X < p.X && p.X < t.X) || (q.Y < p.Y && p.Y < t.Y)) return PointOnLineStates.PointIsNotOnTheOpenRayP;
             if ((t.X < p.X && p.X < q.X) || (t.Y < p.Y && p.Y < q.Y)) return PointOnLineStates.PointIsNotOnTheOpenRayP;
