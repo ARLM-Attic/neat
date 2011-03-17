@@ -69,6 +69,21 @@ namespace Neat.Mathematics
             }
         }
 
+        public enum LineIntersectionStates
+        {
+            Intersect,
+            Overlap,
+            None
+        }
+        public static LineIntersectionStates LinesIntersect(LineSegment firstLine, LineSegment secondLine, bool firstSegment, bool secondSegment)
+        {
+            var ip = GetIntersectionPoint(firstLine, secondLine, firstSegment, secondSegment);
+            if (IsNaN(ip)) return LineIntersectionStates.None;
+            if ((firstLine.Contains(secondLine.StartPos) && firstLine.Contains(secondLine.EndPos)) ||
+                (secondLine.Contains(firstLine.StartPos) && secondLine.Contains(firstLine.EndPos))) return LineIntersectionStates.Overlap;
+            return LineIntersectionStates.Intersect;
+        }
+
         public static Vector2 GetShortestVectorToLine(LineSegment line, Vector2 p)
         {
             return GetShortestVectorToLine(line, p, true);

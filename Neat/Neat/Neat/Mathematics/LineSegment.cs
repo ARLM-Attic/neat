@@ -118,5 +118,10 @@ namespace Neat.Mathematics
         {
             return GeometryHelper.IsPointOnLine(this, p) == GeometryHelper.PointOnLineStates.PointIsOnTheSegment;
         }
+
+        public GeometryHelper.LineIntersectionStates Intersects(LineSegment l2)
+        {
+            return GeometryHelper.LinesIntersect(this, l2, true, true);
+        }
     }
 }
