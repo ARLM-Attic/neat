@@ -9,32 +9,92 @@ namespace Neat
 {
     public class Sprite
     {
-        List<Texture2D> textures;
+        public class Slice
+        {
+            public Texture2D Texture;
+            public Rectangle? Crop;
+
+            public Slice(Texture2D tex, Rectangle? crop=null)
+            {
+                create(tex, crop);
+            }
+
+            public Slice(Texture2D tex, int x, int y, int width, int height)
+            {
+                create(tex, new Rectangle(x, y, width, height));
+            }
+
+            void create(Texture2D tex, Rectangle? crop=null)
+            {
+                Texture = tex;
+                Crop = crop;
+            }
+
+            public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color)
+            {
+                spriteBatch.Draw(
+                    Texture,
+                    position,
+                    Crop,
+                    color);
+            }
+        }
+
+        List<Slice> textures;
         int frames;
         int playingFrame;
-        string name;
         public double FrameRate;
 
-        public Sprite(string textureName, List<Texture2D> t, double rate)
+        public Sprite(double frameRate, List<Slice> slices)
         {
-            textures = t;
-            frames = textures.Count;
-            name = textureName;
-            FrameRate = rate;
-            playingFrame = 0;
+            textures = slices;
+            FrameRate = frameRate;
+            create();
+        }
+
+        public Sprite(double frameRate, params Slice[] slices)
+        {
+            textures = new List<Slice>(slices);
+            FrameRate = frameRate;
+            create();
         } //Animated Texture
 
-        public Sprite(string textureName, Texture2D t)
+        public Sprite(Texture2D t, Rectangle? rect=null)
         {
-            textures = new List<Texture2D>();
-            textures.Add( t) ;
-            frames = textures.Count;
-            name = textureName;
+            textures = new List<Slice> { new Slice(t,rect) };
             FrameRate = 0;
-            playingFrame = 0;
+            create();
         } //Still Texture
 
+        public Sprite(Slice t)
+        {
+            textures = new List<Slice>{t};
+            FrameRate = 0;
+            create();
+        } //Still Texture
+
+        void create()
+        {
+            frames = textures.Count;
+            playingFrame = 0;
+        }
+
         public Texture2D GetTexture(GameTime gameTime)
+        {
+            return GetSlice(gameTime).Texture;
+        }
+
+        public Texture2D GetTexture(uint frame)
+        {
+            return GetSlice(frame).Texture;
+        }
+
+        public Texture2D GetTexture()
+        {
+            return textures[playingFrame].Texture;
+        }
+
+        public Slice GetSlice(GameTime gameTime)
         {
             if (FrameRate > 0)
             {
@@ -43,7 +103,7 @@ namespace Neat
             return textures[playingFrame];
         }
 
-        public Texture2D GetTexture(uint frame)
+        public Slice GetSlice(uint frame)
         {
             if (FrameRate > 0)
             {
@@ -52,7 +112,7 @@ namespace Neat
             return textures[playingFrame];
         }
 
-        public Texture2D GetTexture()
+        public Slice GetSlice()
         {
             return textures[playingFrame];
         }

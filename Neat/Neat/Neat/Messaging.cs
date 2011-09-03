@@ -19,6 +19,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
+using System.Diagnostics;
  
 namespace Neat
 {
@@ -37,8 +38,9 @@ namespace Neat
             ResetMessages();
         }
 
-        public void SayMessage(string msg)
+        public void SayMessage(string msg, bool fail = false)
         {
+            Debug.WriteLine(msg);
             if (gamestime != null)
             {
                 msg = gamestime.TotalGameTime.Hours.ToString() + ":" +
@@ -52,6 +54,8 @@ namespace Neat
                 gameMessages[i] = gameMessages[i + 1];
             }
             gameMessages[GameMessagesCount - 1] = msg;
+            
+            Debug.Assert(!fail, msg);
         }
 
         public string GetMessages()

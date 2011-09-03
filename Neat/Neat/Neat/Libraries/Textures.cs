@@ -12,58 +12,36 @@ using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
 using Microsoft.Xna.Framework.Input.Touch;
 #endif
-#if WINDOWS
- 
- 
-#endif
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
+using System.Diagnostics;
  
 namespace Neat
 {
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
         protected GameTime gamesTime;
-        Dictionary<String, Sprite> textures = new Dictionary<string, Sprite>();
-
-        public void LoadTexture(string path)
+        Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
+        //Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
+        
+        public void LoadTexture(string path, string name=null)
         {
-            string textureName = getNameFromPath(path).ToLower();
             try
             {
-                if (textures.ContainsKey(textureName))
+                if (name == null)
+                    name = getNameFromPath(path).ToLower();
+                else
+                    name = name.ToLower();
+
+                if (sprites.ContainsKey(name))
                 {
                     if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
-                        textures.Remove(textureName);
+                        sprites.Remove(name);
                     else
                         return;
                 }
-                textures.Add(textureName,
-                    new Sprite(textureName,
-                    Content.Load<Texture2D>(path)));
-            }
-            catch
-            {
-                SayMessage("Cannot Load {" + path + "}");
-            }
-        }
-        public void LoadTexture(string path, string name)
-        {
-
-            try
-            {
-                name = name.ToLower();
-                if (textures.ContainsKey(name))
-                {
-                    if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
-                        textures.Remove(name);
-                    else
-                        return;
-                }
-                textures.Add(name,
-                    new Sprite(name,
-                    Content.Load<Texture2D>(path)));
+                sprites.Add(name, new Sprite(Content.Load<Texture2D>(path)));
             }
             catch
             {
@@ -71,83 +49,167 @@ namespace Neat
             }
         }
 
-        public void AssignTexture(string Sourcename, string Destname)
+        public void AssignTexture(string sourcename, string destname)
         {
             try
             {
-                textures.Add(Destname.ToLower(),
-                    textures[Destname.ToLower()]);
+                sprites[destname.ToLower()] = sprites[destname.ToLower()];
             }
             catch
             {
-                SayMessage("Cannot assign {" + Destname + "} to {" + Sourcename + "}");
+                SayMessage("Cannot assign {" + destname + "} to {" + sourcename + "}");
             }
         }
-        public void AssignTexture(Texture2D source, string Destname)
+
+        public void AssignTexture(Sprite source, string Destname)
         {
             try
             {
-                Destname = Destname.ToLower();
-                if (textures.ContainsKey(Destname)) textures[Destname] = new Sprite(Destname, source);
-                else
-                    textures.Add(Destname,
-                        new Sprite(Destname, source));
+                sprites[Destname.ToLower()] = source;
             }
             catch
             {
                 SayMessage("Cannot assign {" + Destname + "}");
             }
         }
+
+        public void AssignTexture(Sprite.Slice source, string Destname)
+        {
+            try
+            {
+                sprites[Destname.ToLower()] = new Sprite(source);
+            }
+            catch
+            {
+                SayMessage("Cannot assign {" + Destname + "}");
+            }
+        }
+
+        public void CreateSprite(string name, string spritesheet, Rectangle slice, double framerate = 0, int count=1, bool horizontal=true)
+        {
+            if (!sprites.ContainsKey(spritesheet = spritesheet.ToLower()))
+            {
+                SayMessage("Sprite " + spritesheet + " not found!");
+                return;
+            }
+
+            name = name.ToLower();
+            if (sprites.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior != ContentDuplicateBehaviors.Replace)
+                    return;
+            }
+
+            Texture2D tex = GetTexture(spritesheet);
+            List<Sprite.Slice> frames = new List<Sprite.Slice>();
+            for (int i = 0; i < count; i++)
+            {
+                if (slice.X + slice.Width > tex.Width ||
+                    slice.Y + slice.Height > tex.Height ||
+                    slice.X < 0 || slice.Y < 0)
+                {
+                    SayMessage("Slice is outside texture boundaries ("+name+")", true);
+                    return;
+                }
+                frames.Add(new Sprite.Slice(tex, slice));
+                if (horizontal) slice.X += slice.Width;
+                else slice.Y += slice.Height;
+            }
+
+            sprites[name] = new Sprite(framerate, frames);
+        }
+
+        public void CreateSprite(string name, double frameRate, KeyValuePair<string, Rectangle>[] slices)
+        {
+            name = name.ToLower();
+            if (sprites.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior != ContentDuplicateBehaviors.Replace)
+                    return;
+            }
+
+            List<Sprite.Slice> frames = new List<Sprite.Slice>();
+            for (int i = 0; i < slices.Length; i++)
+            {
+                Texture2D tex = GetTexture(slices[i].Key);
+                if (slices[i].Value.X + slices[i].Value.Width > tex.Width ||
+                    slices[i].Value.Y + slices[i].Value.Height > tex.Height ||
+                    slices[i].Value.X < 0 || slices[i].Value.Y < 0)
+                {
+                    SayMessage("Slice is outside texture boundaries ("+name+")", true);
+                    return;
+                }
+                frames.Add(new Sprite.Slice(tex, slices[i].Value));
+            }
+
+            sprites[name] = new Sprite(frameRate, frames);
+        }
+
         public void LoadTexture(string name, double frameRate, params string[] paths)
         {
             name = name.ToLower();
-            List<Texture2D> frames = new List<Texture2D>();
-            foreach (string path in paths)
-            {
-                frames.Add(
-                    Content.Load<Texture2D>(path));
-            }
-            if (textures.ContainsKey(name))
+            if (sprites.ContainsKey(name))
             {
                 if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
-                    textures.Remove(name);
+                    sprites.Remove(name);
                 else
                     return;
             }
-            textures.Add(name,
-                new Sprite(name,
-                frames, frameRate));
+            List<Sprite.Slice> frames = new List<Sprite.Slice>();
+            int f = -1;
+            foreach (string path in paths)
+            {
+                f++;
+                string frameName = getNameFromPath(path);
+                Texture2D tex;
+                if (sprites.ContainsKey(frameName)) tex = GetTexture(frameName);
+                else
+                {
+                    LoadTexture(path, frameName);
+                    tex = GetTexture(frameName);
+                }
+                frames.Add(new Sprite.Slice(tex, 0,0, tex.Width, tex.Height));
+            }
+            sprites.Add(name, new Sprite(frameRate, frames));
         }
         
-        public Texture2D GetTexture(string name)
+        public Sprite.Slice GetSlice(string name)
         {
             try
             {
                 name = name.ToLower();
-                if (textures.ContainsKey(name))
-                    return textures[name].GetTexture(Frame);
+                if (sprites.ContainsKey(name))
+                    return sprites[name].GetSlice(Frame);
                 else
-                    return textures["error"].GetTexture(Frame);
+                    return sprites["error"].GetSlice(Frame);
             }
             catch
             {
-                return textures["error"].GetTexture(Frame);
+                return sprites["error"].GetSlice(Frame);
             }
         } //Texture using default time
-        public Texture2D GetTexture(string name, GameTime gt)
+        public Sprite.Slice GetSlice(string name, GameTime gt)
         {
             try
             {
                 name = name.ToLower();
-                if (textures.ContainsKey(name))
-                    return textures[name].GetTexture(gt);
+                if (sprites.ContainsKey(name))
+                    return sprites[name].GetSlice(gt);
                 else
-                    return textures["error"].GetTexture(gt);
+                    return sprites["error"].GetSlice(gt);
             }
             catch
             {
-                return textures["error"].GetTexture(gt);
+                return sprites["error"].GetSlice(gt);
             }
+        }
+
+        public Texture2D GetTexture(string name, GameTime gt = null)
+        {
+            if (gt == null)
+                return GetSlice(name).Texture;
+            else
+                return GetSlice(name, gt).Texture;
         }
 
         public Sprite GetSprite(string name)
@@ -155,36 +217,14 @@ namespace Neat
             try
             {
                 name = name.ToLower();
-                if (textures.ContainsKey(name))
-                    return textures[name];
-                else return textures["error"];
+                if (sprites.ContainsKey(name))
+                    return sprites[name];
+                else return sprites["error"];
             }
             catch
             {
-                return textures["error"];
+                return sprites["error"];
             }
         }
-
-        protected string getNameFromPath(string path)
-        {
-            int bs = 0;
-            string fname = "";
-            for (int i = path.Length - 1; i >= 0; i--)
-            {
-                if (path[i] == '\\')
-                {
-                    bs = i;
-                    break;
-                }
-            }
-            if (bs == 0) return fname;
-            for (int i = bs + 1; i < path.Length; i++)
-            {
-                fname += path[i].ToString();
-            }
-            return fname;
-        }
-        
-
     }
 }

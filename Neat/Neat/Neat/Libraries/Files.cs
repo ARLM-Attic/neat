@@ -29,8 +29,10 @@ namespace Neat
             Replace,
             Ignore
         }
+
         public ContentDuplicateBehaviors ContentDuplicateBehavior = 
             ContentDuplicateBehaviors.Replace;
+
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -88,6 +90,26 @@ namespace Neat
             Screens.Add("quitconfirm", new EasyMenus.QuitConfirmationMenu(this));
             Screens.Add("optionsmenu", new EasyMenus.OptionsMenu(this));
             Screens.Add("ingamemenu", new EasyMenus.InGameMenu(this));
+        }
+
+        protected string getNameFromPath(string path)
+        {
+            int bs = 0;
+            string fname = "";
+            for (int i = path.Length - 1; i >= 0; i--)
+            {
+                if (path[i] == '\\')
+                {
+                    bs = i;
+                    break;
+                }
+            }
+            if (bs == 0) return fname;
+            for (int i = bs + 1; i < path.Length; i++)
+            {
+                fname += path[i].ToString();
+            }
+            return fname;
         }
 
         protected override void UnloadContent()
