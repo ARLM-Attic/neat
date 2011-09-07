@@ -16,10 +16,7 @@ namespace Neat.Components
     {
         public virtual void Run(string c)
         {
-            var t = command;
-            command = c;
-            ParseCommand();
-            command = t;
+            RunCommand(c);
         }
         public Dictionary<string, Action<IList<string>>> Commands;
 

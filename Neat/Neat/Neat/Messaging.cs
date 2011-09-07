@@ -65,7 +65,7 @@ namespace Neat
             {
                 r += m + "\n";
             }
-            return r;
+            return r.Remove(0, r.LastIndexOf('\n', GameMessagesCount)+1);
         }
 
         public void ResetMessages()

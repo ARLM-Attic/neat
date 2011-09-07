@@ -64,7 +64,7 @@ namespace Neat.Components
                     try
                     {
                         command = script[lc];
-                        ParseCommand();
+                        RunCommand();
                         if (batchEnd)
                         {
                             batchEnd = false;

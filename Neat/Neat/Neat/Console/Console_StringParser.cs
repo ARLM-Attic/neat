@@ -240,18 +240,30 @@ namespace Neat.Components
             return expr;
         }
 
-        public void ParseCommand()
+        public void RunCommand()
+        {
+            RunCommand(command);
+        }
+
+        public void RunCommand(string rawcommand)
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(command))
-                    Run(ParseParenthesis(command.Trim()).Split(' ').ToList());
+                var commands =
+                    rawcommand.Replace("$_", "\n").
+                    Replace("$S", " ").
+                    Split('\n');
+
+                foreach (var command in commands)
+                {
+                    if (!string.IsNullOrWhiteSpace(command))
+                        Run(ParseParenthesis(command.Trim()).Split(' ').ToList());
+                }
             }
             catch (Exception e)
             {
                 WriteLine("Error while parsing command: " + e.Message);
             }
-            //command = "";
         }
 
         //ParseColor(string) -> color 

@@ -129,7 +129,7 @@ namespace Neat.Components
             {
                 commandsbuffer.Add(command);
                 if (Echo) WriteLine("  > " + command);
-                ParseCommand();
+                RunCommand();
                 command = "";
             }
             else if (game.IsTapped(Keys.Escape, Buttons.Back)) command = "";

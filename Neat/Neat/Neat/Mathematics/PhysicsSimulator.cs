@@ -11,24 +11,31 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Diagnostics;
+using Neat.Graphics;
 
 namespace Neat.Mathematics
 {
     public class Body
     {
+        public Action<object> Collide = null; 
+        public Polygon Mesh;
         public bool IsStatic = false;
         public bool IsFree = false;
-        public bool Pushable = true;
+        //public bool Pushable = true;
         public bool AttachToGravity = true;
         public Vector2 Force;
         public Vector2 Acceleration;
         public Vector2 Velocity;
         public float InverseMass = 0;
-        public float Elasticity = 0; //[0=no elasticity, 1]
-        public float FrictionCoef = 0.1f; //[0=no friction, 1]
+        //public float Elasticity = 0; //[0=no elasticity, 1]
+        //public float FrictionCoef = 0.1f; //[0=no friction, 1]
         public Vector2 MaxSpeed = new Vector2(-1);
         public Vector2 MaxAcceleration = new Vector2(-1);
+        public Vector2 GravityNormal = new Vector2(0, -1);
+        public bool PreventSlippingOnSlopes = true; //Hopefully this is just temporary and I'll find the right way to do this
         float _mass = 0;
+        Neat.Components.Console console;
         public float Mass
         {
             get
@@ -49,14 +56,6 @@ namespace Neat.Mathematics
         public object entity;
         public PhysicsSimulator simulator;
         public NeatGame game;
-
-        public void AttachToConsole()
-        {
-            if (game == null) return;
-            //TODO: Write Body.AttachToConsole with DVars
-        }
-
-        public Polygon Mesh;
 
         public Body(PhysicsSimulator i_sim, NeatGame i_game,
             object i_entity, Polygon i_mesh, float i_mass)
@@ -118,49 +117,132 @@ namespace Neat.Mathematics
             Velocity += p / Mass;
         }
 
-        
+        #region Console Commands
+        public void AttachToConsole()
+        {
+            if (game == null) return;
+            console = game.Console;
+            console.AddCommand("bd_static", bd_static);
+            console.AddCommand("bd_free", bd_free);
+            console.AddCommand("bd_gravity", bd_gravity);
+            console.AddCommand("bd_mass", bd_mass);
+            console.AddCommand("bd_selectmesh", bd_selectmesh);
+            console.AddCommand("bd_velocity", bd_velocity);
+            console.AddCommand("bd_impact", bd_impact);
+            console.AddCommand("bd_detach", bd_detach);
+            console.AddCommand("bd_attach", bd_attach);
+            console.AddCommand("bd_gravitynormal", bd_gravitynormal);
+        }
+
+        void bd_static(IList<string> args)
+        {
+            if (args.Count > 1) IsStatic = bool.Parse(args[1]);
+            else console.WriteLine(IsStatic.ToString());
+        }
+
+        void bd_free(IList<string> args)
+        {
+            if (args.Count > 1) IsFree = bool.Parse(args[1]);
+            else console.WriteLine(IsFree.ToString());
+        }
+
+        void bd_gravity(IList<string> args)
+        {
+            if (args.Count > 1) AttachToGravity = bool.Parse(args[1]);
+            else console.WriteLine(AttachToGravity.ToString());
+        }
+
+        void bd_mass(IList<string> args)
+        {
+            if (args.Count > 1) Mass = float.Parse(args[1]);
+            else console.WriteLine(Mass.ToString());
+        }
+
+        void bd_selectmesh(IList<string> args)
+        {
+            //TODO: Implement bd_selectmesh
+        }
+
+        void bd_velocity(IList<string> args)
+        {
+            if (args.Count > 1) Velocity = GeometryHelper.String2Vector(args[1]);
+            else console.WriteLine(GeometryHelper.Vector2String(Velocity));
+        }
+
+        void bd_gravitynormal(IList<string> args)
+        {
+            if (args.Count > 1) GravityNormal = GeometryHelper.String2Vector(args[1]);
+            else console.WriteLine(GeometryHelper.Vector2String(GravityNormal));
+        }
+
+        void bd_impact(IList<string> args)
+        {
+            ApplyImpact(GeometryHelper.String2Vector(args[1]));
+        }
+
+        void bd_detach(IList<string> args)
+        {
+            simulator.Bodies.Remove(this);
+        }
+
+        void bd_attach(IList<string> args)
+        {
+            if (!simulator.Bodies.Contains(this)) simulator.Bodies.Add(this);
+        }
+        #endregion
     }
 
-    public class PhysicsSimulator
+    public class PhysicsSimulator : GameComponent
     {
         const float _epsilon = 1f;
-        const float _allowedPenetrationDepth = -0.1f;
         const float _bigNumber = 100f;
-        const float _dampingCoEf = 0.95f;
         Vector2 negativeOne = new Vector2(-1);
-        public Vector2 Gravity = new Vector2(0, -0.98f);
-        public List<Body> Bodies = new List<Body>();
-        public float Speed = 0.7f;
 
+        public float AllowedPenetrationDepth = -0.1f;
+        public float DampingCoef = 0.95f;
+        public Vector2 Gravity = new Vector2(0, 0.98f);
+        public List<Body> Bodies = new List<Body>();
+        public float SpeedCoef = 0.025f;
+        public float StickCoef = 0.8f;
+        
+        float speed;
         public NeatGame game;
 
         Neat.Components.Console console { get { return game.Console; } set { game.Console = value; } }
 
-        public PhysicsSimulator(NeatGame i_game)
+        public PhysicsSimulator(NeatGame i_game) : base(i_game)
         {
             game = i_game;
-
             Initialize();
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
+            AttachToConsole();
         }
 
-        public void Update()
+        public override void Update(GameTime gameTime)
+        {
+            Update((float)(gameTime.ElapsedGameTime.Milliseconds + 1));
+        }
+
+        public void Update(float time)
         {
             Vector2 a, v, p, r;
+            speed = (time * SpeedCoef);
             for (int i = 0; i < Bodies.Count; i++)
             {
                 var body = Bodies[i];
                 if (body.IsStatic) continue;
                 a = body.Force * body.InverseMass -
-                    (body.AttachToGravity ? Gravity : Vector2.Zero);
-                v = a * Speed + body.Velocity;
+                    (body.AttachToGravity ? 
+                    new Vector2(Gravity.X * body.GravityNormal.X, Gravity.Y * body.GravityNormal.Y) : 
+                    Vector2.Zero);
+                v = a * speed + body.Velocity;
                 Vector2 position,size;
                 body.Mesh.GetPositionAndSize(out position, out size);
 
-                r = v * Speed;
+                r = v * speed;
                 //r = 0.5f * a * Speed * Speed + body.Velocity * Speed;
                 p = r + position;
                 //Polygon nm = new Polygon(body.Mesh);
@@ -187,7 +269,11 @@ namespace Neat.Mathematics
                                 {
                                     Vector2 pd = push;
                                     pd.Normalize();
-                                    body.Mesh.Offset(push-_allowedPenetrationDepth*pd);
+                                    pd = push - AllowedPenetrationDepth * pd;
+                                    if (body.PreventSlippingOnSlopes)
+                                        if (Math.Abs(pd.X) < StickCoef) pd.X = 0;
+                                    body.Mesh.Offset(pd);
+                                    if (body.Collide != null) body.Collide(item.entity);
                                 }
                             }
                         }
@@ -197,10 +283,11 @@ namespace Neat.Mathematics
 
                 var newP = body.Mesh.GetPosition();
                 var movedDistance = newP-p;
-                if (movedDistance.Length() > _bigNumber)
+                if (movedDistance.Length() > _bigNumber) //We don't want no weird teleports, do we?
                     body.Mesh.Offset(-movedDistance); //rollback
-                v += movedDistance / Speed;
-                body.Velocity = v*_dampingCoEf;
+                else
+                    v += movedDistance / speed;
+                body.Velocity = v*DampingCoef;
                 body.Acceleration = a;
                 
                 if (body.MaxSpeed.X >= 0 && Math.Abs(body.Velocity.X) > body.MaxSpeed.X)
@@ -221,7 +308,7 @@ namespace Neat.Mathematics
         {
             if (A.IsStatic && B.IsStatic) return;
             Vector2 MTD, N;
-            float t = Speed;
+            float t = speed;
 
             if (Polygon.Collide(tA.ToPolygon(), tB.ToPolygon(), A.Velocity, B.Velocity, out N, ref t))
             {
@@ -292,5 +379,92 @@ namespace Neat.Mathematics
                     if (TrianglesIntersect(i, j)) return true;
             return false;
         }
+
+        public void Draw(SpriteBatch spriteBatch, LineBrush lb, Color color, Vector2 offset, bool showTriangles=false)
+        {
+            if (showTriangles)
+            {
+                foreach (var item in Bodies)
+                    if (item.Mesh.Triangles != null)
+                        foreach (var tri in item.Mesh.Triangles)
+                            tri.Draw(spriteBatch, lb, offset, color);
+            }
+            else
+                foreach (var item in Bodies)
+                    item.Mesh.Draw(spriteBatch, lb, offset, color);
+        }
+
+        #region Console Commands
+        public void AttachToConsole()
+        {
+            console.AddCommand("ph_gravity", ph_gravity);
+            console.AddCommand("ph_speed", ph_speed);
+            console.AddCommand("ph_selectbody", ph_selectbody);
+            console.AddCommand("ph_removebody", ph_removebody);
+            console.AddCommand("ph_newbody", ph_newbody);
+            console.AddCommand("ph_update", ph_update);
+            console.AddCommand("ph_stickiness", ph_stickiness);
+            console.AddCommand("ph_penetration", ph_penetration);
+            console.AddCommand("ph_damp", ph_damp);
+        }
+
+        void ph_gravity(IList<string> args)
+        {
+            if (args.Count > 1) Gravity.Y = float.Parse(args[1]);
+            else console.WriteLine(Gravity.Y.ToString());
+        }
+
+        void ph_speed(IList<string> args)
+        {
+            if (args.Count > 1) SpeedCoef = float.Parse(args[1]);
+            else console.WriteLine(SpeedCoef.ToString());
+        }
+
+        void ph_penetration(IList<string> args)
+        {
+            if (args.Count > 1) AllowedPenetrationDepth = float.Parse(args[1]);
+            else console.WriteLine(AllowedPenetrationDepth.ToString());
+        }
+
+        void ph_damp(IList<string> args)
+        {
+            if (args.Count > 1) DampingCoef = float.Parse(args[1]);
+            else console.WriteLine(DampingCoef.ToString());
+        }
+
+        void ph_stickiness(IList<string> args)
+        {
+            if (args.Count > 1) StickCoef = float.Parse(args[1]);
+            else console.WriteLine(StickCoef.ToString());
+        }
+
+        void ph_selectbody(IList<string> args)
+        {
+            Bodies[int.Parse(args[1])].AttachToConsole();
+        }
+
+        void ph_removebody(IList<string> args)
+        {
+            Bodies.RemoveAt(int.Parse(args[1]));
+        }
+
+        void ph_newbody(IList<string> args)
+        {
+            List<Vector2> points = new List<Vector2>();
+            for (int i = 1; i < args.Count; i++)
+                points.Add(GeometryHelper.String2Vector(args[i]));
+            Body b = new Body(this, game, new Polygon(points), 100);
+            b.Mesh.AutoTriangulate = true;
+            b.Mesh.Triangulate();
+            b.IsFree = true;
+            b.AttachToConsole();
+        }
+
+        void ph_update(IList<string> args)
+        {
+            if (args.Count > 1) Update(float.Parse(args[1]));
+            else Update(16);
+        }
+        #endregion
     }
 }

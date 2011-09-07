@@ -106,11 +106,15 @@ namespace Neat.Components
         void s_dir(IList<string> args)
         {
             var c = 1;
-            foreach (var item in Directory.GetFiles(".\\", args[1]))
+            string pattern = "*.*";
+            if (args.Count > 1) pattern = args[1];
+            foreach (var item in Directory.GetFiles(".\\", pattern))
             {
                 if (c++ % 5 == 0) WriteLine("");
-                Write(item);
+                Write(item + " ");
             }
+            WriteLine("");
+            WriteLine((c-1) + " files found.");
         }
 
         void s_type(IList<string> args)

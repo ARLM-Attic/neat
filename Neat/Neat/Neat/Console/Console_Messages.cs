@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
+using System.Diagnostics;
 #if LIVE
 using Microsoft.Xna.Framework.GamerServices;
 #endif
@@ -18,15 +19,17 @@ namespace Neat.Components
             buffer = new List<string>();
         }
 
-        public void Write(string text)
+        public void Write(string text="")
         {
+            Debug.Write(text);
             if (buffer.Count > 0) buffer[buffer.Count - 1] += text;
             else buffer.Add(text);
         }
 
-        public void WriteLine(string text)
+        public void WriteLine(string text="")
         {
             Write(text);
+            Debug.WriteLine("");
             buffer.Add("");
         }
 

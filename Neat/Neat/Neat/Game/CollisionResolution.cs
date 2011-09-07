@@ -1,4 +1,6 @@
-﻿using System;
+﻿/* This file is for testing purposes only. */
+#if DEBUG
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -24,6 +26,7 @@ using Neat.EasyMenus;
 using Neat.GUI;
 using Neat.Mathematics;
 using Neat.Graphics;
+using System.Diagnostics;
 
 namespace Neat
 {
@@ -81,7 +84,7 @@ namespace Neat
             poly3.AddVertex(700, 450);
             poly3.Triangulate();
 
-            var circle = Polygon.BuildCircle(20, new Vector2(300), 90);
+            var circle = Polygon.BuildCircle(20, new Vector2(600), 90);
             circle.Triangulate();
 
             bodies = new List<Body>();
@@ -121,11 +124,16 @@ namespace Neat
                 }
             }
 
-            
             form.Update(gameTime);
             base.Behave(gameTime);
+            
+            if (!paused)
+            {
+                sim.Update(gameTime);
+            }
         }
 
+        float vel = 8f;
         public override void HandleInput(GameTime gameTime)
         {
             bodies[0].Velocity.X = 0f;
@@ -133,14 +141,16 @@ namespace Neat
             {
                 //bodies[0].Mesh.Offset(new Vector2(-10, -0.1f));
                 //bodies[0].Mesh.Triangulate();
-                bodies[0].ApplyForce(new Vector2(-100, 0));
+                bodies[0].Velocity.X = -vel;
+                //bodies[0].ApplyForce(new Vector2(-100, 0));
             }
                 //body1.ApplyForce(new Vector2(-10, 0));
             if (game.IsPressed(Keys.Right))
             {
                 //bodies[0].Mesh.Offset(new Vector2(10, -0.1f));
                 //bodies[0].Mesh.Triangulate();
-                bodies[0].ApplyForce(new Vector2(100, 0));
+                bodies[0].Velocity.X = vel;
+                //bodies[0].ApplyForce(new Vector2(100, 0));
             }
                 //body1.ApplyForce(new Vector2(10, 0));
             if (game.IsPressed(Keys.Up))
@@ -153,13 +163,9 @@ namespace Neat
                 //bodies[0].Mesh.Offset(new Vector2(0, 5f));
                 bodies[0].ApplyForce(new Vector2(0, 100));
             }
-            if (game.IsTapped(Keys.Space)) paused = !paused;
             if (game.IsTapped(Keys.R)) Reset();
-
-            if (!paused)
-            {
-                sim.Update();
-            }
+            if (game.IsTapped(Keys.T)) Debug.WriteLine(gameTime.TotalGameTime.TotalSeconds);
+            
             base.HandleInput(gameTime);
         }
 
@@ -168,20 +174,10 @@ namespace Neat
         {
             int q = 0;
             base.Render(gameTime);
+            sim.Draw(game.SpriteBatch, lb, Color.White, Vector2.Zero);
             game.Write(showFill.ToString() + GeometryHelper.Coords2String(bodies[0].Mesh.GetPosition()), new Vector2(100));
-
-            foreach (var item in bodies)
-            {
-                q++;
-                var c = palette[q % palette.Count];
-                
-                foreach (var tri in item.Mesh.Triangles)
-                {
-                    tri.Draw(game.SpriteBatch, lb, c);
-                }
-            }
-
             form.Draw(gameTime);
         }
     }
 }
+#endif

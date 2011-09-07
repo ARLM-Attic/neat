@@ -10,6 +10,7 @@ using System.IO;
 using Microsoft.Xna.Framework.GamerServices;
 #endif
 using Neat.Graphics;
+using System.Diagnostics;
 namespace Neat.Components
 {
     public partial class Console : GameComponent
@@ -41,6 +42,7 @@ namespace Neat.Components
         {'D', Color.LightPink},
         {'E', Color.LightYellow},
         {'F', Color.White}};
+
         public char ColorChangeSpecialCharacter = '@';
 
         public void Draw(int _hoffset, int _lines, bool showOnBottom)
@@ -75,19 +77,19 @@ namespace Neat.Components
                 InputColor);
             try
             {
+                Vector2 charSize = font.MeasureString("Z");
+                int rowLength = (int)(width / charSize.X);
                 if (EnableCharacterByCharacterDrawing)
                 {
                     int row = 0; int col = 0; Color c = TextColor;
-                    Vector2 charSize = font.MeasureString("Z");
                     Vector2 startPoint = new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + font.MeasureString("Z").Y);
-                    int rowLength = (int)(width / charSize.X);
                     for (int i = 0; i < messages.Length; i++)
                     {
-                        if (messages[i] == ColorChangeSpecialCharacter && messages.Length > i+1 && ColorsTable.ContainsKey(messages[i+1]))
+                        if (messages[i] == ColorChangeSpecialCharacter && messages.Length > i + 1 && ColorsTable.ContainsKey(messages[i + 1]))
                         {
                             //change color
                             c = ColorsTable[messages[i + 1]];
-                            i ++;
+                            i++;
                         }
                         else if (messages[i] == '\n')
                         {
@@ -111,11 +113,33 @@ namespace Neat.Components
                     }
                 }
                 else
-                spriteBatch.DrawString(
-                    font,
-                    messages,
-                    new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + font.MeasureString("Z").Y),
-                    TextColor);
+                {
+                    try
+                    {
+                        var lines = messages.Split('\n');
+                        for (int l = 0; l < lines.Length; l++)
+                        {
+                            int length = lines[l].Length;
+                            for (int i = 1; i < length / rowLength; i++)
+                            {
+                                lines[l].Insert(i * rowLength, "\n");
+                            }
+                        }
+                        var text = String.Join("\n", lines);
+                        var lastindex = text.LastIndexOf('\n', LinesCount);
+                        if (lastindex >= 0) text = text.Remove(0, text.LastIndexOf('\n', LinesCount));
+                        spriteBatch.DrawString(
+                            font,
+                            text,
+                            new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + charSize.Y),
+                            TextColor);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e);
+                        Debug.Fail("Error in drawing text");
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -136,7 +160,7 @@ namespace Neat.Components
 
         public void Draw(bool showOnBottom)
         {
-            Draw(showOnBottom ? game.GameHeight - MeasureHeight(LinesCount) : 0, LinesCount,showOnBottom);
+            Draw(showOnBottom ? game.GameHeight - MeasureHeight(LinesCount) : 0, LinesCount, showOnBottom);
         }
 
         public void Draw(SpriteBatch spriteBatch, bool showOnBottom)
@@ -145,8 +169,8 @@ namespace Neat.Components
                 (standAlone ? spriteBatch.GraphicsDevice.DisplayMode.Height : game.GameHeight)
                 - MeasureHeight(LinesCount) : 0, LinesCount, showOnBottom);
         }
-        #region Special Effects
 
+        #region Special Effects
         List<string> messages = new List<string>();
         string fx_text = "Get Ready!";
         bool fx_on, fx_end;
