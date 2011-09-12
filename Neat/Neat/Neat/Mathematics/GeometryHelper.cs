@@ -43,7 +43,6 @@ namespace Neat.Mathematics
         {
             return GetIntersectionPoint(firstLine, secondLine, true, true);
         }
-
         public static Vector2 GetIntersectionPoint(LineSegment firstLine, LineSegment secondLine, bool firstSegment, bool secondSegment)
         {
             double Ua, Ub;
@@ -88,7 +87,6 @@ namespace Neat.Mathematics
         {
             return GetShortestVectorToLine(line, p, true);
         }
-
         public static Vector2 GetShortestVectorToLine(LineSegment line, Vector2 p, bool segment)
         {
             var u = ((p.X - line.StartPos.X) * (line.EndPos.X - line.StartPos.X) + (p.Y - line.StartPos.Y) * (line.EndPos.Y - line.StartPos.Y)) / line.LengthSquared();
@@ -142,7 +140,6 @@ namespace Neat.Mathematics
             return new Rectangle(r.X + offset.X, r.Y + offset.Y,
                 r.Width, r.Height);
         }
-
         public static Rectangle MoveRectangle(Rectangle r, Vector2 offset)
         {
             return MoveRectangle(r, new Point((int)offset.X, (int)offset.Y));
@@ -161,13 +158,12 @@ namespace Neat.Mathematics
                 (vector.Y > position.Y) &&
                 (vector.Y < position.Y + size.Y);
         }
-
         public static bool IsVectorInRectangle(Rectangle r, Vector2 vector)
         {
             return r.Contains(Vector2Point(vector));
         }
 
-        //Depricated
+        //Deprecated
         public static bool IsVectorInside(Vector3 point, List<Vector3> polygon)
         {
             int i, j = 0;
@@ -187,7 +183,6 @@ namespace Neat.Mathematics
         {
             return new Point((int)(vector.X), (int)(vector.Y));
         }
-
         public static Vector2 Point2Vector(Point point)
         {
             return new Vector2((float)(point.X), (float)(point.Y));
@@ -197,7 +192,6 @@ namespace Neat.Mathematics
         {
             return new Rectangle((int)(position.X), (int)(position.Y), (int)(size.X), (int)(size.Y));
         }
-
         public static Rectangle Points2Rectangle(Point position, Point size)
         {
             return new Rectangle((position.X), (position.Y), (size.X), (size.Y));
@@ -221,23 +215,12 @@ namespace Neat.Mathematics
                 case ("unitx"): { return Vector2.UnitX; }
                 case ("unity"): { return Vector2.UnitY;}
             }
+            var elements = s.Split(',');
             Vector2 result = Vector2.Zero;
-            string number = "";
-            char d = '0';
-            int i = 0;
-            for (; d != ',' && i<s.Length; i++)
-            {
-                d = s[i];
-                if (d != ',') number += d;
-            }
-            result.X = float.Parse(number.Trim());
-
-            number = "";
-            for (; i < s.Length; i++) number += s[i];
-            result.Y = float.Parse(number);
+            result.X = float.Parse(elements[0].Trim());
+            result.Y = float.Parse(elements[1].Trim());
             return result;
         }
-
         public static Vector3 String2Vector3(string s)
         {
             switch (s.Trim().ToLower())
@@ -259,6 +242,7 @@ namespace Neat.Mathematics
             result.Z = float.Parse(elements[2].Trim());
             return result;
         }
+
         public static string Vector2String(Vector2 v)
         {
             return v.X.ToString() + "," + v.Y.ToString();
@@ -267,6 +251,11 @@ namespace Neat.Mathematics
         {
             return v.X.ToString() + "," + v.Y.ToString() + "," + v.Z.ToString();
         }
+        public static string Vector2String(Vector4 v)
+        {
+            return v.X.ToString() + "," + v.Y.ToString() + "," + v.Z.ToString()+","+v.W;
+        }
+        
         public static string Point2String(Point p)
         {
             return Vector2String(Point2Vector(p));

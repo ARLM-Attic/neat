@@ -32,6 +32,7 @@ namespace Neat
         public GameTime gamesTime;
         public uint Frame { get { return game.Frame; }}
         public Form Form;
+        public List<GameComponent> Components = new List<GameComponent>();
 #endregion
 
 #region Initialize
@@ -43,6 +44,10 @@ namespace Neat
         public virtual void Initialize()
         {
             Form = new Form(game);
+            foreach (var item in Components)
+            {
+                item.Initialize();
+            }
         }
 
         public virtual void Activate()
@@ -62,6 +67,10 @@ namespace Neat
         {
             HandleInput(gameTime);
             Behave(gameTime);
+            foreach (var item in Components)
+            {
+                item.Update(gameTime);
+            }
             Form.Update(gameTime);
         }
 

@@ -20,7 +20,7 @@ namespace Neat.Components
         NeatGame game;
         List<string> buffer;
         string command;
-        RAM ram;
+        public RAM Ram;
         LineBrush lb;
         bool _isActive = false;
         public bool IsActive
@@ -49,7 +49,7 @@ namespace Neat.Components
         public Console(NeatGame _game) : base(_game)
         {
             game = _game;
-            ram = game.Ram;
+            Ram = game.Ram;
             //Initialize();
         }
 
@@ -57,7 +57,7 @@ namespace Neat.Components
             : base(_game)
         {
             game = new NeatGame(game);
-            ram = new RAM();
+            Ram = new RAM();
             standAlone = true;
         }
 

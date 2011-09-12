@@ -18,9 +18,9 @@ namespace Neat.Mathematics
 {
     public class Body
     {
-        public Action<object> Collide = null; 
+        public Action<object,Vector2> Collide = null; 
         public Polygon Mesh;
-        public bool IsStatic = false;
+        public bool IsStatic = true;
         public bool IsFree = false;
         //public bool Pushable = true;
         public bool AttachToGravity = true;
@@ -52,7 +52,6 @@ namespace Neat.Mathematics
                 _mass = value;
             }
         }
-
         public object entity;
         public PhysicsSimulator simulator;
         public NeatGame game;
@@ -273,7 +272,7 @@ namespace Neat.Mathematics
                                     if (body.PreventSlippingOnSlopes)
                                         if (Math.Abs(pd.X) < StickCoef) pd.X = 0;
                                     body.Mesh.Offset(pd);
-                                    if (body.Collide != null) body.Collide(item.entity);
+                                    if (body.Collide != null) body.Collide(item.entity,pd);
                                 }
                             }
                         }
@@ -326,6 +325,7 @@ namespace Neat.Mathematics
                     }
                     else
                     {
+                        //TODO: Implement Push
                         var aw = A.Mass / (A.Mass + B.Mass);
                         A.Mesh.Offset(MTD * aw);
                         B.Mesh.Offset(MTD * (1 - aw));

@@ -127,6 +127,7 @@ namespace Neat.Components
             else commandsbuffer.RemoveAt(0);
         }
 
+        //This function looks stupid. I don't know what I was thinking when I wrote this :-/
         public int MeasureHeight(int _lines)
         {
             string rulerHelper = "Z";

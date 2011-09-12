@@ -36,7 +36,7 @@ namespace Neat.Components
                         string right = command.Substring(end + 1);
                         string mid = EvaluateString( command.Substring(start + 1, end - start - 1) );
 
-                        command = left + ram.GetValue(mid) + right;
+                        command = left + Ram.GetValue(mid) + right;
                         start = command.IndexOf(eval_open);
                         i = start;
                     }

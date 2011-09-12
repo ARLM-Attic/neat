@@ -57,10 +57,14 @@ namespace Neat.Components
             if (yCurtain >= 0) yCurtain = 0;
             else yCurtain += CurtainSpeed;
 
-            string messages = GetMessages(_lines, ref mOffset);
+            string messages = GetMessages(_lines, ref mOffset).Replace("\r\n", "\n"); 
+            
+            var font = standAlone ? StandAloneFont : game.GetFont(Font);
+            Vector2 charSize = font.MeasureString("Z");
 
-            int height = MeasureHeight(_lines);
+            int height = (int)(charSize.Y * (_lines + 1));// MeasureHeight(_lines);
             var width = standAlone ? spriteBatch.GraphicsDevice.DisplayMode.Width : game.GameWidth;
+
             //Draw Rectangle
             spriteBatch.Draw(
                 standAlone ? StandAloneTexture : game.GetTexture(BackTexture),
@@ -68,7 +72,6 @@ namespace Neat.Components
                     width, height),
                 BackColor);
 
-            var font = standAlone ? StandAloneFont : game.GetFont(Font);
             //Write Text
             spriteBatch.DrawString(
                 font,
@@ -77,12 +80,28 @@ namespace Neat.Components
                 InputColor);
             try
             {
-                Vector2 charSize = font.MeasureString("Z");
+                //Limit text to _lines lines.
                 int rowLength = (int)(width / charSize.X);
+                int length = messages.Length;
+                for (int i = 1; i < length / rowLength; i++) 
+                    if (messages[i-1] == ColorChangeSpecialCharacter)
+                        messages.Insert((i * rowLength)+1, "\n");
+                    else
+                        messages.Insert(i * rowLength, "\n");
+                var texts = messages.Split('\n');
+                Stack<string> reverseTexts = new Stack<string>();
+                for (int i = texts.Length - 1;
+                    i >= 0 && reverseTexts.Count < _lines; i--)
+                    reverseTexts.Push(texts[i]);
+                messages = "";
+                while (reverseTexts.Count > 0) messages += reverseTexts.Pop() + "\n";
+
                 if (EnableCharacterByCharacterDrawing)
                 {
+                    //Draw text with colors
                     int row = 0; int col = 0; Color c = TextColor;
-                    Vector2 startPoint = new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + font.MeasureString("Z").Y);
+                    Vector2 startPoint = new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + charSize.Y);
+
                     for (int i = 0; i < messages.Length; i++)
                     {
                         if (messages[i] == ColorChangeSpecialCharacter && messages.Length > i + 1 && ColorsTable.ContainsKey(messages[i + 1]))
@@ -114,31 +133,10 @@ namespace Neat.Components
                 }
                 else
                 {
-                    try
-                    {
-                        var lines = messages.Split('\n');
-                        for (int l = 0; l < lines.Length; l++)
-                        {
-                            int length = lines[l].Length;
-                            for (int i = 1; i < length / rowLength; i++)
-                            {
-                                lines[l].Insert(i * rowLength, "\n");
-                            }
-                        }
-                        var text = String.Join("\n", lines);
-                        var lastindex = text.LastIndexOf('\n', LinesCount);
-                        if (lastindex >= 0) text = text.Remove(0, text.LastIndexOf('\n', LinesCount));
-                        spriteBatch.DrawString(
-                            font,
-                            text,
-                            new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + charSize.Y),
-                            TextColor);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e);
-                        Debug.Fail("Error in drawing text");
-                    }
+                    //Draw text without colors
+                    spriteBatch.DrawString(font,messages,
+                        new Vector2(0, _hoffset + (showOnBottom ? -yCurtain : yCurtain) + charSize.Y),
+                        TextColor);
                 }
             }
             catch (Exception e)

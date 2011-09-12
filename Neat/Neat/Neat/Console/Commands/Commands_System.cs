@@ -22,13 +22,13 @@ namespace Neat.Components
         void s_set(IList<string> args)
         {
             for (int i = 1; i < args.Count; i++)
-                ram.Add(args[i], "True");
+                Ram.Add(args[i], "True");
         }
 
         void s_free(IList<string> args)
         {
             for (int i = 1; i < args.Count; i++)
-                if (ram.ContainsKey(args[i])) ram.Remove(args[i]);
+                if (Ram.ContainsKey(args[i])) Ram.Remove(args[i]);
         }
 
         void s_on(IList<string> args)
@@ -43,8 +43,8 @@ namespace Neat.Components
 
         void s_inc(IList<string> args)
         {
-            if (args.Count == 2) ram.Add(args[1], (float.Parse(ram.GetValue(args[1])) + 1).ToString());
-            else if (args.Count == 3) ram.Add(args[1], (float.Parse(ram.GetValue(args[1])) + float.Parse(args[2])).ToString());
+            if (args.Count == 2) Ram.Add(args[1], (float.Parse(Ram.GetValue(args[1])) + 1).ToString());
+            else if (args.Count == 3) Ram.Add(args[1], (float.Parse(Ram.GetValue(args[1])) + float.Parse(args[2])).ToString());
             else throw new Exception("Error in ~inc");
         }
 
@@ -59,7 +59,7 @@ namespace Neat.Components
              */
         void s_dvar(IList<string> args)
         {
-            try { ram.Add(args[1], Args2Str(args, 2)); }
+            try { Ram.Add(args[1], Args2Str(args, 2)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
