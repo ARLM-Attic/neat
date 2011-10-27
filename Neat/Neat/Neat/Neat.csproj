@@ -49,7 +49,7 @@
     <NoStdLib>true</NoStdLib>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
-    <XnaCompressContent>false</XnaCompressContent>
+    <XnaCompressContent>True</XnaCompressContent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
@@ -112,6 +112,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormsAux\GraphicsDeviceService.cs" />
     <Compile Include="Graphics\LineBrush.cs" />
     <Compile Include="Console\Commands\Commands_Audio.cs" />
     <Compile Include="Console\Commands\Commands_Console.cs" />
@@ -131,6 +132,8 @@
     <Compile Include="EasyMenus\MainMenu.cs" />
     <Compile Include="EasyMenus\OptionsMenu.cs" />
     <Compile Include="EasyMenus\QuitConfirmation.cs" />
+    <Compile Include="GUI\Container.cs" />
+    <Compile Include="GUI\Window.cs" />
     <Compile Include="Mathematics\Triangle.cs" />
     <Compile Include="Screen.cs" />
     <Compile Include="Game\CollisionTest.cs" />
@@ -173,6 +176,7 @@
     <Compile Include="RAM.cs" />
     <Compile Include="Neat.cs" />
     <Compile Include="Components\TrackHUD.cs" />
+    <Compile Include="FormsAux\ServiceContainer.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Update.cs" />
   </ItemGroup>

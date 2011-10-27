@@ -23,7 +23,7 @@ namespace NeatStarter
         {
             GameWidth = 800;
             GameHeight = 600;
-            GameBackGroundColor = Color.CornflowerBlue;
+            GameBackgroundColor = Color.CornflowerBlue;
             FullScreen = false;
         }
 

@@ -43,11 +43,11 @@ namespace Neat.GUI
 
         public void CenterX()
         {
-            Position.X = game.GameWidth / 2 - game.GetTexture(BackgroundImage).Width / 2;
+            _position.X = Game.GameWidth / 2 - Game.GetTexture(BackgroundImage).Width / 2;
         }
         public void CenterY()
         {
-            Position.Y = game.GameHeight / 2 - game.GetTexture(BackgroundImage).Height / 2;
+            _position.Y = Game.GameHeight / 2 - Game.GetTexture(BackgroundImage).Height / 2;
         }
         public void Center()
         {
@@ -57,20 +57,20 @@ namespace Neat.GUI
         public void StretchToScreen()
         {
             Position = Vector2.Zero;
-            Size = new Vector2(((float)(game.GameWidth)), ((float)(game.GameHeight)));
+            Size = new Vector2(((float)(Game.GameWidth)), ((float)(Game.GameHeight)));
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (AutoSize)
             {
-                spriteBatch.Draw(game.GetTexture(BackgroundImage),
+                spriteBatch.Draw(Game.GetTexture(BackgroundImage),
                     Position,
                     TintColor);
             }
             else
             {
-                spriteBatch.Draw(game.GetTexture(BackgroundImage),
+                spriteBatch.Draw(Game.GetTexture(BackgroundImage),
                     new Rectangle((int)(Position.X), (int)(Position.Y), (int)(Size.X), (int)(Size.Y)),
                     TintColor);
             }
@@ -79,17 +79,17 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fc_autosize", fc_autosize);
-            game.Console.AddCommand("fc_color", fc_color);
-            game.Console.AddCommand("fc_center", fc_center);
-            game.Console.AddCommand("fc_stretch", fc_stretch);
+            Game.Console.AddCommand("fc_autosize", fc_autosize);
+            Game.Console.AddCommand("fc_color", fc_color);
+            Game.Console.AddCommand("fc_center", fc_center);
+            Game.Console.AddCommand("fc_stretch", fc_stretch);
         }
 
         void fc_autosize(IList<string> args)
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [bool]");
                 return;
             }
             AutoSize = bool.Parse(args[1]);
@@ -99,10 +99,10 @@ namespace Neat.GUI
         {
             if (args.Count < 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [color]");
                 return;
             }
-            SetColor( game.Console.ParseColor(game.Console.Args2Str(args, 1)));
+            SetColor( Game.Console.ParseColor(Game.Console.Args2Str(args, 1)));
         }
 
         void fc_center(IList<string> args)
@@ -124,7 +124,7 @@ namespace Neat.GUI
             }
             else
             {
-                game.Console.WriteLine("syntax: " + args[0] + " {x|y}");
+                Game.Console.WriteLine("syntax: " + args[0] + " {x|y}");
                 return;
             }
         }

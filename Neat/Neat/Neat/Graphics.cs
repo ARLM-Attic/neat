@@ -22,8 +22,8 @@ namespace Neat
     {
         public enum StretchModes { None, Stretch, Fit, Center };
 
-        public Color GameBackGroundColor = Color.Black;
-        public Color OutputBackGroundColor = Color.Black;
+        public Color GameBackgroundColor = Color.Black;
+        public Color OutputBackgroundColor = Color.Black;
 
         public bool AutoDraw = true;
         public bool AutoClear = true;
@@ -31,6 +31,8 @@ namespace Neat
         public bool ShowConsoleOnBottom = false;
         public bool Disable2DRendering = false;
         StretchModes _stretchMode = StretchModes.None;
+        public RenderTarget2D DefaultTarget { get { 
+            return _renderTarget; } set { _renderTarget = value; } }
         public Point OutputResolution;
         
         bool _landscape = false;
@@ -50,7 +52,8 @@ namespace Neat
 
         void ResetRenderTarget()
         {
-            _renderTarget = new RenderTarget2D(GraphicsDevice, GameWidth, GameHeight);
+            _renderTarget = new RenderTarget2D(GraphicsDevice, GameWidth, GameHeight, 
+                false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 1, RenderTargetUsage.PreserveContents);
             if (StretchMode == StretchModes.Center)
             {
                 _vecDest.X = (OutputResolution.X - GameWidth) / 2f;
@@ -84,6 +87,13 @@ namespace Neat
                 _vecSize.X = OutputResolution.X;
                 _vecSize.Y = OutputResolution.Y;
             }
+            else
+            {
+                _vecDest.X = 0;
+                _vecDest.Y = 0;
+                _vecSize.X = GameWidth;
+                _vecSize.Y = GameHeight;
+            }
         }
 
         public bool Landscape
@@ -116,16 +126,14 @@ namespace Neat
             {
                 gamestime = gameTime;
 
-                if (Landscape || StretchMode != StretchModes.None)
+                //if (Landscape || StretchMode != StretchModes.None)
                     GraphicsDevice.SetRenderTarget(_renderTarget);
 
                 if (AutoClear)
-                    Graphics.GraphicsDevice.Clear(GameBackGroundColor);
+                    GraphicsDevice.Clear(GameBackgroundColor);
 
-
-                if (AutoDraw)
-                    SpriteBatch.Begin();
-
+                    if (AutoDraw)
+                        SpriteBatch.Begin();
             }
 
 #if LIVE
@@ -141,7 +149,7 @@ namespace Neat
 )
                 {
 #if WINDOWS
-                    DrawMouse(mousePosition);
+                    DrawMouse(MousePosition);
 #endif
                 }
 
@@ -174,10 +182,11 @@ namespace Neat
 
                     SpriteBatch.End();
                 }
-                else if (StretchMode != StretchModes.None)
+                else if (_renderTarget != null)// if (StretchMode != StretchModes.None)
                 {
                     GraphicsDevice.SetRenderTarget(null);
-                    Clear(OutputBackGroundColor);
+                    if (AutoClear)
+                        Clear(OutputBackgroundColor);
                     SpriteBatch.Begin();
                     SpriteBatch.Draw(
                         _renderTarget,
@@ -194,7 +203,8 @@ namespace Neat
         }
         protected virtual void Render(GameTime gameTime)
         {
-            Screens[ActiveScreen].Render(gameTime);
+            if (Screens.ContainsKey(ActiveScreen))
+                Screens[ActiveScreen].Render(gameTime);
         }
         
         public void Write(string text, Vector2 position)

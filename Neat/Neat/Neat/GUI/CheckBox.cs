@@ -32,7 +32,7 @@ namespace Neat.GUI
         public bool DrawShadow = true;
         public override void Initialize()
         {
-            Size.Y = 32;
+            _size.Y = 32;
             Caption = "Checkbox";
             base.Initialize();
         }
@@ -42,12 +42,12 @@ namespace Neat.GUI
             Checked = !Checked;
             if (Checked)
             {
-                if (OnCheckedRun != null) game.Console.Run(OnCheckedRun);
+                if (OnCheckedRun != null) Game.Console.Run(OnCheckedRun);
                 if (OnChecked != null) OnChecked(); 
             }
             else
             {
-                if (OnUncheckedRun != null) game.Console.Run(OnUncheckedRun);
+                if (OnUncheckedRun != null) Game.Console.Run(OnUncheckedRun);
                 if (OnUnchecked != null) OnUnchecked(); }
         
             base.Released();
@@ -61,15 +61,15 @@ namespace Neat.GUI
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             //Rectangle bounds = new Rectangle((int)(position.X), (int)(position.Y), (int)(size.X), (int)(size.Y));
-            Texture2D t = game.GetTexture(Checked ? CheckedPicture : UncheckedPicture);
+            Texture2D t = Game.GetTexture(Checked ? CheckedPicture : UncheckedPicture);
             spriteBatch.Draw(t, 
                 new Rectangle((int)(Position.X),(int)(Position.Y),32,32) , TintColor); // Draw Background
 
-            Vector2 textsize = game.GetFont(Font).MeasureString(Caption);
+            Vector2 textsize = Game.GetFont(Font).MeasureString(Caption);
 
             if (DrawShadow)
             {
-                GraphicsHelper.DrawShadowedString(spriteBatch, game.GetFont(Font), Caption, Position + new Vector2(35, 0),
+                GraphicsHelper.DrawShadowedString(spriteBatch, Game.GetFont(Font), Caption, Position + new Vector2(35, 0),
                     (IsMouseHold ? MouseHoldColor :
                     (IsMouseHovered ? MouseHoverColor :
                     ForeColor)),
@@ -77,7 +77,7 @@ namespace Neat.GUI
             }
             else
             {
-                spriteBatch.DrawString(game.GetFont(Font), Caption, Position + new Vector2(35, 0),
+                spriteBatch.DrawString(Game.GetFont(Font), Caption, Position + new Vector2(35, 0),
                     (IsMouseHold ? MouseHoldColor :
                     (IsMouseHovered ? MouseHoverColor :
                     ForeColor)));
@@ -87,29 +87,29 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fc_checked", fc_checked);
-            game.Console.AddCommand("fc_drawshadow", fc_drawshadow);
-            game.Console.AddCommand("fc_checkedimg", fc_checkedimg);
-            game.Console.AddCommand("fc_uncheckedimg", fc_uncheckedimg);
-            game.Console.AddCommand("fc_onchecked", fc_onchecked);
-            game.Console.AddCommand("fc_onunchecked", fc_onunchecked);
+            Game.Console.AddCommand("fc_checked", fc_checked);
+            Game.Console.AddCommand("fc_drawshadow", fc_drawshadow);
+            Game.Console.AddCommand("fc_checkedimg", fc_checkedimg);
+            Game.Console.AddCommand("fc_uncheckedimg", fc_uncheckedimg);
+            Game.Console.AddCommand("fc_onchecked", fc_onchecked);
+            Game.Console.AddCommand("fc_onunchecked", fc_onunchecked);
         }
 
         void fc_onchecked(IList<string> args)
         {
-            OnCheckedRun = game.Console.Args2Str(args, 1);
+            OnCheckedRun = Game.Console.Args2Str(args, 1);
         }
 
         void fc_onunchecked(IList<string> args)
         {
-            OnUncheckedRun = game.Console.Args2Str(args, 1);
+            OnUncheckedRun = Game.Console.Args2Str(args, 1);
         }
 
         void fc_checked(IList<string> args)
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [bool]");
                 return;
             }
             Checked = bool.Parse(args[1]);
@@ -119,7 +119,7 @@ namespace Neat.GUI
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [bool]");
                 return;
             }
             DrawShadow = bool.Parse(args[1]);
@@ -129,7 +129,7 @@ namespace Neat.GUI
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [string]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [string]");
                 return;
             }
             CheckedPicture = args[1];
@@ -139,7 +139,7 @@ namespace Neat.GUI
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [string]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [string]");
                 return;
             }
             UncheckedPicture = args[1];

@@ -32,12 +32,6 @@ namespace Neat.Graphics
 
         public void Draw(SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color)
         {
-            /*if (point1.X > point2.X)
-            {
-                var temp = point1;
-                point1 = point2;
-                point2 = temp;
-            }*/
             Vector2 difference, normalizedDifference, scale;
             float theta, rotation;
 
@@ -56,21 +50,7 @@ namespace Neat.Graphics
             float desiredLength = difference.Length();
             scale.X = desiredLength / texture.Width;
             scale.Y = 1;
-            /*
-            Vector2 distance = point2-point1;
             
-            Vector2 normalizedDistance = Vector2.Normalize(distance);
-
-            float length = distance.Length();
-
-
-            if (length < 1) return;
-            
-            float dot = Vector2.Dot(normalizedDistance, x);
-            float theta = (float)Math.Acos(dot) * Math.Sign(distance.Y);
-
-            Vector2 scale = new Vector2(distance.Length() / texture.Width, 1);
-            */
             spriteBatch.Draw(
                 texture,
                 point1,
@@ -96,6 +76,19 @@ namespace Neat.Graphics
         public void Draw(SpriteBatch spriteBatch, LineSegment segment, Color color, Vector2 offset)
         {
             Draw(spriteBatch, segment.StartPos + offset, segment.EndPos + offset, color);
+        }
+
+        public void DrawRectangle(SpriteBatch spriteBatch, Rectangle rect, Color color)
+        {
+            DrawRectangle(spriteBatch, rect, color, Vector2.Zero);
+        }
+
+        public void DrawRectangle(SpriteBatch spriteBatch, Rectangle rect, Color color, Vector2 offset)
+        {
+            Draw(spriteBatch, new Vector2((float)rect.Left, (float)rect.Top), new Vector2((float)rect.Right, (float)rect.Top), color, offset);
+            Draw(spriteBatch, new Vector2((float)rect.Left, (float)rect.Bottom), new Vector2((float)rect.Right, (float)rect.Bottom), color, offset);
+            Draw(spriteBatch, new Vector2((float)rect.Left, (float)rect.Top), new Vector2((float)rect.Left, (float)rect.Bottom), color, offset);
+            Draw(spriteBatch, new Vector2((float)rect.Right, (float)rect.Top), new Vector2((float)rect.Right, (float)rect.Bottom), color, offset);
         }
     }
 }

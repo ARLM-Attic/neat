@@ -13,12 +13,11 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 #endif
 #if WINDOWS
- 
- 
 #endif
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
+using System.Diagnostics;
  
 namespace Neat
 {
@@ -35,6 +34,7 @@ namespace Neat
 
         protected override void LoadContent()
         {
+            Debug.WriteLine("Begin NeatGame.LoadContent");
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             LoadSong("Sounds\\blank");
@@ -47,6 +47,12 @@ namespace Neat
             LoadSound("Sounds\\BLEEP3");
             LoadSound("Sounds\\BLEEP6");
 
+            LoadSound(@"Sounds\typewriter-key-1", "console_keystroke");
+            LoadSound(@"Sounds\typewriter-backspace-1", "console_backspace");
+            LoadSound(@"Sounds\typewriter-paper-roll-up-1", "console_echo");
+            LoadSound(@"Sounds\typewriter-return-1", "console_return");
+            LoadSound(@"Sounds\typewriter-space-bar-1", "console_space");
+
             LoadTexture("Sprites\\Blank");
             LoadTexture("Sprites\\Solid");
             LoadTexture("Sprites\\Error");
@@ -54,7 +60,7 @@ namespace Neat
             LoadTexture("Sprites\\gamerCardHUD");
             LoadTexture("Sprites\\mediaHUD");
             LoadTexture("Sprites\\menuFocus");
-            LoadTexture("Sprites\\buttonBG");
+            LoadTexture("Sprites\\buttonBG1", "buttonBG");
             LoadTexture("Sprites\\MessageBox", "MessageBoxWindow");
             LoadTexture("Sprites\\msgbox_text", "MessageBoxWindow_TextBox");
             LoadTexture("Sprites\\msgbox_yesno", "MessageBoxWindow_YesNo");
@@ -66,6 +72,15 @@ namespace Neat
             LoadTexture("Sprites\\icon");
             LoadTexture("Sprites\\neatlogo");
 
+            LoadTexture("Sprites\\WindowSheet");
+            CreateSprite("window_tl", "windowsheet", new Rectangle(0, 0, 11, 35));
+            CreateSprite("window_tm", "windowsheet", new Rectangle(19, 0, 25, 38));
+            CreateSprite("window_tr", "windowsheet", new Rectangle(55, 0, 7, 35));
+            CreateSprite("window_v", "windowsheet", new Rectangle(0, 40, 4, 10));
+            CreateSprite("window_bl", "windowsheet", new Rectangle(0, 61, 5, 5));
+            CreateSprite("window_br", "windowsheet", new Rectangle(57, 61, 5, 5));
+            CreateSprite("window_h", "windowsheet", new Rectangle(19, 62, 25, 4));
+
             NormalFont = Content.Load<SpriteFont>("Fonts\\normal");
             LoadFont("Normal", NormalFont);
             LoadFont("Fonts\\smallFont");
@@ -76,12 +91,14 @@ namespace Neat
             LoadFont("Fonts\\messageBoxTextFont");
             LoadFont("Fonts\\consolefont");
             LoadFont("Fonts\\fxFont");
-
+            LoadFont(@"Fonts\FormFont");
             LoadEffect("Effects\\ColorFilter");
             LoadEffect("Effects\\ColorAdder");
-
+            
+            Debug.WriteLine("Begin Screens LoadContent");
             foreach (var p in Screens)
                 p.Value.LoadContent();
+            Debug.WriteLine("End NeatGame.LoadContent");
         }
 
         public virtual void AddScreens()
@@ -94,27 +111,23 @@ namespace Neat
 
         protected string getNameFromPath(string path)
         {
-            int bs = 0;
-            string fname = "";
-            for (int i = path.Length - 1; i >= 0; i--)
-            {
-                if (path[i] == '\\')
-                {
-                    bs = i;
-                    break;
-                }
-            }
-            if (bs == 0) return fname;
-            for (int i = bs + 1; i < path.Length; i++)
-            {
-                fname += path[i].ToString();
-            }
-            return fname;
+            var fileName = path.Split('\\').Last();
+            int len = fileName.LastIndexOf('.');
+            if (len < 0) len = fileName.Length;
+            fileName = fileName.Substring(0, len);
+            return fileName;
         }
 
         protected override void UnloadContent()
         {
-            //Unload any non ContentManager content here
+            try
+            {
+                //Unload any non ContentManager content here
+                base.UnloadContent();
+            }
+            catch
+            {
+            }
         }
     }
 }

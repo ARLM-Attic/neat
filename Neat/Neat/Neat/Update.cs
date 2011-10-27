@@ -12,10 +12,6 @@ using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
 using Microsoft.Xna.Framework.Input.Touch;
 #endif
-#if WINDOWS
- 
- 
-#endif
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
@@ -50,6 +46,7 @@ namespace Neat
 #if WINDOWS
             if (HasConsole && IsTapped(ConsoleKey))
             {
+                if (Console.SoundEffects) PlaySound("console_echo");
                 Console.IsActive = !Console.IsActive;
             }
 #endif
@@ -62,7 +59,7 @@ namespace Neat
 #elif WINDOWS
                 if (IsTapped(Keys.Escape))
 #endif
-                    GetSound("bleep6").Play();
+                    PlaySound("bleep6");
 #endif
             }
             base.Update(gameTime);
@@ -101,10 +98,10 @@ namespace Neat
             UpdateGame(gameTime);
 #endif
             
-            if (ShowMouse)
+            //if (ShowMouse)
             {
 #if WINDOWS
-                mousePosition = new Vector2((float)Mouse.GetState().X, (float)Mouse.GetState().Y);
+                MousePosition = new Vector2((float)Mouse.GetState().X, (float)Mouse.GetState().Y);
 #elif ZUNE
                 MoveZuneMouse();
                 
@@ -140,10 +137,10 @@ namespace Neat
             }*/
         }
 #endif
-        public Vector2 mousePosition = Vector2.Zero;
+        public Vector2 MousePosition = Vector2.Zero;
         protected virtual void Behave(GameTime gameTime)
         {
-            if (!IsPaused && ActiveScreen != null) Screens[ActiveScreen].Update(gameTime);
+            if (!IsPaused && ActiveScreen != null && Screens.ContainsKey(ActiveScreen)) Screens[ActiveScreen].Update(gameTime);
         }
     }
 }

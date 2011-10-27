@@ -53,13 +53,13 @@ namespace Neat.GUI
             {
                 if (lastText != Caption)
                 {
-                    GraphicsHelper.DrawShadowedString(spriteBatch, game.GetFont(Font), Text, Position,
+                    GraphicsHelper.DrawShadowedString(spriteBatch, Game.GetFont(Font), Text, Position,
                         (IsMouseHold ? MouseHoldColor :
                         (IsMouseHovered ? MouseHoverColor :
                         GraphicsHelper.GetColorWithAlpha(ForeColor, alpha))),
                         GraphicsHelper.GetColorWithAlpha(ShadowColor, alpha));
 
-                    GraphicsHelper.DrawShadowedString(spriteBatch, game.GetFont(Font), lastText, Position,
+                    GraphicsHelper.DrawShadowedString(spriteBatch, Game.GetFont(Font), lastText, Position,
                         (IsMouseHold ? MouseHoldColor :
                         (IsMouseHovered ? MouseHoverColor :
                         ForeColor)),
@@ -67,7 +67,7 @@ namespace Neat.GUI
                 }
                 else
                 {
-                    GraphicsHelper.DrawShadowedString(spriteBatch, game.GetFont(Font), Caption, Position,
+                    GraphicsHelper.DrawShadowedString(spriteBatch, Game.GetFont(Font), Caption, Position,
                         (IsMouseHold ? MouseHoldColor :
                         (IsMouseHovered ? MouseHoverColor :
                         ForeColor)),
@@ -78,18 +78,18 @@ namespace Neat.GUI
             {
                 if (lastText != Caption)
                 {
-                    spriteBatch.DrawString(game.GetFont(Font), Text, Position,
+                    spriteBatch.DrawString(Game.GetFont(Font), Text, Position,
                         (IsMouseHold ? MouseHoldColor :
                         (IsMouseHovered ? MouseHoverColor :
                         GraphicsHelper.GetColorWithAlpha(ForeColor, alpha))));
-                    spriteBatch.DrawString(game.GetFont(Font), lastText, Position,
+                    spriteBatch.DrawString(Game.GetFont(Font), lastText, Position,
                         (IsMouseHold ? MouseHoldColor :
                         (IsMouseHovered ? MouseHoverColor :
                         ForeColor)));
                 }
                 else
                 {
-                    spriteBatch.DrawString(game.GetFont(Font), Caption, Position,
+                    spriteBatch.DrawString(Game.GetFont(Font), Caption, Position,
                         (IsMouseHold ? MouseHoldColor :
                         (IsMouseHovered ? MouseHoverColor :
                         ForeColor)));
@@ -100,14 +100,14 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fc_speed", fc_speed);
+            Game.Console.AddCommand("fc_speed", fc_speed);
         }
 
         void fc_speed(IList<string> args)
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [int]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [int]");
                 return;
             }
             Speed = int.Parse(args[1]);

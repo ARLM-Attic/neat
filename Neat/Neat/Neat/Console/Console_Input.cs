@@ -31,6 +31,7 @@ namespace Neat.Components
         void HandleInput(GameTime gameTime)
         {
             lastKeyTime++;
+            string oldcmd = command;
             bool shift = (game.IsPressed(Keys.LeftShift) || game.IsPressed(Keys.RightShift));
             bool ctrl = (game.IsPressed(Keys.LeftControl) || game.IsPressed(Keys.RightControl));
             //Alphabet, Numbers, Space
@@ -49,7 +50,7 @@ namespace Neat.Components
                     else if (i == 3) command += '#';
                     else if (i == 4) command += '$';
                     else if (i == 5) command += '%';
-                    else if (i == 6) { if (ctrl) command += GeometryHelper.Vector2String(game.mousePosition); else command += '^'; }
+                    else if (i == 6) { if (ctrl) command += GeometryHelper.Vector2String(game.MousePosition); else command += '^'; }
                     else if (i == 7) command += '&';
                     else if (i == 8) command += '*';
                     else if (i == 9) command += '(';
@@ -69,17 +70,22 @@ namespace Neat.Components
             if (IsPressed(Keys.Back)) command = (command.Length != 0 
                 ? command.Substring(0, command.Length - 1) 
                 : "");
-            
+
+            if (SoundEffects && command != oldcmd) game.PlaySound("console_keystroke");
+
             if (IsPressed(Keys.PageUp))
             {
                 mOffset--;
+                if (SoundEffects) game.PlaySound("console_echo");
             }
             else if (IsPressed(Keys.PageDown))
             {
                 mOffset++;
+                if (SoundEffects) game.PlaySound("console_echo");
             }
             else if (IsPressed(Keys.Tab))
             {
+                if (SoundEffects) game.PlaySound("console_space");
                 List<string> s = new List<string>();
                 foreach (var item in Commands.Keys)
                 {
@@ -112,7 +118,9 @@ namespace Neat.Components
                             }
                             if (done) break;
                         }
+                        
                         command = sample.Substring(0,cindex-1);
+                        if (command.Length < oldcmd.Length) command = oldcmd;
                     }
                     for (int i = 0; i < s.Count; i++)
                     {
@@ -125,8 +133,9 @@ namespace Neat.Components
 
             if (game.IsTapped(Keys.Enter, Buttons.A))
             {
+                if (SoundEffects) game.PlaySound("console_return");
                 commandsbuffer.Add(command);
-                if (Echo) WriteLine("  > " + command);
+                
                 RunCommand();
                 command = "";
             }

@@ -207,7 +207,7 @@ namespace Neat.Mathematics
         float speed;
         public NeatGame game;
 
-        Neat.Components.Console console { get { return game.Console; } set { game.Console = value; } }
+        Neat.Components.Console console { get { if (game == null) return null; else return game.Console; } set { game.Console = value; } }
 
         public PhysicsSimulator(NeatGame i_game) : base(i_game)
         {
@@ -397,6 +397,7 @@ namespace Neat.Mathematics
         #region Console Commands
         public void AttachToConsole()
         {
+            if (console == null) return;
             console.AddCommand("ph_gravity", ph_gravity);
             console.AddCommand("ph_speed", ph_speed);
             console.AddCommand("ph_selectbody", ph_selectbody);

@@ -12,6 +12,9 @@ technique Technique1
 {
     pass Pass1
     {
+		AlphaBlendEnable = TRUE;
+        DestBlend = INVSRCALPHA;
+        SrcBlend = SRCALPHA;
         PixelShader = compile ps_2_0 PixelShaderFunction();
     }
 }

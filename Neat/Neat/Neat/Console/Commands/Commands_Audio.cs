@@ -94,6 +94,16 @@ namespace Neat.Components
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 
+        void a_mediashuffle(IList<string> args)
+        {
+            if (args.Count == 1) WriteLine(MediaPlayer.IsShuffled.ToString());
+            else MediaPlayer.IsShuffled = bool.Parse(args[1]);
+        }
 
+        void a_mediarepeat(IList<string> args)
+        {
+            if (args.Count == 1) WriteLine(MediaPlayer.IsRepeating.ToString());
+            else MediaPlayer.IsRepeating = bool.Parse(args[1]);
+        }
     }
 }

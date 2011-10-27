@@ -132,5 +132,11 @@ namespace Neat.Components
             if (args.Count == 1) WriteLine(KeyboardRepeatDelay.ToString());
             else KeyboardRepeatDelay = int.Parse(args[1]);
         }
+
+        void c_sfx(IList<string> args)
+        {
+            if (args.Count == 1) WriteLine(SoundEffects.ToString());
+            else SoundEffects = bool.Parse(args[1]);
+        }
     }
 }

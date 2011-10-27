@@ -49,14 +49,14 @@ namespace Neat.GUI
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (DrawShadow)
-                GraphicsHelper.DrawShadowedString(spriteBatch, game.GetFont(Font), Caption.Substring(0, cursor), Position,
+                GraphicsHelper.DrawShadowedString(spriteBatch, Game.GetFont(Font), Caption.Substring(0, cursor), Position,
                     (IsMouseHold ? MouseHoldColor :
                     (IsMouseHovered ? MouseHoverColor :
                     ForeColor)),
                     ShadowColor);
             else
             {
-                spriteBatch.DrawString(game.GetFont(Font), Caption.Substring(0, cursor), Position, (IsMouseHold ? MouseHoldColor :
+                spriteBatch.DrawString(Game.GetFont(Font), Caption.Substring(0, cursor), Position, (IsMouseHold ? MouseHoldColor :
                     (IsMouseHovered ? MouseHoverColor :
                     ForeColor)));
             }
@@ -65,14 +65,14 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fc_speed", fc_speed);
+            Game.Console.AddCommand("fc_speed", fc_speed);
         }
 
         void fc_speed(IList<string> args)
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [int]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [int]");
                 return;
             }
             Speed = int.Parse(args[1]);

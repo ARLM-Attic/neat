@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
 using System.Diagnostics;
+using System.IO;
  
 namespace Neat
 {
@@ -23,9 +24,8 @@ namespace Neat
     {
         protected GameTime gamesTime;
         Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
-        //Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         
-        public void LoadTexture(string path, string name=null)
+        public void LoadTexture(string path, string name=null, bool viaContentManager=true)
         {
             try
             {
@@ -41,10 +41,20 @@ namespace Neat
                     else
                         return;
                 }
-                sprites.Add(name, new Sprite(Content.Load<Texture2D>(path)));
+
+                if (viaContentManager)
+                    sprites.Add(name, new Sprite(Content.Load<Texture2D>(path)));
+                else
+                {
+                    using (Stream titleStream = TitleContainer.OpenStream(path))
+                    {
+                        sprites.Add(name, new Sprite(Texture2D.FromStream(GraphicsDevice, titleStream)));
+                    }
+                }
             }
             catch
             {
+                if (viaContentManager && File.Exists(path)) LoadTexture(path, name, false);
                 SayMessage("Cannot load {" + name + "}");
             }
         }
@@ -145,7 +155,7 @@ namespace Neat
             sprites[name] = new Sprite(frameRate, frames);
         }
 
-        public void LoadTexture(string name, double frameRate, params string[] paths)
+        public void LoadTexture(string name, double frameRate, bool viaContentManager, params string[] paths)
         {
             name = name.ToLower();
             if (sprites.ContainsKey(name))
@@ -165,12 +175,17 @@ namespace Neat
                 if (sprites.ContainsKey(frameName)) tex = GetTexture(frameName);
                 else
                 {
-                    LoadTexture(path, frameName);
+                    LoadTexture(path, frameName, viaContentManager);
                     tex = GetTexture(frameName);
                 }
-                frames.Add(new Sprite.Slice(tex, 0,0, tex.Width, tex.Height));
+                frames.Add(new Sprite.Slice(tex, 0, 0, tex.Width, tex.Height));
             }
             sprites.Add(name, new Sprite(frameRate, frames));
+        }
+
+        public void LoadTexture(string name, double frameRate, params string[] paths)
+        {
+            LoadTexture(name, frameRate, true, paths);
         }
         
         public Sprite.Slice GetSlice(string name)

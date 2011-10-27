@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
 using System.IO;
+using System.Diagnostics;
  
 
 namespace Neat
@@ -31,7 +32,24 @@ namespace Neat
 
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
+        public NeatGame(string[] args = null, GraphicsDevice device=null, ContentManager content=null)
+        {
+            Debug.WriteLine("NeatGame Constructed.");
+            _graphicsDevice = device;
+            _content = content;
+            Create();
+        }
 
+        GraphicsDevice _graphicsDevice = null;
+        ContentManager _content = null;
+        public new GraphicsDevice GraphicsDevice
+        {
+            get { if (_graphicsDevice != null) return _graphicsDevice; else return base.GraphicsDevice; }
+        }
+        public new ContentManager Content
+        {
+            get { if (_content != null) return _content; else return base.Content; }
+        }
         public Neat.Components.Console Console;
         public bool HasConsole = true;
         public Keys ConsoleKey = Keys.OemTilde;
@@ -81,6 +99,11 @@ namespace Neat
 #if WINDOWS
         public virtual void InitializeGraphics()
         {
+            if (_graphicsDevice != null)
+            {
+                return;
+            }
+
             GraphicsDevice.Reset();
 
             if (StretchMode == StretchModes.None)
@@ -92,9 +115,9 @@ namespace Neat
             {
                 Graphics.PreferredBackBufferWidth = OutputResolution.X;
                 Graphics.PreferredBackBufferHeight = OutputResolution.Y;
-                ResetRenderTarget();
             }
 
+            ResetRenderTarget();
             Graphics.IsFullScreen = FullScreen;
             Graphics.ApplyChanges();
         }
@@ -114,10 +137,6 @@ namespace Neat
         }
 #endif
         bool standAlone = true;
-        public NeatGame()
-        {
-            Create();
-        }
         
         public void Create()
         {
@@ -159,6 +178,7 @@ namespace Neat
                 return new NeatGame(new Game());
             }
         }
+
         public void SetFrameRate(double f)
         {
             TargetElapsedTime = TimeSpan.FromSeconds(1 / f);
@@ -173,18 +193,23 @@ namespace Neat
 
         public void ActivateScreen(string screen)
         {
-            Screens[screen].Activate();
-            ActiveScreen = screen;
+            if (Screens.ContainsKey(screen))
+            {
+                Screens[screen].Activate();
+                ActiveScreen = screen;
+            }
         }
 
         public SpriteFont NormalFont;
 
         protected override void BeginRun()
         {
+            base.BeginRun();
             InitializeScreens();
             ActivateScreen("mainmenu");
             FirstTime();
-            base.BeginRun();
+
+            if (File.Exists("autoexec.nsc")) Console.Run("call autoexec.nsc");
         }
 
         protected override void Initialize()
@@ -198,14 +223,14 @@ namespace Neat
 #endif
                 OutputResolution =
                     new Point(
-                    Graphics.GraphicsDevice.DisplayMode.Width,
-                    Graphics.GraphicsDevice.DisplayMode.Height);
+                    GraphicsDevice.DisplayMode.Width,
+                    GraphicsDevice.DisplayMode.Height);
                 InitializeMessages();
                 InitializeGraphics();
 
                 SayMessage("ClientBounds: " + Window.ClientBounds.Width.ToString() + "x" + Window.ClientBounds.Height.ToString());
-                SayMessage("Display Mode: " + Graphics.GraphicsDevice.DisplayMode.Width.ToString() + "x" + Graphics.GraphicsDevice.DisplayMode.Height.ToString());
-                SayMessage("Aspect Ratio: " + Graphics.GraphicsDevice.DisplayMode.AspectRatio.ToString());
+                SayMessage("Display Mode: " + GraphicsDevice.DisplayMode.Width.ToString() + "x" + GraphicsDevice.DisplayMode.Height.ToString());
+                SayMessage("Aspect Ratio: " + GraphicsDevice.DisplayMode.AspectRatio.ToString());
 
                 base.Initialize();
 

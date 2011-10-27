@@ -67,5 +67,13 @@ namespace Neat.Components
         {
             game.Window.Title = Args2Str(args, 1);
         }
+
+        void e_lockfps(IList<string> args)
+        {
+            if (args.Count > 1)
+                game.IsFixedTimeStep = bool.Parse(args[1]);
+            else
+                WriteLine(game.IsFixedTimeStep.ToString());
+        }
     }
 }

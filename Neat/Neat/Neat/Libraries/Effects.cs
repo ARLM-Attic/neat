@@ -56,7 +56,8 @@ namespace Neat
             try
             {
                 name = name.ToLower();
-                return effects[name];
+                if (effects.ContainsKey(name)) return effects[name];
+                else return effects["none"];
             }
             catch
             {

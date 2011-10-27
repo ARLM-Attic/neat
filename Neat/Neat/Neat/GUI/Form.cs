@@ -30,21 +30,74 @@ namespace Neat.GUI
         public string SelectedControl;
         public int SelectedControlNo=0;
         public bool HasMouse = false;
+        public Vector2 MouseOffset = Vector2.Zero;
+        public bool ClickHandled = false;
+        public bool MainForm = true;
+        public Vector2 Size = Vector2.Zero;
+        public Vector2 MousePosition
+        {
+            get
+            {
+                return game.MousePosition + MouseOffset;
+            }
+        }
         protected NeatGame game;
         public int MouseSpeed = 7;
+        LinkedList<Control> controlChain;
         public Form(NeatGame g)
         {
             Controls = new Dictionary<string, Control>();
+            controlChain = new LinkedList<Control>();
             game = g;
             HasMouse = game.ShowMouse;
         }
 
+        public void BringControlToFront(Control c)
+        {
+            LinkedListNode<Control> n = controlChain.First;
+            while (n != null)
+            {
+                if (n.Value == c) break;
+                n = n.Next;
+            }
+            if (n != null) controlChain.Remove(n);
+            controlChain.AddFirst(c);
+            c.Focused();
+        }
+
         public virtual void Update(GameTime gameTime)
         {
-            foreach (var item in Controls )
+            if (MainForm)
+                ClickHandled = false;
+            
+            var n = controlChain.First;
+            while (n != null)
             {
-                if (item.Value.Visible)
-                    item.Value.Update(gameTime);
+                if (n.Value.Visible)
+                {
+                    n.Value.Update(gameTime);
+                    if (!ClickHandled) n.Value.HandleInput(gameTime);
+
+                    if (GeometryHelper.IsVectorInRectangle(n.Value.Position, n.Value.Size, MousePosition)) ClickHandled = true;
+                    if (game.IsPressed(Keys.Space))
+                    {
+                        if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                            new Rectangle((int)(MousePosition.X), (int)(MousePosition.Y), 1, 1)))
+                        {
+                            n.Value.Pressed();
+                        }
+                    }
+
+                    if (game.IsTapped(Keys.Space))
+                    {
+                        if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                            new Rectangle((int)(MousePosition.X), (int)(MousePosition.Y), 1, 1)))
+                        {
+                            n.Value.Released();
+                        }
+                    }
+                }
+                n = n.Next;
             }
 
 #if WINDOWS
@@ -61,30 +114,7 @@ namespace Neat.GUI
 
                 else if (game.IsPressed(Keys.Down))
                     Mouse.SetPosition(Mouse.GetState().X, Mouse.GetState().Y + MouseSpeed);
-
-                if (game.IsPressed(Keys.Space))
-                {
-                    foreach (var item in Controls)
-                    {
-                        if (GeometryHelper.Vectors2Rectangle(item.Value.Position, item.Value.Size).Intersects(
-                            new Rectangle(Mouse.GetState().X, Mouse.GetState().Y,1, 1)))
-                        {
-                            item.Value.Pressed();
-                        }
-                    }
-                }
-
-                if (game.IsTapped(Keys.Space))
-                {
-                    foreach (var item in Controls)
-                    {
-                        if (GeometryHelper.Vectors2Rectangle(item.Value.Position, item.Value.Size).Intersects(
-                            new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 2, 2)))
-                        {
-                            item.Value.Released();
-                        }
-                    }
-                }
+                
             }
 #elif WINDOWS_PHONE
             if (game.IsTouched())
@@ -102,10 +132,21 @@ namespace Neat.GUI
 
         public virtual void Draw(GameTime gameTime)
         {
+            if (game.AutoDraw)
+                game.SpriteBatch.End();
+            game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null);
+            /*
             foreach (var item in Controls)
             {
-                if (item.Value.Visible)
-                    item.Value.Draw(gameTime, game.SpriteBatch);
+                item.Value.Draw(gameTime, game.SpriteBatch);
+            }
+            return;*/
+            var n = controlChain.Last;
+            while (n != null)
+            {
+                if (n.Value.Visible)
+                    n.Value.Draw(gameTime, game.SpriteBatch);
+                n = n.Previous;
             }
         }
 
@@ -113,7 +154,10 @@ namespace Neat.GUI
         {
             name = name.ToLower();
             Controls.Add(name, item);
-            Controls[name].game = game;
+            Controls[name].Game = game;
+            Controls[name].Parent = this;
+            Controls[name].Initialize();
+            BringControlToFront(item);
         }
 
         public Control GetControl(string name)
@@ -121,16 +165,19 @@ namespace Neat.GUI
             return Controls[name.ToLower()];
         }
 
+        #region Console
         public void AttachToConsole()
         {
             if (game.Console == null) return;
 
             game.Console.AddCommand("f_hasmouse", f_hasmouse);
+            game.Console.AddCommand("f_mouseoffset", f_mouseoffset);
             game.Console.AddCommand("f_mousespeed", f_mousespeed);
             game.Console.AddCommand("f_newcontrol", f_newcontrol);
             game.Console.AddCommand("f_delcontrol", f_delcontrol);
             game.Console.AddCommand("f_selcontrol", f_selcontrol);
             game.Console.AddCommand("f_listcontrols", f_listobjects);
+            game.Console.AddCommand("f_reset", f_reset);
         }
 
         void f_hasmouse(IList<string> args)
@@ -151,6 +198,13 @@ namespace Neat.GUI
                 return;
             }
             MouseSpeed = int.Parse(args[1]);
+        }
+
+        void f_mouseoffset(IList<string> args)
+        {
+            if (args.Count < 2)
+                game.Console.WriteLine(GeometryHelper.Vector2String(MouseOffset));
+            else MouseOffset = GeometryHelper.String2Vector(args[1]);
         }
 
         void f_newcontrol(IList<string> args)
@@ -186,6 +240,12 @@ namespace Neat.GUI
                 case "typewriter":
                     NewControl(args[1], new TypeWriter());
                     break;
+                case "container":
+                    NewControl(args[1], new Container());
+                    break;
+                case "window":
+                    NewControl(args[1], new Window());
+                    break;
                 default:
                     game.Console.WriteLine("Invalid Control type.");
                     return;
@@ -219,5 +279,12 @@ namespace Neat.GUI
                 game.Console.WriteLine(item);
             }
         }
+
+        void f_reset(IList<string> args)
+        {
+            Controls = new Dictionary<string, Control>();
+            controlChain = new LinkedList<Control>();
+        }
+        #endregion
     }
 }

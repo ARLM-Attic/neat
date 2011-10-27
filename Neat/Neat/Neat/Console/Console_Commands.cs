@@ -109,6 +109,7 @@ namespace Neat.Components
                 {"c_showonbottom"       ,c_showonbottom},
                 {"c_openspeed"          ,c_curtainspeed},
                 {"c_keydelay"           ,c_keydelay},
+                {"c_sfx"                ,c_sfx},
 
                 //audio
                 {"a_sfx"                ,a_sfx},
@@ -120,10 +121,13 @@ namespace Neat.Components
                 {"a_mediaplay"          ,a_mediaplay},
                 {"a_songinfo"           ,a_songinfo},
                 {"a_mutesounds"         ,a_mutesounds},
+                {"a_mediashuffle"       ,a_mediashuffle},
+                {"a_mediarepeat"        ,a_mediarepeat},
 
                 //engine
                 {"e_show"               ,e_show},
                 {"e_framerate"          ,e_framerate},
+                {"e_lockfps"            ,e_lockfps},
                 {"sh"                   ,e_show},
                 {"e_title"              ,e_title},
 #if LIVE

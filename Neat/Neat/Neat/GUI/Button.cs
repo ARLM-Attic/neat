@@ -36,38 +36,38 @@ namespace Neat.GUI
             Caption = "Button";
             base.Initialize();
         }
-        public override void Update(GameTime gameTime)
+        public override void HandleInput(GameTime gameTime)
         {
+            base.HandleInput(gameTime);
             if (IsMouseHovered) TintColor = HoverTintColor ;
             else TintColor = NormalTintColor;
-            base.Update(gameTime);
         }
 
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fc_hovertintcolor", fc_hovertintcolor);
-            game.Console.AddCommand("fc_tintcolor", fc_tintcolor);
+            Game.Console.AddCommand("fc_hovertintcolor", fc_hovertintcolor);
+            Game.Console.AddCommand("fc_tintcolor", fc_tintcolor);
         }
 
         void fc_hovertintcolor(IList<string> args)
         {
             if (args.Count < 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [color]");
                 return;
             }
-            HoverTintColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+            HoverTintColor = Game.Console.ParseColor(Game.Console.Args2Str(args, 1));
         }
 
         void fc_tintcolor(IList<string> args)
         {
             if (args.Count < 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [color]");
                 return;
             }
-            NormalTintColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+            NormalTintColor = Game.Console.ParseColor(Game.Console.Args2Str(args, 1));
         }
     }
 }

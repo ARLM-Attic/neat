@@ -46,6 +46,7 @@ namespace Neat
             name = name.ToLower();
             try
             {
+                if (!fonts.ContainsKey(name)) return fonts["normal"];
                 return fonts[name];
             }
             catch

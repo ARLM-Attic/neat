@@ -24,6 +24,7 @@ namespace Neat.Components
                     string assetName = args[3];
                     string assetPath = Args2Str(args, 4);
                     if (assetType == "texture") game.LoadTexture(assetPath, assetName);
+                    else if (assetType == "directtexture") game.LoadTexture(assetPath, assetName, false);
                     else if (assetType == "sfx") game.LoadSound(assetPath, assetName);
                     else if (assetType == "fx") game.LoadEffect(assetPath, assetName);
                     else if (assetType == "font") game.LoadFont(assetPath, assetName);
@@ -39,6 +40,7 @@ namespace Neat.Components
                     string assetType = args[1];
                     string assetPath = args[2];
                     if (assetType == "texture") game.LoadTexture(assetPath);
+                    else if (assetType == "directtexture") game.LoadTexture(assetPath, null, false);
                     else if (assetType == "sfx") game.LoadSound(assetPath);
                     else if (assetType == "fx") game.LoadEffect(assetPath);
                     else if (assetType == "font") game.LoadFont(assetPath);

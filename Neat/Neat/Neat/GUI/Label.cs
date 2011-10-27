@@ -46,21 +46,21 @@ namespace Neat.GUI
 
         public void Center()
         {
-            Position.X =
-                game.Window.ClientBounds.Width / 2 -
-                game.GetFont(Font).MeasureString(Caption).X / 2;
+            _position.X =
+                Game.Window.ClientBounds.Width / 2 -
+                Game.GetFont(Font).MeasureString(Caption).X / 2;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (DrawShadow)
-                GraphicsHelper.DrawShadowedString(spriteBatch, game.GetFont(Font), Caption, Position,
+                GraphicsHelper.DrawShadowedString(spriteBatch, Game.GetFont(Font), Caption, Position,
                     (IsMouseHold ? MouseHoldColor :
                     (IsMouseHovered ? MouseHoverColor :
                     ForeColor)),
                     ShadowColor);
             else
-                spriteBatch.DrawString(game.GetFont(Font), Caption, Position, (IsMouseHold ? MouseHoldColor :
+                spriteBatch.DrawString(Game.GetFont(Font), Caption, Position, (IsMouseHold ? MouseHoldColor :
                     (IsMouseHovered ? MouseHoverColor :
                     ForeColor)));
         }
@@ -78,10 +78,10 @@ namespace Neat.GUI
         public override void AttachToConsole()
         {
             base.AttachToConsole();
-            game.Console.AddCommand("fc_center", fc_center);
-            game.Console.AddCommand("fc_color", fc_color);
-            game.Console.AddCommand("fc_drawshadow", fc_drawshadow);
-            game.Console.AddCommand("fc_shadowcolor", fc_shadowcolor);
+            Game.Console.AddCommand("fc_center", fc_center);
+            Game.Console.AddCommand("fc_color", fc_color);
+            Game.Console.AddCommand("fc_drawshadow", fc_drawshadow);
+            Game.Console.AddCommand("fc_shadowcolor", fc_shadowcolor);
         }
 
         void fc_center(IList<string> args)
@@ -93,17 +93,17 @@ namespace Neat.GUI
         {
             if (args.Count < 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [color]");
                 return;
             }
-            SetColor(game.Console.ParseColor(game.Console.Args2Str(args, 1)));
+            SetColor(Game.Console.ParseColor(Game.Console.Args2Str(args, 1)));
         }
 
         void fc_drawshadow(IList<string> args)
         {
             if (args.Count != 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [bool]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [bool]");
                 return;
             }
             DrawShadow = bool.Parse(args[1]);
@@ -113,10 +113,10 @@ namespace Neat.GUI
         {
             if (args.Count < 2)
             {
-                game.Console.WriteLine("syntax: " + args[0] + " [color]");
+                Game.Console.WriteLine("syntax: " + args[0] + " [color]");
                 return;
             }
-            ShadowColor = game.Console.ParseColor(game.Console.Args2Str(args, 1));
+            ShadowColor = Game.Console.ParseColor(Game.Console.Args2Str(args, 1));
         }
     }
 }

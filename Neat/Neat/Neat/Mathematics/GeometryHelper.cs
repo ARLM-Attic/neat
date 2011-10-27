@@ -126,7 +126,7 @@ namespace Neat.Mathematics
         }
         public static PointOnLineStates IsPointOnLine(ref Vector2 p, ref Vector2 q, ref Vector2 t)
         {
-            if ((Math.Abs((q.Y - p.Y) * (t.X - p.X) - (t.Y - p.Y) * (q.X - p.X))) >=
+            if (Math.Abs((q.Y - p.Y) * (t.X - p.X) - (t.Y - p.Y) * (q.X - p.X)) >=
                 Math.Max(Math.Abs(q.X - p.X), Math.Abs(q.Y - p.Y))) return PointOnLineStates.PointIsNotOnTheInfiniteLine;
             if ((q.X < p.X && p.X < t.X) || (q.Y < p.Y && p.Y < t.Y)) return PointOnLineStates.PointIsNotOnTheOpenRayP;
             if ((t.X < p.X && p.X < q.X) || (t.Y < p.Y && p.Y < q.Y)) return PointOnLineStates.PointIsNotOnTheOpenRayP;
@@ -206,7 +206,7 @@ namespace Neat.Mathematics
             return "(" + p.X.ToString() + "," + p.Y.ToString() + ")";
         }
 
-        public static Vector2 String2Vector(String s)
+        public static Vector2 String2Vector(string s)
         {
             switch (s.Trim().ToLower())
             {
@@ -240,6 +240,25 @@ namespace Neat.Mathematics
             result.X = float.Parse(elements[0].Trim());
             result.Y = float.Parse(elements[1].Trim());
             result.Z = float.Parse(elements[2].Trim());
+            return result;
+        }
+        public static Vector4 String2Vector4(string s)
+        {
+            switch (s.Trim().ToLower())
+            {
+                case ("zero"): { return Vector4.Zero; }
+                case ("one"): { return Vector4.One; }
+                case ("unitx"): { return Vector4.UnitX; }
+                case ("unity"): { return Vector4.UnitY; }
+                case ("unitz"): { return Vector4.UnitZ; }
+                case ("unitw"): { return Vector4.UnitW; }
+            }
+            var elements = s.Split(',');
+            Vector4 result = Vector4.Zero;
+            result.X = float.Parse(elements[0].Trim());
+            result.Y = float.Parse(elements[1].Trim());
+            result.Z = float.Parse(elements[2].Trim());
+            result.W = float.Parse(elements[3].Trim());
             return result;
         }
 
@@ -310,6 +329,13 @@ namespace Neat.Mathematics
             return new Vector2(
                 r * (float)Math.Cos((double)t),
                 r * (float)Math.Sin((double)t));
+        }
+
+        public static Vector2 Rotate2(Vector2 v, float a)
+        {
+            return new Vector2(
+                (float)(v.X * Math.Cos(a) - v.Y * Math.Sin(a)),
+                (float)(v.X * Math.Sin(a) + v.Y * Math.Cos(a)));
         }
     }
 }

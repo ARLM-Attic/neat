@@ -63,8 +63,7 @@ namespace Neat.Components
                 {
                     try
                     {
-                        command = script[lc];
-                        RunCommand();
+                        RunCommand(script[lc]);
                         if (batchEnd)
                         {
                             batchEnd = false;
