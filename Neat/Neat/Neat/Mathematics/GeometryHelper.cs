@@ -9,7 +9,6 @@ namespace Neat.Mathematics
 {
     public static class GeometryHelper
     {
-        
 #if WINDOWS
         public static Point GetMousePosition()
         {
@@ -179,7 +178,7 @@ namespace Neat.Mathematics
             return c;
         }
 
-        public static  Point Vector2Point(Vector2 vector)
+        public static Point Vector2Point(Vector2 vector)
         {
             return new Point((int)(vector.X), (int)(vector.Y));
         }
