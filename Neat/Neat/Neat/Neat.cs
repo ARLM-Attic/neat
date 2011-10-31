@@ -126,6 +126,12 @@ namespace Neat
         {
             Graphics.ToggleFullScreen();
         }
+
+        public void ResizeToScreen()
+        {
+            OutputResolution.X = GraphicsDevice.DisplayMode.Width;
+            OutputResolution.Y = GraphicsDevice.DisplayMode.Height;
+        }
 #endif
 #if WINDOWS_PHONE
         public virtual void InitializeGraphics()
