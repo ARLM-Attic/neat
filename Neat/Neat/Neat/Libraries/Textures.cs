@@ -162,8 +162,7 @@ namespace Neat
             {
                 if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
                     sprites.Remove(name);
-                else
-                    return;
+                else return;
             }
             List<Sprite.Slice> frames = new List<Sprite.Slice>();
             int f = -1;
@@ -171,6 +170,8 @@ namespace Neat
             {
                 f++;
                 string frameName = getNameFromPath(path);
+                while (sprites.ContainsKey(frameName += "0") || frameName == name) ;
+                
                 Texture2D tex;
                 if (sprites.ContainsKey(frameName)) tex = GetTexture(frameName);
                 else
