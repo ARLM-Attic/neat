@@ -35,6 +35,18 @@ namespace Neat.GUI
             base.Initialize();
         }
 
+        public override void CaptionChanged(string newCaption)
+        {
+            base.CaptionChanged(newCaption);
+            Size = Game.GetFont(Font).MeasureString(newCaption);
+        }
+
+        public override void FontChanged(string newFont)
+        {
+            base.FontChanged(newFont);
+            Caption = Caption.ToString();
+        }
+
         public Color ShadowColor = Color.Black;
         public bool DrawShadow = true;
         public void SetColor(Color color)

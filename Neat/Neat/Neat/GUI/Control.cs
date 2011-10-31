@@ -37,11 +37,12 @@ namespace Neat.GUI
         protected Vector2 _size = new Vector2(200,60);
         public Vector2 Size { get { return _size; } set { Resize(value); } }
 
-        public string Caption = "";
+        protected string _caption = "";
         public string BackgroundImage = "blank";
         public string PushSound = "bleep10";
-        public string Font = "FormFont";
-
+        protected string _font = "FormFont";
+        public string Caption { get { return _caption; } set { CaptionChanged(value); } }
+        public string Font { get { return _font; } set { FontChanged(value); } }
         public Color TintColor = Color.White;
         public Color ForeColor = Color.White ;
         public Color MouseHoverColor = Color.YellowGreen  ;
@@ -61,6 +62,16 @@ namespace Neat.GUI
         public event XEventHandler OnRelease;
 
         public string OnPressRun, OnReleaseRun;
+
+        public virtual void CaptionChanged(string newCaption)
+        {
+            _caption = newCaption;
+        }
+
+        public virtual void FontChanged(string newFont)
+        {
+            _font = newFont;
+        }
 
         public virtual void Pressed()
         {
