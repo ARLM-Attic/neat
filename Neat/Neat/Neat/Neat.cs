@@ -150,7 +150,7 @@ namespace Neat
 
             videos = new Dictionary<string, Video>();
             videoPlayers = new List<VideoPlayer>();
-            sounds = new Dictionary<string, SoundEffect>();
+            sounds = new Dictionary<string, SFXList>();
             songs = new Dictionary<string, Song>();
             effects = new Dictionary<string, Effect>();
             fonts = new Dictionary<string, SpriteFont>();

@@ -25,18 +25,49 @@ namespace Neat
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
         #region SFX
-        Dictionary<string, SoundEffect> sounds;
+        public class SFXList : List<SoundEffect>
+        {
+            static Random RandomGenerator = new Random();
+            public int CurrentIndex = 0;
+            public bool Shuffle = true;
+
+            public SoundEffect GetNext()
+            {
+                if (Shuffle)
+                    CurrentIndex = RandomGenerator.Next(Count);
+                else
+                    CurrentIndex = (CurrentIndex + 1) % Count;
+
+                return this[CurrentIndex];
+            }
+
+            public SoundEffect GetPrevious()
+            {
+                if (Shuffle)
+                    CurrentIndex = RandomGenerator.Next(Count);
+                else
+                {
+                    CurrentIndex--;
+                    if (CurrentIndex < 0) CurrentIndex = Count - 1;
+                }
+
+                return this[CurrentIndex];
+            }
+        }
+
+        Dictionary<string, SFXList> sounds;
         public bool muteAllSounds = false;
-        public SoundEffect LoadSound(string spath)
+        public SFXList LoadSound(string spath)
         {
             return LoadSound(getNameFromPath(spath), Content.Load<SoundEffect>(spath));
         }
-        public SoundEffect LoadSound(string spath, string sname)
+        public SFXList LoadSound(string spath, string sname)
         {
             return LoadSound(sname, Content.Load<SoundEffect>(spath));
         }
-        public SoundEffect LoadSound(string name, SoundEffect data)
+        public SFXList LoadSound(string name, SoundEffect data)
         {
+            name = name.ToLower();
             if (sounds.ContainsKey(name))
             {
                 if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
@@ -44,28 +75,47 @@ namespace Neat
                 else
                     return sounds[name];
             }
-            name = name.ToLower();
-            sounds.Add(name, data);
-            return data;
+            var sfxlist = new SFXList { data };
+            sounds.Add(name, sfxlist);
+            return sfxlist;
         }
 
-        public void PlaySound(string name)
+        public SFXList LoadSounds(string name, params string[] paths)
         {
-            if (name == null) return;
-            GetSound(name).Play();
+            SFXList sfxlist = new SFXList();
+            
+            foreach (var item in paths)
+            {
+                sfxlist.AddRange(LoadSound(item));
+            }
+            if (sounds.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
+                    sounds.Remove(name);
+                else
+                    return sounds[name];
+            }
+            sounds.Add(name, sfxlist);
+            return sfxlist;
         }
-        public void PlaySound(string name, float volume)
+
+        public void PlaySound(string name, float volume=1.0f, float pitch=0.0f, float pan=0.0f)
         {
-            if (name == null) return;
-            GetSound(name).Play(volume,0f,0f);
+            if (name == null || muteAllSounds || name == "mute") return;
+            GetSound(name).Play(volume,pitch,pan);
         }
         public SoundEffect GetSound(string name)
         {
-            if (muteAllSounds)
+            /*if (muteAllSounds)
             {
-                return sounds["mute"];
-            }
+                return sounds["mute"].GetNext();
+            }*/
 
+            return GetSFXList(name).GetNext();
+        }
+
+        public SFXList GetSFXList(string name)
+        {
             try
             {
                 name = name.ToLower();

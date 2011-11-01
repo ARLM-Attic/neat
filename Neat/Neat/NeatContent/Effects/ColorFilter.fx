@@ -10,7 +10,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD) : COLOR
 
 float4 ReplacePixelShaderFunction() : COLOR
 {
-	return normalize(mulColor);
+	return mulColor;
 }
 
 float4 BalanceFunction() : COLOR
@@ -31,6 +31,17 @@ technique ColorFilter
     }
 }
 
+technique ColorBalance
+{
+   pass Pass1
+    {
+		AlphaBlendEnable = TRUE;
+        DestBlend = INVSRCALPHA;
+        SrcBlend = SRCALPHA;
+        PixelShader = compile ps_2_0 BalanceFunction();
+    }
+}
+
 technique ColorReplace
 {
    pass Pass1
@@ -42,13 +53,3 @@ technique ColorReplace
     }
 }
 
-technique ColorBalance
-{
-   pass Pass1
-    {
-		AlphaBlendEnable = TRUE;
-        DestBlend = INVSRCALPHA;
-        SrcBlend = SRCALPHA;
-        PixelShader = compile ps_2_0 BalanceFunction();
-    }
-}
