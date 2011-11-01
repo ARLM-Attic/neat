@@ -17,6 +17,7 @@ using Neat;
 using Neat.MenuSystem;
 using System.Diagnostics;
 using System.IO;
+using Neat.Mathematics;
  
 namespace Neat
 {
@@ -93,6 +94,28 @@ namespace Neat
             {
                 SayMessage("Cannot assign {" + Destname + "}");
             }
+        }
+
+        public void CreateSprite(string name, string spritesheet, Vector2 sliceSize, double framerate, bool horizontal)
+        {
+            if (!sprites.ContainsKey(spritesheet = spritesheet.ToLower()))
+            {
+                SayMessage("Sprite " + spritesheet + " not found!");
+                return;
+            }
+            var tex = GetTexture(spritesheet);
+            List<Sprite.Slice> frames = new List<Sprite.Slice>();
+            Point count = new Point((int)(tex.Width / sliceSize.X), (int)(tex.Height / sliceSize.Y));
+
+            for (int i = 0; i < count.X * count.Y; i++)
+            {
+                Vector2 pos = new Vector2(
+                    horizontal ? (i % count.X) * sliceSize.X : (i / count.X) * sliceSize.X,
+                    horizontal ? (i / count.Y) * sliceSize.Y : (i % count.Y) * sliceSize.Y);
+                frames.Add(new Sprite.Slice(tex, GeometryHelper.Vectors2Rectangle(pos, sliceSize)));
+            }
+
+            sprites[name] = new Sprite(framerate, frames);
         }
 
         public void CreateSprite(string name, string spritesheet, Rectangle slice, double framerate = 0, int count=1, bool horizontal=true)

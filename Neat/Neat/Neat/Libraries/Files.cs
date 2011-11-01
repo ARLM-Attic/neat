@@ -92,9 +92,11 @@ namespace Neat
             LoadFont("Fonts\\consolefont");
             LoadFont("Fonts\\fxFont");
             LoadFont(@"Fonts\FormFont");
+
             LoadEffect("Effects\\ColorFilter");
             LoadEffect("Effects\\ColorAdder");
-            
+            LoadEffect(@"Effects\Ripple");
+
             Debug.WriteLine("Begin Screens LoadContent");
             foreach (var p in Screens)
                 p.Value.LoadContent();
