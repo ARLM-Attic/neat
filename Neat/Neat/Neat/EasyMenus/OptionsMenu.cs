@@ -48,7 +48,7 @@ namespace Neat.EasyMenus
             }
             fullscreen2 = game.FullScreen;
             System.Items[0].Caption = ("Fullscreen: " + (fullscreen2 ? "ON" : "OFF"));
-            System.Items[1].Caption = ("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
+            System.Items[1].Caption = ("Sounds: " + (game.MuteAllSounds ? "OFF" : "ON"));
 
             resolutions = new List<Point>();
             resolutions.Add(new Point(800, 600));
@@ -99,7 +99,7 @@ namespace Neat.EasyMenus
 #if !WINDOWS
             System.GetLastMenuItem().Enabled = false;
 #endif
-            System.AddItem("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
+            System.AddItem("Sounds: " + (game.MuteAllSounds ? "OFF" : "ON"));
             System.AddItem("Resolution: ", true);
             resolutionItem = System.GetLastMenuItem();
             resolutionItem.Caption += gameWidth2.ToString() + "x" + gameHeight2.ToString();
@@ -146,8 +146,8 @@ namespace Neat.EasyMenus
                     //optionsMenu.recalculateSizes();
                     break;
                 case 1:
-                    game.muteAllSounds = !game.muteAllSounds;
-                    System.Items[1].Caption=("Sounds: " + (game.muteAllSounds ? "OFF" : "ON"));
+                    game.MuteAllSounds = !game.MuteAllSounds;
+                    System.Items[1].Caption=("Sounds: " + (game.MuteAllSounds ? "OFF" : "ON"));
                     break;
                 case 2:
                     selectedResolution = (selectedResolution + 1) % resolutions.Count;
@@ -159,7 +159,7 @@ namespace Neat.EasyMenus
                     StreamWriter sw = new StreamWriter("options.nsc");
                     sw.WriteLine("g_res " + resolutions[selectedResolution].X.ToString() + " " + resolutions[selectedResolution].Y.ToString());
                     sw.WriteLine("g_fullscreen " + fullscreen2.ToString());
-                    sw.WriteLine("a_mutesounds " + game.muteAllSounds.ToString());
+                    sw.WriteLine("a_mutesounds " + game.MuteAllSounds.ToString());
                     sw.WriteLine("g_reinit");
                     sw.Close();
                     if (game.StretchMode == NeatGame.StretchModes.None)

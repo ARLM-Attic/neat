@@ -56,7 +56,7 @@ namespace Neat
         }
 
         Dictionary<string, SFXList> sounds;
-        public bool muteAllSounds = false;
+        public bool MuteAllSounds = false;
         public SFXList LoadSound(string spath)
         {
             return LoadSound(getNameFromPath(spath), Content.Load<SoundEffect>(spath));
@@ -101,7 +101,7 @@ namespace Neat
 
         public void PlaySound(string name, float volume=1.0f, float pitch=0.0f, float pan=0.0f)
         {
-            if (name == null || muteAllSounds || name == "mute") return;
+            if (name == null || MuteAllSounds || name == "mute") return;
             GetSound(name).Play(volume,pitch,pan);
         }
         public SoundEffect GetSound(string name)
@@ -116,6 +116,7 @@ namespace Neat
 
         public SFXList GetSFXList(string name)
         {
+            if (name == null || MuteAllSounds) return sounds["mute"];
             try
             {
                 name = name.ToLower();

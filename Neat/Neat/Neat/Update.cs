@@ -34,11 +34,11 @@ namespace Neat
 #endif
             GetInputState();
 
-            if (MediaPlayer.State == MediaState.Playing && muteAllSounds)
+            if (MediaPlayer.State == MediaState.Playing && MuteAllSounds)
             {
                 MediaPlayer.Pause();
             }
-            else if (MediaPlayer.State == MediaState.Paused && !muteAllSounds)
+            else if (MediaPlayer.State == MediaState.Paused && !MuteAllSounds)
             {
                 MediaPlayer.Resume();
             }

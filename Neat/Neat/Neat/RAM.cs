@@ -52,7 +52,7 @@ namespace Neat
                     else if (key == "a_mediamute") MediaPlayer.IsMuted = bool.Parse(value);
                     else if (key == "a_mediashuffle") MediaPlayer.IsShuffled = bool.Parse(value);
                     else if (key == "a_mediarepeat") MediaPlayer.IsRepeating = bool.Parse(value);
-                    else if (key == "a_mute") _game.muteAllSounds = bool.Parse(value);
+                    else if (key == "a_mute") _game.MuteAllSounds = bool.Parse(value);
 
                     // ENGINE
                     else if (key == "e_freeze") _game.Freezed = bool.Parse(value);
@@ -81,7 +81,7 @@ namespace Neat
                     else if (key == "a_mediamute") return MediaPlayer.IsMuted.ToString();
                     else if (key == "a_mediashuffle") return MediaPlayer.IsShuffled.ToString();
                     else if (key == "a_mediarepeat") return MediaPlayer.IsRepeating.ToString();
-                    else if (key == "a_mute") return _game.muteAllSounds.ToString();
+                    else if (key == "a_mute") return _game.MuteAllSounds.ToString();
 
                     // ENGINE
                     else if (key == "e_freeze") return _game.Freezed.ToString();

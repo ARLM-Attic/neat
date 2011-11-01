@@ -28,7 +28,7 @@ namespace Neat.Components
          */
         void a_mutesounds(IList<string> args)
         {
-            game.muteAllSounds = bool.Parse(args[1]);
+            game.MuteAllSounds = bool.Parse(args[1]);
         }
 
         /* a_medianext
