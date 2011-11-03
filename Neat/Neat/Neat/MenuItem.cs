@@ -50,17 +50,17 @@ namespace Neat
             public void Focused()
             {
                 if (!Enabled) return;
-                if (OnFocus != null) OnFocus();
+                if (OnFocus != null) OnFocus(this);
             }
 
             public void Selected()
             {
                 if (!Enabled) return;
-                if (OnSelect != null) OnSelect();
+                if (OnSelect != null) OnSelect(this);
             }
 
-            public event XEventHandler OnFocus;
-            public event XEventHandler OnSelect;
+            public Action<MenuItem> OnFocus;
+            public Action<MenuItem> OnSelect;
             public string OnFocusScript;
             public string OnSelectScript;
         }

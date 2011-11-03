@@ -34,6 +34,7 @@ namespace Neat.GUI
         public bool ClickHandled = false;
         public bool MainForm = true;
         public Vector2 Size = Vector2.Zero;
+        public bool Visible = true;
         public Vector2 MousePosition
         {
             get
@@ -132,6 +133,7 @@ namespace Neat.GUI
 
         public virtual void Draw(GameTime gameTime)
         {
+            if (!Visible) return;
             if (game.AutoDraw)
                 game.SpriteBatch.End();
             game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null);
@@ -150,7 +152,7 @@ namespace Neat.GUI
             }
         }
 
-        public void NewControl(string name, Control item)
+        public Control NewControl(string name, Control item)
         {
             name = name.ToLower();
             Controls.Add(name, item);
@@ -158,6 +160,7 @@ namespace Neat.GUI
             Controls[name].Parent = this;
             Controls[name].Initialize();
             BringControlToFront(item);
+            return item;
         }
 
         public Control GetControl(string name)

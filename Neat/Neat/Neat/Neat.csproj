@@ -112,6 +112,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\TextEffects.cs" />
     <Compile Include="FormsAux\GraphicsDeviceService.cs" />
     <Compile Include="Graphics\LineBrush.cs" />
     <Compile Include="Console\Commands\Commands_Audio.cs" />

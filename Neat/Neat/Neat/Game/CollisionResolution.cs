@@ -172,7 +172,6 @@ namespace Neat
 
         public override void Render(GameTime gameTime)
         {
-            int q = 0;
             base.Render(gameTime);
             sim.Draw(game.SpriteBatch, lb, Color.White, Vector2.Zero);
             game.Write(showFill.ToString() + GeometryHelper.Coords2String(bodies[0].Mesh.GetPosition()), new Vector2(100));

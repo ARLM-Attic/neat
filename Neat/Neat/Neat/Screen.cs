@@ -54,6 +54,10 @@ namespace Neat
         {
             if (game.HasConsole && Form != null) Form.AttachToConsole();
         }
+
+        public virtual void Deactivate(string nextScreen)
+        {
+        }
 #endregion
 
 #region Files

@@ -58,9 +58,14 @@ namespace Neat.GUI
 
         public void Center()
         {
+            var fsize = Game.GetFont(Font).MeasureString(Caption);
             _position.X =
-                Game.Window.ClientBounds.Width / 2 -
-                Game.GetFont(Font).MeasureString(Caption).X / 2;
+                //Game.Window.ClientBounds.Width / 2 -
+                Game.GameWidth / 2 -
+                fsize.X / 2;
+            _position.Y =
+                Game.GameHeight / 2 -
+                fsize.Y / 2;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

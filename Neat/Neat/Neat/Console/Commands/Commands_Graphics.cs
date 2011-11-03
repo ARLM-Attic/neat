@@ -180,14 +180,14 @@ namespace Neat.Components
          */
         void g_saymessage(IList<string> args)
         {
-            ShoutText(Args2Str(args, 1));
+            game.TextEffects.ShoutText(Args2Str(args, 1));
         }
 
         /* g_messagecolor [color]
             */
         void g_messagecolor(IList<string> args)
         {
-            try { fx_Color = ParseColor(Args2Str(args, 1)); }
+            try { game.TextEffects.ForeColor = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 

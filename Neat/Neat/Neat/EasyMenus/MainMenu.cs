@@ -23,7 +23,7 @@ using Neat.EasyMenus;
 
 namespace Neat.EasyMenus
 {
-    class MainMenu : Menu 
+    public class MainMenu : Menu 
     {
         public MainMenu(NeatGame G)
             : base(G)
@@ -32,49 +32,24 @@ namespace Neat.EasyMenus
 
         public override void CreateMenu()
         {
-            System.AddItem("Play");
-            System.AddItem("Options");
-            System.AddItem("Quit");
+            System.AddItem("Play", true, null, "g_start");
+            System.AddItem("Options", true, null, "sh optionsmenu");
+            System.AddItem("Quit", true, null, "sh quitconfirm");
             System.GetLastMenuItem().Forecolor = Color.Red;
             System.ItemsOffset = new Vector2(0, 100);
             Activate();
             base.CreateMenu();
         }
 
-        public override void HandleInput(GameTime gameTime)
-        {
-#if ZUNE
-            if (game.IsTapped(Buttons.Back)) 
-#elif WINDOWS
-            if (game.IsTapped(Keys.Escape))
-#endif
-                game.ActivateScreen("quitconfirm");
-#if ZUNE
-            if (game.IsTapped( Buttons.A))
-#elif WINDOWS
-            if (game.IsTapped(Keys.Enter))
-#endif
-            {
-                switch (System.SelectedItem)
-                {
-                    case 0: //game
-                        game.Console.Run("g_start");
-                        break;
-                    case 1: //opt
-                        game.Console.Run("sh optionsmenu");
-                        break;
-                    case 2: //quit
-                        game.Console.Run("sh quitconfirm");
-                        break;
-                }
-            }
-            base.HandleInput(gameTime);
-        }
-
         public override void Render(GameTime gameTime)
         {
             game.SpriteBatch.Draw(game.GetTexture("menuBackground"), new Rectangle(0, 0, game.GameWidth, game.GameHeight), Color.White);
             base.Render(gameTime);
-        } 
+        }
+
+        public void RenderBase(GameTime gameTime)
+        {
+            base.Render(gameTime);
+        }
     }
 }

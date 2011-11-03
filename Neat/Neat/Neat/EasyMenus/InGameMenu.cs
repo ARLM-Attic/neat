@@ -23,7 +23,7 @@ using Neat.Graphics;
 
 namespace Neat.EasyMenus
 {
-    class InGameMenu : Menu
+    public class InGameMenu : Menu
     {
         public InGameMenu(NeatGame G)
             : base(G)
@@ -32,7 +32,7 @@ namespace Neat.EasyMenus
 
         public override void CreateMenu()
         {
-            ShadeColor = GraphicsHelper.GetColorWithAlpha(Color.Gray, 0.3f);
+            ShadeColor = GraphicsHelper.GetColorWithAlpha(Color.Black, 0.4f);
             System.AddItem("Return to Game");
             System.AddItem("Restart the Game");
             System.AddItem("", false);

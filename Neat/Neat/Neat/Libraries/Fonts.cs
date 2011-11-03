@@ -37,7 +37,7 @@ namespace Neat
                     return fonts[name];
             }
             
-            fonts.Add(name, data);
+            fonts[name] = data;
             return data;
         }
 

@@ -117,7 +117,7 @@ namespace Neat
             int len = fileName.LastIndexOf('.');
             if (len < 0) len = fileName.Length;
             fileName = fileName.Substring(0, len);
-            return fileName;
+            return fileName.ToLower();
         }
 
         protected override void UnloadContent()

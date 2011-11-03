@@ -23,7 +23,7 @@ using Neat.EasyMenus;
 
 namespace Neat.EasyMenus
 {
-    class QuitConfirmationMenu : Menu
+    public class QuitConfirmationMenu : Menu
     {
         public QuitConfirmationMenu(NeatGame G)
             : base(G)

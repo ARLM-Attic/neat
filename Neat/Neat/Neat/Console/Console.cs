@@ -85,7 +85,6 @@ namespace Neat.Components
         
         public override void Update(GameTime gameTime)
         {
-            UpdateMessages();
             if (standAlone)
             {
                 game.UpdateManually(gameTime);

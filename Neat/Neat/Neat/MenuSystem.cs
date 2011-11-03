@@ -334,20 +334,19 @@ namespace Neat
                     Color.White);
             }
 
-            public void AddItem(string Caption)
-            {
-                AddItem(Caption, true);
-            }
-
             Vector2 centerOffset=Vector2.Zero;
-            public void AddItem(string Caption, bool Enabled)
+            public void AddItem(string Caption, bool Enabled=true, string OnFocusScript=null, string OnSelectScript=null)
             {
                 Items.Add(new MenuItem(this, Caption, Enabled));
                 RecalculateSizes();
-                GetLastMenuItem().Forecolor = DefaultItemColor;
-                GetLastMenuItem().Alpha = (float)Items.Count * 0.1f;
-                GetLastMenuItem().AlphaV = itemAlphaRate;
+                var lastItem = GetLastMenuItem();
+                lastItem.Forecolor = DefaultItemColor;
+                lastItem.Alpha = (float)Items.Count * 0.1f;
+                lastItem.AlphaV = itemAlphaRate;
+                lastItem.OnFocusScript = OnFocusScript;
+                lastItem.OnSelectScript = OnSelectScript;
             }
+
             public void RecalculateSizes()
             {
                 if (font == null) return;

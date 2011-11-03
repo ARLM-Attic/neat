@@ -42,6 +42,7 @@ namespace Neat
 
         GraphicsDevice _graphicsDevice = null;
         ContentManager _content = null;
+        public Components.TextEffects TextEffects = null;
         public new GraphicsDevice GraphicsDevice
         {
             get { if (_graphicsDevice != null) return _graphicsDevice; else return base.GraphicsDevice; }
@@ -156,8 +157,10 @@ namespace Neat
             fonts = new Dictionary<string, SpriteFont>();
 
             Console = new Neat.Components.Console(this);
-            Components.Add(Console);
+            TextEffects = new Neat.Components.TextEffects(this);
 
+            Components.Add(Console);
+            Components.Add(TextEffects);
 #if LIVE
             Components.Add(new GamerServicesComponent(this));
 #endif
@@ -201,6 +204,10 @@ namespace Neat
         {
             if (Screens.ContainsKey(screen))
             {
+                if (ActiveScreen != null && Screens.ContainsKey(ActiveScreen))
+                {
+                    Screens[ActiveScreen].Deactivate(screen);
+                }
                 Screens[screen].Activate();
                 ActiveScreen = screen;
             }

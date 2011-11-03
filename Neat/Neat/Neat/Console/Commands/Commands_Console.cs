@@ -94,7 +94,7 @@ namespace Neat.Components
 
         void cfx_color(IList<string> args)
         {
-            try { fx_Color = ParseColor(Args2Str(args, 1)); }
+            try { game.TextEffects.ForeColor = ParseColor(Args2Str(args, 1)); }
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
         }
 

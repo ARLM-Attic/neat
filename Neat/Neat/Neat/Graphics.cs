@@ -162,6 +162,11 @@ namespace Neat
                     Console.Draw(ShowConsoleOnBottom);
                     SpriteBatch.End();
                 }
+
+
+                SpriteBatch.Begin();
+                TextEffects.Draw(gameTime);
+                SpriteBatch.End();
 #endif
 
                 if (Landscape)
