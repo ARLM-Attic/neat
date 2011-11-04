@@ -53,14 +53,6 @@ namespace Neat
             if (!Freezed)
             {
                 Behave(gameTime);
-#if !WINDOWS_PHONE
-#if ZUNE
-            if (IsTapped(Buttons.Back))
-#elif WINDOWS
-                if (IsTapped(Keys.Escape))
-#endif
-                    PlaySound("bleep6");
-#endif
             }
             base.Update(gameTime);
             SaveInputState();

@@ -34,9 +34,9 @@ namespace Neat.EasyMenus
         {
             System.AddItem("Do you really want to quit?", false);
             
-            System.AddItem("No! i wanna play a bit more");
+            System.AddItem("No! i wanna play a bit more", true, null, "sh mainmenu");
             System.GetLastMenuItem().Forecolor = Color.Green;
-            System.AddItem("Yes. lemme out!");
+            System.AddItem("Yes. lemme out!", true, null, "quit");
                        
             System.GetLastMenuItem().Forecolor = Color.Red;
             System.DisabledItemForeground = Color.White;
@@ -44,33 +44,6 @@ namespace Neat.EasyMenus
             System.SelectedItem = 1;
             Activate();
             base.CreateMenu();
-        }
-
-        public override void HandleInput(GameTime gameTime)
-        {
-            //if (game.IsTapped(Keys.Escape)) game.Exit();
-#if ZUNE
-            if (game.IsTapped(Buttons.A))
-#elif WINDOWS
-            if (game.IsTapped(Keys.Enter))
-#endif
-            {
-                SelectItem();
-            }
-            base.HandleInput(gameTime);
-        }
-
-        void SelectItem()
-        {
-            switch (System.SelectedItem)
-            {
-                case 1: //back
-                    game.Console.Run("sh mainmenu");
-                    break;
-                case 2: //quit
-                    game.Exit();
-                    break;
-            }
         }
 
         public override void Render(GameTime gameTime)

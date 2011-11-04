@@ -115,18 +115,10 @@ namespace Neat.EasyMenus
 
         public override void HandleInput(GameTime gameTime)
         {
-#if ZUNE
-            if (game.IsTapped(Buttons.Back))
-#elif WINDOWS
-            if (game.IsTapped(Keys.Escape))
-#endif
+            if (game.IsTapped(Keys.Escape) || game.IsTapped(Buttons.Back))
                 game.Console.Run("sh mainmenu");
 
-#if ZUNE
-            if (game.IsTapped(Buttons.A))
-#elif WINDOWS
-            if (game.IsTapped(Keys.Enter))
-#endif
+            if (game.IsTapped(Keys.Enter) || game.IsTapped(Buttons.A))
             {
                 SelectItem();
             }

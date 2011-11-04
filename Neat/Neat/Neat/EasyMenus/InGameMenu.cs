@@ -33,10 +33,10 @@ namespace Neat.EasyMenus
         public override void CreateMenu()
         {
             ShadeColor = GraphicsHelper.GetColorWithAlpha(Color.Black, 0.4f);
-            System.AddItem("Return to Game");
-            System.AddItem("Restart the Game");
+            System.AddItem("Return to Game", true, null, "sh game");
+            System.AddItem("Restart the Game", true, null, "g_start");
             System.AddItem("", false);
-            System.AddItem("Return to Main Menu");
+            System.AddItem("Return to Main Menu", true, null, "sh_mainmenu");
             //system.AddItem("Exit to Windows");
             System.GetLastMenuItem().Forecolor = Color.PaleVioletRed;
             System.Enable();
@@ -53,44 +53,9 @@ namespace Neat.EasyMenus
 
         public override void HandleInput(GameTime gameTime)
         {
-#if ZUNE
-            if (game.IsTapped(Buttons.Back )) 
-#elif WINDOWS
-            if (game.IsTapped(Keys.Escape))
-#endif
+            if (game.IsTapped(Keys.Escape) || game.IsTapped(Buttons.Back))
                 game.Console.Run("sh game");
-#if ZUNE
-            if (game.IsTapped(Buttons.A))
-#elif WINDOWS
-            if (game.IsTapped(Keys.Enter))
-#endif
-            {
-                SelectItem();
-            }
             base.HandleInput(gameTime);
         }
-
-        void SelectItem()
-        {
-            switch (System.SelectedItem)
-            {
-                case 0:
-                    game.Console.Run("sh game");
-                    break;
-                case 1:
-                    game.Console.Run("g_start");
-                    break;
-                case 2:
-                    // Seperator
-                    break;
-                case 3:
-                    game.Console.Run("sh mainmenu");
-                    break;
-                case 4:
-                    game.Console.Run("quit");
-                    break;
-            }
-        }
-
     }
 }

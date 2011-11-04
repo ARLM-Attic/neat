@@ -80,7 +80,7 @@ namespace Neat.GUI
                     if (!ClickHandled) n.Value.HandleInput(gameTime);
 
                     if (GeometryHelper.IsVectorInRectangle(n.Value.Position, n.Value.Size, MousePosition)) ClickHandled = true;
-                    if (game.IsPressed(Keys.Space))
+                    if (game.IsPressed(Keys.Space) || game.IsPressed(Buttons.A))
                     {
                         if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
                             new Rectangle((int)(MousePosition.X), (int)(MousePosition.Y), 1, 1)))
@@ -89,7 +89,7 @@ namespace Neat.GUI
                         }
                     }
 
-                    if (game.IsTapped(Keys.Space))
+                    if (game.IsTapped(Keys.Space) || game.IsTapped(Buttons.A))
                     {
                         if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
                             new Rectangle((int)(MousePosition.X), (int)(MousePosition.Y), 1, 1)))
@@ -104,16 +104,16 @@ namespace Neat.GUI
 #if WINDOWS
             if (HasMouse)
             {
-                if (game.IsPressed(Keys.Right))
+                if (game.IsPressed(Keys.Right) || game.IsPressed(Buttons.LeftThumbstickRight))
                     Mouse.SetPosition(Mouse.GetState().X + MouseSpeed , Mouse.GetState().Y);
 
-                else if (game.IsPressed(Keys.Left))
+                else if (game.IsPressed(Keys.Left) || game.IsPressed(Buttons.LeftThumbstickLeft))
                     Mouse.SetPosition(Mouse.GetState().X - MouseSpeed, Mouse.GetState().Y);
 
-                if (game.IsPressed(Keys.Up))
+                if (game.IsPressed(Keys.Up) || game.IsPressed(Buttons.LeftThumbstickUp))
                     Mouse.SetPosition(Mouse.GetState().X, Mouse.GetState().Y - MouseSpeed);
 
-                else if (game.IsPressed(Keys.Down))
+                else if (game.IsPressed(Keys.Down) || game.IsPressed(Buttons.LeftThumbstickDown))
                     Mouse.SetPosition(Mouse.GetState().X, Mouse.GetState().Y + MouseSpeed);
                 
             }

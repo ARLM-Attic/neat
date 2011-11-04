@@ -160,30 +160,17 @@ namespace Neat
 
             void HandleInput(GameTime gameTime)
             {
-
-#if ZUNE
-                if (IsTapped(Buttons.A)) 
-#elif WINDOWS || WINDOWS_PHONE
-                if (game.IsTapped(Keys.Enter))
-#endif
+                if (game.IsTapped(Keys.Enter) || game.IsTapped(Buttons.A) || game.IsTapped(Buttons.Start))
                 { 
                     game.PlaySound("bleep3");
                     Items[SelectedItem].Selected();
                     if (Items[SelectedItem].Enabled && !string.IsNullOrEmpty(Items[SelectedItem].OnSelectScript))
                         game.Console.Run(Items[SelectedItem].OnSelectScript);
                 }
-#if ZUNE
-                 (IsTapped( Buttons.DPadDown)) 
-#elif WINDOWS || WINDOWS_PHONE
-                if (game.IsTapped(Keys.Down))
-#endif
+                if (game.IsTapped(Keys.Down) || game.IsTapped(Buttons.DPadDown) || game.IsTapped(Buttons.LeftThumbstickDown))
                     { Bleep(); NextItem(); }
                 else
-#if ZUNE
-                if (IsTapped( Buttons.DPadUp)) 
-#elif WINDOWS || WINDOWS_PHONE
-                    if (game.IsTapped(Keys.Up))
-#endif
+                    if (game.IsTapped(Keys.Up) || game.IsTapped(Buttons.DPadUp) || game.IsTapped(Buttons.LeftThumbstickUp))
                     { Bleep(); PrevItem(); }
 #if WINDOWS || WINDOWS_PHONE
                 if (EnableShortcuts) HandleShortcuts();
