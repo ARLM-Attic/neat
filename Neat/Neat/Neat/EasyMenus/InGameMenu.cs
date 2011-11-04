@@ -36,7 +36,7 @@ namespace Neat.EasyMenus
             System.AddItem("Return to Game", true, null, "sh game");
             System.AddItem("Restart the Game", true, null, "g_start");
             System.AddItem("", false);
-            System.AddItem("Return to Main Menu", true, null, "sh_mainmenu");
+            System.AddItem("Return to Main Menu", true, null, "sh mainmenu");
             //system.AddItem("Exit to Windows");
             System.GetLastMenuItem().Forecolor = Color.PaleVioletRed;
             System.Enable();

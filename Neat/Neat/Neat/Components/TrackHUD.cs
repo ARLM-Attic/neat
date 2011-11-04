@@ -71,6 +71,8 @@ namespace Neat.Components
         public override void Initialize()
         {
             Refresh();
+
+            MediaPlayer.ActiveSongChanged += new EventHandler<EventArgs>(MediaPlayer_ActiveSongChanged);
             base.Initialize();
         }
 
@@ -89,7 +91,6 @@ namespace Neat.Components
 
         protected override void LoadContent()
         {
-            MediaPlayer.ActiveSongChanged += new EventHandler<EventArgs>(MediaPlayer_ActiveSongChanged);
             base.LoadContent();
         }
 
@@ -98,7 +99,7 @@ namespace Neat.Components
             try
             {
                 game.Console.WriteLine("Song Changed to " + MediaPlayer.Queue.ActiveSong.Name + " | Album: " + MediaPlayer.Queue.ActiveSong.Album);
-                DrawPosition = new Vector2(0, (game.Window.ClientBounds.Height) - 100);
+                DrawPosition = new Vector2(0, (game.GameHeight) - 100);
 
                 Refresh();
                 FadeIn();
