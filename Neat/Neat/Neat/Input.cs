@@ -4,17 +4,10 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-#if LIVE
-using Microsoft.Xna.Framework.GamerServices;
-#endif
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
 using Microsoft.Xna.Framework.Input.Touch;
-#endif
-#if WINDOWS
- 
- 
 #endif
 using Microsoft.Xna.Framework.Media;
 using Neat;
@@ -198,17 +191,49 @@ namespace Neat
         {
             return currentKeyboardState.IsKeyDown(key) && lastKeyboardState.IsKeyUp(key);
         }
+        public bool IsTapped(params Keys[] keys)
+        {
+            foreach (var item in keys)
+            {
+                if (IsTapped(item)) return true;
+            }
+            return false;
+        }
         public bool IsTapped(Buttons button)
         {
             return currentGamePadState.IsButtonDown(button) && lastGamePadState.IsButtonUp(button);
+        }
+        public bool IsTapped(params Buttons[] buttons)
+        {
+            foreach (var item in buttons)
+            {
+                if (IsTapped(item)) return true;
+            }
+            return false;
         }
         public bool IsPressed(Keys key)
         {
             return currentKeyboardState.IsKeyDown(key);
         }
+        public bool IsPressed(params Keys[] keys)
+        {
+            foreach (var item in keys)
+            {
+                if (IsPressed(item)) return true;
+            }
+            return false;
+        }
         public bool IsPressed(Buttons button)
         {
             return currentGamePadState.IsButtonDown(button);
+        }
+        public bool IsPressed(params Buttons[] buttons)
+        {
+            foreach (var item in buttons)
+            {
+                if (IsPressed(item)) return true;
+            }
+            return false;
         }
         public bool IsTapped(Keys key, Buttons button)
         {
@@ -222,9 +247,27 @@ namespace Neat
         {
             return currentKeyboardState.IsKeyUp(key) && lastKeyboardState.IsKeyDown(key);
         }
+        public bool IsReleased(params Keys[] keys)
+        {
+            foreach (var item in keys)
+            {
+                if (IsReleased(item))
+                    return true;
+            }
+            return false;
+        }
         public bool IsReleased(Buttons button)
         {
             return currentGamePadState.IsButtonUp(button) && lastGamePadState.IsButtonDown(button);
+        }
+        public bool IsReleased(params Buttons[] buttons)
+        {
+            foreach (var item in buttons)
+            {
+                if (IsReleased(item))
+                    return true;
+            }
+            return false;
         }
         public bool IsReleased(Keys key, Buttons button)
         {
