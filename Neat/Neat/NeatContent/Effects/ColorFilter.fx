@@ -1,6 +1,6 @@
 sampler  TextureSampler  : register(s0);
 
-float4 mulColor;
+float4 mulColor = float4(1,1,1,1);
 
 float4 PixelShaderFunction(float2 uv : TEXCOORD) : COLOR
 {
@@ -13,11 +13,13 @@ float4 ReplacePixelShaderFunction() : COLOR
 	return mulColor;
 }
 
-float4 BalanceFunction() : COLOR
+float4 BalanceFunction(float2 uv : TEXCOORD) : COLOR
 {
-	float4 positive = abs(mulColor);
-	float4 c = max(positive.r, max(positive.g, positive.b));
-	return float4(saturate(positive.r / c.r), saturate(positive.g / c.g), saturate(positive.b / c.b), mulColor.a);
+	float4 p = mulColor;// float4(abs(mulColor.r), abs(mulColor.g), abs(mulColor.b), abs(mulColor.a));// float4(1,1,1,1);// abs(mulColor);
+	float4 c = max(p.r, max(p.g, p.b));
+	p.rgb /= c.rgb;
+	p.a = mulColor.a;
+	return p;
 }
 
 technique ColorFilter
@@ -28,17 +30,6 @@ technique ColorFilter
         DestBlend = INVSRCALPHA;
         SrcBlend = SRCALPHA;
         PixelShader = compile ps_2_0 PixelShaderFunction();
-    }
-}
-
-technique ColorBalance
-{
-   pass Pass1
-    {
-		AlphaBlendEnable = TRUE;
-        DestBlend = INVSRCALPHA;
-        SrcBlend = SRCALPHA;
-        PixelShader = compile ps_2_0 BalanceFunction();
     }
 }
 
@@ -53,3 +44,13 @@ technique ColorReplace
     }
 }
 
+technique ColorBalance
+{
+   pass Pass1
+    {
+		AlphaBlendEnable = TRUE;
+        DestBlend = INVSRCALPHA;
+        SrcBlend = SRCALPHA;
+        PixelShader = compile ps_2_0 BalanceFunction();
+    }
+}
