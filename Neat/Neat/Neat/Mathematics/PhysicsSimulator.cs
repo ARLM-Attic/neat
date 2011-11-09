@@ -380,9 +380,10 @@ namespace Neat.Mathematics
             return false;
         }
 
-        public void Draw(SpriteBatch spriteBatch, LineBrush lb, Color color, Vector2 offset, bool showTriangles=false)
+        public bool ShowTriangles;
+        public void Draw(SpriteBatch spriteBatch, LineBrush lb, Color color, Vector2 offset, bool? showTriangles=null)
         {
-            if (showTriangles)
+            if ((showTriangles.HasValue && showTriangles.Value) || ShowTriangles)
             {
                 foreach (var item in Bodies)
                     if (item.Mesh.Triangles != null)
@@ -407,6 +408,7 @@ namespace Neat.Mathematics
             console.AddCommand("ph_stickiness", ph_stickiness);
             console.AddCommand("ph_penetration", ph_penetration);
             console.AddCommand("ph_damp", ph_damp);
+            console.AddCommand("ph_showtriangles", ph_showtriangles);
         }
 
         void ph_gravity(IList<string> args)
@@ -465,6 +467,12 @@ namespace Neat.Mathematics
         {
             if (args.Count > 1) Update(float.Parse(args[1]));
             else Update(16);
+        }
+
+        void ph_showtriangles(IList<string> args)
+        {
+            if (args.Count > 1) ShowTriangles = bool.Parse(args[1]);
+            else console.WriteLine(ShowTriangles.ToString());
         }
         #endregion
     }
