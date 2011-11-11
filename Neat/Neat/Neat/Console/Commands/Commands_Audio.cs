@@ -105,5 +105,11 @@ namespace Neat.Components
             if (args.Count == 1) WriteLine(MediaPlayer.IsRepeating.ToString());
             else MediaPlayer.IsRepeating = bool.Parse(args[1]);
         }
+
+        void a_mediavolume(IList<string> args)
+        {
+            if (args.Count == 1) WriteLine(MediaPlayer.Volume.ToString());
+            else MediaPlayer.Volume = float.Parse(args[1]);
+        }
     }
 }
