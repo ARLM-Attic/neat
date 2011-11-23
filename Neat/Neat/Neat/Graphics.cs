@@ -38,7 +38,32 @@ namespace Neat
         bool _landscape = false;
 
         RenderTarget2D _renderTarget;
-        Vector2 _vecOrigin, _vecDest, _vecSize;  
+        Vector2 _vecOrigin, _vecDest, _vecSize;
+
+        protected Stack<RenderTarget2D> targetStack = new Stack<RenderTarget2D>();
+
+        public void PushTarget(RenderTarget2D target)
+        {
+            targetStack.Push(target);
+            GraphicsDevice.SetRenderTarget(target);
+        }
+
+        public RenderTarget2D PopTarget()
+        {
+            RenderTarget2D target = DefaultTarget;
+            if (targetStack.Count > 0) target = targetStack.Pop();
+            GraphicsDevice.SetRenderTarget(target);
+            return target;
+        }
+
+        public RenderTarget2D CurrentTarget
+        {
+            get
+            {
+                if (targetStack.Count > 0) return targetStack.Peek();
+                return DefaultTarget;
+            }
+        }
 
         public StretchModes StretchMode 
         {

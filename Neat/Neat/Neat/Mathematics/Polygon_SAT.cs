@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Diagnostics;
 
 namespace Neat.Mathematics
 {
@@ -52,6 +53,62 @@ namespace Neat.Mathematics
             float d = d0 < d1 ? d0 : d1;
             push = axis * d / axis.LengthSquared();
             return true;
+        }
+
+        public static bool TrianglesCollide(Polygon A, Polygon B, out Vector2 MTD)
+        {
+            MTD = Vector2.Zero;
+            if (A.Triangles == null) A.Triangulate();
+            if (B.Triangles == null) B.Triangulate();
+
+            foreach (var triA in A.Triangles)
+            {
+                Polygon pA = triA.ToPolygon();
+                foreach (var triB in B.Triangles)
+                {
+                    if (Polygon.Collide(pA, triB.ToPolygon(), out MTD))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static bool TrianglesCollide(Polygon A, Polygon B)
+        {
+            Vector2 MTD;
+            return TrianglesCollide(A, B, out MTD);
+        }
+
+        public static bool RectanglesCollide(Polygon A, Polygon B, out Vector2 MTD)
+        {
+            MTD = Vector2.Zero;
+            Rectangle rA = A.GetBoundingRect();
+            Rectangle rB = B.GetBoundingRect();
+            Rectangle rC = Rectangle.Intersect(rA, rB);
+            if (rC == Rectangle.Empty) return false;
+            if (rC.Width > rC.Height)
+            {
+                //DO MTD.Y
+                MTD.Y = rC.Height;
+                if (rC.Y - rA.Y < 0) MTD.Y *= -1;
+            }
+            else
+            {
+                //DO MTD.X
+                MTD.X = rC.Width;
+                if (rC.X - rA.X < 0) MTD.X *= -1;
+            }
+            return true;
+        }
+
+        public static bool RectanglesCollide(Polygon A, Polygon B)
+        {
+            Rectangle rA = A.GetBoundingRect();
+            Rectangle rB = B.GetBoundingRect();
+            Rectangle rC = Rectangle.Intersect(rA, rB);
+            return (rC != Rectangle.Empty);
         }
 
         public static bool Collide(Polygon A, Polygon B, out Vector2 MTD)

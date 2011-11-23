@@ -76,9 +76,16 @@ namespace Neat.Mathematics
         public static LineIntersectionStates LinesIntersect(LineSegment firstLine, LineSegment secondLine, bool firstSegment, bool secondSegment)
         {
             var ip = GetIntersectionPoint(firstLine, secondLine, firstSegment, secondSegment);
-            if (IsNaN(ip)) return LineIntersectionStates.None;
+
             if ((firstLine.Contains(secondLine.StartPos) && firstLine.Contains(secondLine.EndPos)) ||
-                (secondLine.Contains(firstLine.StartPos) && secondLine.Contains(firstLine.EndPos))) return LineIntersectionStates.Overlap;
+                (secondLine.Contains(firstLine.StartPos) && secondLine.Contains(firstLine.EndPos)) ||
+                (firstLine.Contains(secondLine.StartPos) && secondLine.Contains(firstLine.EndPos)) ||
+                (firstLine.Contains(secondLine.EndPos) && secondLine.Contains(firstLine.StartPos)))
+            {
+                return LineIntersectionStates.Overlap;
+            }
+            
+            if (IsNaN(ip)) return LineIntersectionStates.None;
             return LineIntersectionStates.Intersect;
         }
 

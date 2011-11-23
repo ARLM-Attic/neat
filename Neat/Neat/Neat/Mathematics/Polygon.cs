@@ -20,10 +20,19 @@ namespace Neat.Mathematics
 {
     public partial class Polygon
     {
+        public enum PolygonCollisionClass
+        {
+            Rectangle,
+            Convex,
+            Concave
+        }
         public List<Vector2> Vertices;
         
         const float _epsilon = 0.0000001f;
         public bool AutoTriangulate = false;
+
+        //PolygonCollisionClass collisionClass = PolygonCollisionClass.Concave;
+        //public PolygonCollisionClass CollisionClass { get { return collisionClass; } }
 
         private int n { get { return Vertices.Count; } }
 
@@ -51,6 +60,7 @@ namespace Neat.Mathematics
                     Triangles.Add(new Triangle(item));
             }
             AutoTriangulate = source.AutoTriangulate;
+            //collisionClass = source.CollisionClass;
         }
 
         public Polygon(Polygon source, Vector2 offset)
@@ -59,6 +69,7 @@ namespace Neat.Mathematics
             foreach (var item in source.Vertices)
                 Vertices.Add(item+offset);
             AutoTriangulate = source.AutoTriangulate;
+            //collisionClass = source.CollisionClass;
             Triangulate();
         }
 
@@ -69,7 +80,7 @@ namespace Neat.Mathematics
 
         public static Polygon BuildRectangle(float x, float y, float width, float height)
         {
-            Polygon result = new Polygon();
+            Polygon result = new Polygon();// { collisionClass = PolygonCollisionClass.Rectangle };
             result.AddVertex(x, y);
             result.AddVertex(x + width, y);
             result.AddVertex(x + width, y + height);
@@ -79,7 +90,7 @@ namespace Neat.Mathematics
 
         public static Polygon BuildCircle(int vertices, Vector2 center, float radius)
         {
-            Polygon result = new Polygon();
+            Polygon result = new Polygon();// { collisionClass = PolygonCollisionClass.Convex };
             for (double i = 0; i < MathHelper.TwoPi; i += (float)MathHelper.TwoPi / (float)vertices)
             {
                 result.AddVertex(center + radius * new Vector2((float)(Math.Cos(i)), (float)(Math.Sin(i))));

@@ -116,6 +116,7 @@
     <Compile Include="Components\KinectEngine.cs" />
     <Compile Include="Components\TextEffects.cs" />
     <Compile Include="FormsAux\GraphicsDeviceService.cs" />
+    <Compile Include="Game\CalibrationScreen.cs" />
     <Compile Include="Graphics\LineBrush.cs" />
     <Compile Include="Console\Commands\Commands_Audio.cs" />
     <Compile Include="Console\Commands\Commands_Console.cs" />
