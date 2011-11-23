@@ -19,7 +19,7 @@ namespace Neat
 {
     public partial class CalibrateScreen : Screen
     {
-        public KinectEngine Kinect;
+        public static KinectEngine Kinect;
         Label tiltLabel;
         Image kinectImage;
         LineBrush lb;
