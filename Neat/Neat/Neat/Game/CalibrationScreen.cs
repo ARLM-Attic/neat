@@ -106,6 +106,7 @@ namespace Neat
                     zs += i.ToString() + (int)v.Z + "\n";
                 }
 
+                Kinect.DrawSkeleton(SpriteBatch, lb, offset, new Vector2(640, 480), Color.Gray);
                 game.Write(zs + "\n\n\n\n\n\n" + predicted, new Vector2(200, 100));
             }
 
