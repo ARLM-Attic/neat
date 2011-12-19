@@ -21,7 +21,7 @@ namespace Neat
     {
         public static KinectEngine Kinect;
         Label tiltLabel;
-        Image kinectImage;
+        Image kinectImage, skeletonImage;
         LineBrush lb;
         public CalibrateScreen(NeatGame game)
             : base(game)
@@ -45,6 +45,9 @@ namespace Neat
             kinectImage = Form.NewControl("kinectimage", new Image()).ToImage();
             kinectImage.BackgroundImage = "kinectrgb";
 
+            skeletonImage = Form.NewControl("skeletonimage", new Image()).ToImage();
+            skeletonImage.BackgroundImage = "kinectskeletons";
+
             game.Console.AddCommand("k_smooth", k_smooth);
         }
 
@@ -66,7 +69,8 @@ namespace Neat
             if (Kinect == null) return; // this.Kinect = ((KineatGame)game).Kinect;
             tiltLabel.Caption = "Tilt: " + Kinect.Nui.NuiCamera.ElevationAngle;
             kinectImage.Center();
-            
+            skeletonImage.Center();
+
             base.Behave(gameTime);
         }
 
@@ -109,8 +113,6 @@ namespace Neat
                 Kinect.DrawSkeleton(SpriteBatch, lb, offset, new Vector2(640, 480), Color.Gray);
                 game.Write(zs + "\n\n\n\n\n\n" + predicted, new Vector2(200, 100));
             }
-
-            
         }
     }
 }

@@ -46,13 +46,14 @@ namespace Neat
             LoadSound("Sounds\\BLEEP10");
             LoadSound("Sounds\\BLEEP3");
             LoadSound("Sounds\\BLEEP6");
+            LoadSound(@"Sounds\elegantdying");
 
             LoadSound(@"Sounds\typewriter-key-1", "console_keystroke");
             LoadSound(@"Sounds\typewriter-backspace-1", "console_backspace");
             LoadSound(@"Sounds\typewriter-paper-roll-up-1", "console_echo");
             LoadSound(@"Sounds\typewriter-return-1", "console_return");
             LoadSound(@"Sounds\typewriter-space-bar-1", "console_space");
-
+            
             LoadTexture("Sprites\\Blank");
             LoadTexture("Sprites\\Solid");
             LoadTexture("Sprites\\Error");
@@ -92,10 +93,12 @@ namespace Neat
             LoadFont("Fonts\\consolefont");
             LoadFont("Fonts\\fxFont");
             LoadFont(@"Fonts\FormFont");
+            LoadFont(@"Fonts\ElegantFont");
 
             LoadEffect("Effects\\ColorFilter");
-            LoadEffect("Effects\\ColorAdder");
             LoadEffect(@"Effects\Ripple");
+
+            //ElegantTextEngine.Initialize();
 
             Debug.WriteLine("Begin Screens LoadContent");
             foreach (var p in Screens)

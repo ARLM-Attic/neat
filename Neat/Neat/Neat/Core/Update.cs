@@ -15,20 +15,20 @@ using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
+using System.Diagnostics;
 
 namespace Neat
 {
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
 #if LIVE
-        public bool needSignIn = true;
+        public bool NeedSignIn = true;
 #endif
         public bool IsPaused = false;
         
         void UpdateGame(GameTime gameTime)
         {
             gamestime = gameTime;
-
 #if LIVE
             networkHelper.Update();
 #endif
@@ -67,21 +67,24 @@ namespace Neat
             Frame++;
             if (Frame > MaxFrame) Frame = 0;
             if (!standAlone) return;
-#if LIVE
-            if (!needSignIn && !Guide.IsVisible)
+#if LIVE && FALSE
+            if (!NeedSignIn && !Guide.IsVisible)
             {
                 UpdateGame(gameTime);
             }
             else
             {
-                if ((SignedInGamer.SignedInGamers.Count > 0 || !forceSignIn) && !Guide.IsVisible)
+                if ((SignedInGamer.SignedInGamers.Count > 0 || !ForceSignIn) && !Guide.IsVisible)
                 {
                     UpdateGame(gameTime);
+                    Debug.Write("Googooli");
                 }
                 else
                 {
-                    if (SignedInGamer.SignedInGamers.Count <= 0 && !Guide.IsVisible && forceSignIn)
+                    if (!Guide.IsVisible)
                     {
+                        Debug.Write("Looli");
+                        //Window.Title = "F" + Frame;
                         Guide.ShowSignIn(1, false);
                     }
                 }

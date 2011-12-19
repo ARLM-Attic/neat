@@ -191,13 +191,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Effects\ColorAdder.fx">
-      <Name>ColorAdder</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Fonts\FxFont.spritefont">
       <Name>FxFont</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -323,6 +316,20 @@
       <Name>Ripple</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\ElegantFont.spritefont">
+      <Name>ElegantFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\elegantdying.wav">
+      <Name>elegantdying</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

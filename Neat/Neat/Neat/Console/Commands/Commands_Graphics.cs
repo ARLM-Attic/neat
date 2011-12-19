@@ -180,7 +180,7 @@ namespace Neat.Components
          */
         void g_saymessage(IList<string> args)
         {
-            game.TextEffects.ShoutText(Args2Str(args, 1));
+            game.TextEffects.Echo(Args2Str(args, 1));
         }
 
         /* g_messagecolor [color]

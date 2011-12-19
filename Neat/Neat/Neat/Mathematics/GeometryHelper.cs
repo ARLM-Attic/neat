@@ -47,11 +47,17 @@ namespace Neat.Mathematics
             double Ua, Ub;
 
             // Equations to determine whether lines intersect
+            // Ua and Ub will contain Infinity if the lines does not intersect,
+            // and NaN if they overlap.
+
             Ua = ((secondLine.EndPos.X - secondLine.StartPos.X) * (firstLine.StartPos.Y - secondLine.StartPos.Y) - (secondLine.EndPos.Y - secondLine.StartPos.Y) * (firstLine.StartPos.X - secondLine.StartPos.X)) /
                     ((secondLine.EndPos.Y - secondLine.StartPos.Y) * (firstLine.EndPos.X - firstLine.StartPos.X) - (secondLine.EndPos.X - secondLine.StartPos.X) * (firstLine.EndPos.Y - firstLine.StartPos.Y));
 
             Ub = ((firstLine.EndPos.X - firstLine.StartPos.X) * (firstLine.StartPos.Y - secondLine.StartPos.Y) - (firstLine.EndPos.Y - firstLine.StartPos.Y) * (firstLine.StartPos.X - secondLine.StartPos.X)) /
                     ((secondLine.EndPos.Y - secondLine.StartPos.Y) * (firstLine.EndPos.X - firstLine.StartPos.X) - (secondLine.EndPos.X - secondLine.StartPos.X) * (firstLine.EndPos.Y - firstLine.StartPos.Y));
+
+            if (double.IsInfinity(Ua) && double.IsInfinity(Ub)) 
+                return new Vector2(float.NegativeInfinity);
 
             if (((Ua >= 0.0f && Ua <= 1.0f)||(!firstSegment)) && 
                 ((Ub >= 0.0f && Ub <= 1.0f)||(!secondSegment)))

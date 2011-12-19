@@ -55,7 +55,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\x86\Release</OutputPath>
-    <DefineConstants>TRACE;WINDOWS KINECT</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS KINECT LIVE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -115,6 +115,9 @@
   <ItemGroup>
     <Compile Include="Components\KinectEngine.cs" />
     <Compile Include="Components\TextEffects.cs" />
+    <Compile Include="Core\EffectChain.cs" />
+    <Compile Include="Core\EffectHandler.cs" />
+    <Compile Include="Effects\Ripple.cs" />
     <Compile Include="FormsAux\GraphicsDeviceService.cs" />
     <Compile Include="Game\CalibrationScreen.cs" />
     <Compile Include="Graphics\LineBrush.cs" />
@@ -139,12 +142,12 @@
     <Compile Include="GUI\Container.cs" />
     <Compile Include="GUI\Window.cs" />
     <Compile Include="Mathematics\Triangle.cs" />
-    <Compile Include="Screen.cs" />
+    <Compile Include="Core\Screen.cs" />
     <Compile Include="Game\CollisionTest.cs" />
     <Compile Include="Game\CollisionResolution.cs" />
     <Compile Include="Game\Game1.cs" />
     <Compile Include="Game\StartScreen.cs" />
-    <Compile Include="Graphics.cs" />
+    <Compile Include="Core\Graphics.cs" />
     <Compile Include="Graphics\GraphicsHelper.cs" />
     <Compile Include="GUI\Box.cs" />
     <Compile Include="GUI\Button.cs" />
@@ -155,7 +158,7 @@
     <Compile Include="GUI\Image.cs" />
     <Compile Include="GUI\Label.cs" />
     <Compile Include="GUI\TypeWriter.cs" />
-    <Compile Include="Input.cs" />
+    <Compile Include="Core\Input.cs" />
     <Compile Include="Libraries\Effects.cs" />
     <Compile Include="Libraries\Files.cs" />
     <Compile Include="Libraries\Fonts.cs" />
@@ -169,20 +172,20 @@
     <Compile Include="Mathematics\Polygon_Experimental.cs" />
     <Compile Include="Mathematics\Polygon_SAT.cs" />
     <Compile Include="Mathematics\Polygon_Triangulator.cs" />
-    <Compile Include="Menu.cs" />
-    <Compile Include="MenuItem.cs" />
-    <Compile Include="MenuSystem.cs" />
-    <Compile Include="Messaging.cs" />
-    <Compile Include="NetworkHelper.cs" />
+    <Compile Include="Core\Menu.cs" />
+    <Compile Include="Core\MenuItem.cs" />
+    <Compile Include="Core\MenuSystem.cs" />
+    <Compile Include="Core\Messaging.cs" />
+    <Compile Include="Core\NetworkHelper.cs" />
     <Compile Include="Components\NetworkHUD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="RAM.cs" />
-    <Compile Include="Neat.cs" />
+    <Compile Include="Core\RAM.cs" />
+    <Compile Include="Core\Neat.cs" />
     <Compile Include="Components\TrackHUD.cs" />
     <Compile Include="FormsAux\ServiceContainer.cs" />
-    <Compile Include="Sprite.cs" />
-    <Compile Include="Update.cs" />
+    <Compile Include="Core\Sprite.cs" />
+    <Compile Include="Core\Update.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

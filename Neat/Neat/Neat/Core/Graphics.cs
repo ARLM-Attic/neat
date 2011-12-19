@@ -14,6 +14,7 @@ using Neat;
 using Neat.Graphics;
 using Neat.MenuSystem;
 using Neat.Mathematics;
+using System.Diagnostics;
  
 
 namespace Neat
@@ -42,17 +43,20 @@ namespace Neat
 
         protected Stack<RenderTarget2D> targetStack = new Stack<RenderTarget2D>();
 
-        public void PushTarget(RenderTarget2D target)
+        public void PushTarget(RenderTarget2D target, bool switchTarget = true)
         {
             targetStack.Push(target);
-            GraphicsDevice.SetRenderTarget(target);
+            if (switchTarget) GraphicsDevice.SetRenderTarget(target);
         }
 
-        public RenderTarget2D PopTarget()
+        public RenderTarget2D PopTarget(bool switchTarget = true)
         {
             RenderTarget2D target = DefaultTarget;
             if (targetStack.Count > 0) target = targetStack.Pop();
-            GraphicsDevice.SetRenderTarget(target);
+            if (switchTarget)
+            {
+                GraphicsDevice.SetRenderTarget(CurrentTarget);
+            }
             return target;
         }
 
@@ -162,7 +166,7 @@ namespace Neat
             }
 
 #if LIVE
-            if (SignedInGamer.SignedInGamers.Count > 0 || !needSignIn || !forceSignIn)
+            if (SignedInGamer.SignedInGamers.Count > 0 || !NeedSignIn || !ForceSignIn)
 #endif
             Render(gameTime);
             if (!Disable2DRendering)
@@ -191,6 +195,7 @@ namespace Neat
 
                 SpriteBatch.Begin();
                 TextEffects.Draw(gameTime);
+                ElegantTextEngine.Draw(gameTime);
                 SpriteBatch.End();
 #endif
 
@@ -228,13 +233,16 @@ namespace Neat
         }
         protected virtual void DrawMouse(Vector2 pos)
         {
-            SpriteBatch.Draw(GetTexture("mousePointer"),
-                pos, Color.White);
+            SpriteBatch.Draw(GetTexture("mousePointer"), pos, Color.White);
         }
         protected virtual void Render(GameTime gameTime)
         {
             if (Screens.ContainsKey(ActiveScreen))
+            {
+                Screens[ActiveScreen].BeforeRender(gameTime);
                 Screens[ActiveScreen].Render(gameTime);
+                Screens[ActiveScreen].AfterRender(gameTime);
+            }
         }
         
         public void Write(string text, Vector2 position)

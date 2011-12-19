@@ -33,6 +33,8 @@ namespace Neat
         public uint Frame { get { return game.Frame; }}
         public Form Form;
         public List<GameComponent> Components = new List<GameComponent>();
+        public EffectChain EffectChain;
+        public bool RenderFormWithEffects = true;
 #endregion
 
 #region Initialize
@@ -44,6 +46,7 @@ namespace Neat
         public virtual void Initialize()
         {
             Form = new Form(game);
+            if (EffectChain == null) EffectChain = new EffectChain(game);
             foreach (var item in Components)
             {
                 item.Initialize();
@@ -63,6 +66,7 @@ namespace Neat
 #region Files
         public virtual void LoadContent()
         {
+            if (EffectChain == null) EffectChain = new EffectChain(game);
         }
 #endregion 
 
@@ -84,9 +88,24 @@ namespace Neat
 #endregion
 
 #region Render
+        public virtual void BeforeRender(GameTime gameTime)
+        {
+            if (EffectChain != null) EffectChain.Begin(gameTime);
+        }
+
         public virtual void Render(GameTime gameTime)
         {
-            Form.Draw(gameTime);
+        }
+
+        public virtual void AfterRender(GameTime gameTime)
+        {
+            if (EffectChain != null)
+            {
+                if (RenderFormWithEffects) Form.Draw(gameTime);
+                EffectChain.End(gameTime);
+                if (!RenderFormWithEffects) Form.Draw(gameTime);
+            }
+            else Form.Draw(gameTime);
         }
 #endregion
 

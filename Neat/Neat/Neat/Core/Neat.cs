@@ -43,6 +43,7 @@ namespace Neat
         GraphicsDevice _graphicsDevice = null;
         ContentManager _content = null;
         public Components.TextEffects TextEffects = null;
+        public Components.ElegantTextEngine ElegantTextEngine = null;
         public new GraphicsDevice GraphicsDevice
         {
             get { if (_graphicsDevice != null) return _graphicsDevice; else return base.GraphicsDevice; }
@@ -158,9 +159,11 @@ namespace Neat
 
             Console = new Neat.Components.Console(this);
             TextEffects = new Neat.Components.TextEffects(this);
+            ElegantTextEngine = new Neat.Components.ElegantTextEngine(this);
 
             Components.Add(Console);
             Components.Add(TextEffects);
+            Components.Add(ElegantTextEngine);
 #if LIVE
             Components.Add(new GamerServicesComponent(this));
 #endif
@@ -223,6 +226,9 @@ namespace Neat
             FirstTime();
 
             if (File.Exists("autoexec.nsc")) Console.Run("call autoexec.nsc");
+
+            Console.Run("et_echo Engine Initialization Complete.$_" +
+                "et_echo This is Neat.");
         }
 
         protected override void Initialize()

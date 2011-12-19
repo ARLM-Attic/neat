@@ -28,7 +28,10 @@ namespace Neat.Components
         Console Console;
         public Runtime Nui;
         public bool ReceiveVideo = false;
+        public bool ReceiveDepth = false;
         public Texture2D KinectRGB;
+        public Texture2D KinectSkeletons;
+        public int[,] KinectDepths;
         int xMax = 640;
         int yMax = 480;
         public SkeletonData[] Skeletons = new SkeletonData[2];
@@ -49,16 +52,27 @@ namespace Neat.Components
         /// </summary>
         public override void Initialize()
         {
+            Initialize(false);
+        }
+
+        public virtual void Initialize(bool useDepth)
+        {
             // TODO: Add your initialization code here
             Console.AddCommand("k_tilt", k_tilt);
             Console.AddCommand("k_init", k_init);
             Console.AddCommand("k_uninit", k_uninit);
             Console.AddCommand("k_video", k_video);
 
+            if (useDepth)
+                Console.AddCommand("k_depth", k_depth);
+
             try
             {
                 Nui = Runtime.Kinects[0];
-                Nui.Initialize(RuntimeOptions.UseSkeletalTracking | RuntimeOptions.UseColor);
+                if (useDepth)
+                    Nui.Initialize(RuntimeOptions.UseSkeletalTracking | RuntimeOptions.UseColor | RuntimeOptions.UseDepthAndPlayerIndex);
+                else
+                    Nui.Initialize(RuntimeOptions.UseSkeletalTracking | RuntimeOptions.UseColor);
             }
             catch
             {
@@ -68,26 +82,65 @@ namespace Neat.Components
             NeatGame game = ((NeatGame)this.Game);
             Nui.VideoFrameReady += new EventHandler<ImageFrameReadyEventArgs>(nui_VideoFrameReady);
             Nui.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(nui_SkeletonFrameReady);
+            Nui.DepthFrameReady += new EventHandler<ImageFrameReadyEventArgs>(Nui_DepthFrameReady);
             KinectRGB = new Texture2D(game.GraphicsDevice, xMax, yMax);
             game.AssignTexture(new Sprite(KinectRGB), "kinectrgb");
+
+            if (useDepth)
+            {
+                KinectSkeletons = new Texture2D(game.GraphicsDevice, xMax, yMax);
+                game.AssignTexture(new Sprite(KinectSkeletons), "kinectskeletons");
+            }
+            
             Console.WriteLine("Kinect initialized successfully!");
 
             base.Initialize();
         }
+
+
         #endregion
 
         #region Events
         void nui_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             var trackedSkeletons = from s in e.SkeletonFrame.Skeletons
-                                   where
-                                       s.TrackingState == SkeletonTrackingState.Tracked
-                                   select s;
+                                    where
+                                        s.TrackingState == SkeletonTrackingState.Tracked
+                                    select s;
             trackedSkeletonsCount = trackedSkeletons.Count();
             for (int i = 0; i < trackedSkeletonsCount; i++)
             {
                 Skeletons[i] = trackedSkeletons.ElementAt(i);
             }
+        }
+
+        void Nui_DepthFrameReady(object sender, ImageFrameReadyEventArgs e)
+        {
+            if (!ReceiveDepth) return;
+            PlanarImage image = e.ImageFrame.Image;
+
+            int depthIndex = 0;
+            Color[] bitmap = new Color[xMax * yMax];
+            KinectDepths = new int[image.Width, image.Height];
+            for (int y = 0; y < image.Height; y++)
+            {
+                var heightOffset = y * image.Width;
+                for (int x = 0; x < image.Width; x++)
+                {
+                    var index = ((image.Width - x - 1) + heightOffset) * 4;
+                    var distance = GetDistanceWithPlayerIndex(image.Bits[depthIndex], image.Bits[depthIndex + 1]);
+                    KinectDepths[x, y] = distance;
+                    Color c = Color.Transparent;
+                    if (GetPlayerIndex(image.Bits[depthIndex]) > 1) c = Color.Blue;
+                    else if (GetPlayerIndex(image.Bits[depthIndex]) > 0) c = Color.Red;
+                    bitmap[2*y * xMax + 2*x] = c;
+                    bitmap[2*y * xMax + (2*x + 1)] = c;
+                    bitmap[(2*y + 1) * xMax + 2*x] = c;
+                    bitmap[(2*y + 1) * xMax + (2*x + 1)] = c;
+                    depthIndex += 2;
+                }
+            }
+            KinectSkeletons.SetData(bitmap);
         }
 
         void nui_VideoFrameReady(object sender, ImageFrameReadyEventArgs e)
@@ -96,12 +149,12 @@ namespace Neat.Components
             PlanarImage image = e.ImageFrame.Image;
 
             int offset = 0;
-            Color[] bitmap = new Color[xMax * yMax];
-            for (int y = 0; y < yMax; y++)
+            Color[] bitmap = new Color[image.Width * image.Height]; //new Color[xMax * yMax];
+            for (int y = 0; y < image.Height; y++)
             {
-                for (int x = 0; x < xMax; x++)
+                for (int x = 0; x < image.Width; x++)
                 {
-                    bitmap[y * xMax + x] = new Color(image.Bits[offset + 2], image.Bits[offset + 1], image.Bits[offset], 255);
+                    bitmap[y * image.Width + x] = new Color(image.Bits[offset + 2], image.Bits[offset + 1], image.Bits[offset], 255);
                     offset += 4;
                 }
             }
@@ -131,6 +184,11 @@ namespace Neat.Components
             Nui.VideoStream.Open(ImageStreamType.Video, 2, ImageResolution.Resolution640x480, ImageType.Color);
             ReceiveVideo = true;
         }
+        public void OpenDepthStream()
+        {
+            Nui.DepthStream.Open(ImageStreamType.Depth, 2, ImageResolution.Resolution320x240, ImageType.DepthAndPlayerIndex);
+            ReceiveDepth = true;
+        }
         public void Tilt(int degrees)
         {
             Nui.NuiCamera.ElevationAngle = degrees;
@@ -138,6 +196,17 @@ namespace Neat.Components
         #endregion
 
         #region Helpers
+
+        int GetDistanceWithPlayerIndex(byte firstFrame, byte secondFrame)
+        {
+            return (int)(firstFrame >> 3 | secondFrame << 5);
+        }
+
+        int GetPlayerIndex(byte firstFrame)
+        {
+            return (int)firstFrame & 7;
+        }
+
         public Vector3 ToVector3(JointID joint, int skeletonId = 0)
         {
             var p = Skeletons[skeletonId].Joints[joint].Position;
@@ -185,47 +254,66 @@ namespace Neat.Components
         #endregion
 
         #region Render
-        public void DrawSkeleton(SpriteBatch spriteBatch, LineBrush lb, Vector2 position, Vector2 size, Color color, int skeletonId = 0)
-        {
-            if (Skeletons.Length <= skeletonId || Skeletons[skeletonId] == null)
-            {
-                //Skeleton not found. Draw an X
-                lb.Draw(spriteBatch, position, position + size, color);
-                lb.Draw(spriteBatch, new LineSegment(position.X+size.X, position.Y, position.X, position.Y + size.Y), color);
-                return;
-            }
+public void DrawSkeleton(SpriteBatch spriteBatch, LineBrush lb, Vector2 position, Vector2 size, Color color, int skeletonId = 0)
+{
+    if (Skeletons.Length <= skeletonId || Skeletons[skeletonId] == null)
+    {
+        //Skeleton not found. Draw an X
+        lb.Draw(spriteBatch, position, position + size, color);
+        lb.Draw(spriteBatch, new LineSegment(position.X+size.X, position.Y, position.X, position.Y + size.Y), color);
+        return;
+    }
 
-            //Right Hand
-            lb.Draw(spriteBatch, ToVector2(JointID.HandRight, size, skeletonId), ToVector2(JointID.WristRight, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.WristRight, size, skeletonId), ToVector2(JointID.ElbowRight, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.ElbowRight, size, skeletonId), ToVector2(JointID.ShoulderRight, size, skeletonId), color, position);
+    //Right Hand
+    lb.Draw(spriteBatch, ToVector2(JointID.HandRight, size, skeletonId), 
+        ToVector2(JointID.WristRight, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.WristRight, size, skeletonId), 
+        ToVector2(JointID.ElbowRight, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.ElbowRight, size, skeletonId), 
+        ToVector2(JointID.ShoulderRight, size, skeletonId), color, position);
 
-            //Head & Shoulders
-            lb.Draw(spriteBatch, ToVector2(JointID.ShoulderRight, size, skeletonId), ToVector2(JointID.ShoulderCenter, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.Head, size, skeletonId), ToVector2(JointID.ShoulderCenter, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.ShoulderCenter, size, skeletonId), ToVector2(JointID.ShoulderLeft, size, skeletonId), color, position);
+    //Head & Shoulders
+    lb.Draw(spriteBatch, ToVector2(JointID.ShoulderRight, size, skeletonId), 
+        ToVector2(JointID.ShoulderCenter, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.Head, size, skeletonId), 
+        ToVector2(JointID.ShoulderCenter, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.ShoulderCenter, size, skeletonId), 
+        ToVector2(JointID.ShoulderLeft, size, skeletonId), color, position);
             
-            //Left Hand
-            lb.Draw(spriteBatch, ToVector2(JointID.HandLeft, size, skeletonId), ToVector2(JointID.WristLeft, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.WristLeft, size, skeletonId), ToVector2(JointID.ElbowLeft, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.ElbowLeft, size, skeletonId), ToVector2(JointID.ShoulderLeft, size, skeletonId), color, position);
+    //Left Hand
+    lb.Draw(spriteBatch, ToVector2(JointID.HandLeft, size, skeletonId), 
+        ToVector2(JointID.WristLeft, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.WristLeft, size, skeletonId), 
+        ToVector2(JointID.ElbowLeft, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.ElbowLeft, size, skeletonId), 
+        ToVector2(JointID.ShoulderLeft, size, skeletonId), color, position);
 
-            //Hips & Spine
-            lb.Draw(spriteBatch, ToVector2(JointID.HipLeft, size, skeletonId), ToVector2(JointID.HipCenter, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.HipRight, size, skeletonId), ToVector2(JointID.HipCenter, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.Spine, size, skeletonId), ToVector2(JointID.HipCenter, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.Spine, size, skeletonId), ToVector2(JointID.ShoulderCenter, size, skeletonId), color, position);
+    //Hips & Spine
+    lb.Draw(spriteBatch, ToVector2(JointID.HipLeft, size, skeletonId), 
+        ToVector2(JointID.HipCenter, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.HipRight, size, skeletonId), 
+        ToVector2(JointID.HipCenter, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.Spine, size, skeletonId), 
+        ToVector2(JointID.HipCenter, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.Spine, size, skeletonId), 
+        ToVector2(JointID.ShoulderCenter, size, skeletonId), color, position);
 
-            //Left foot
-            lb.Draw(spriteBatch, ToVector2(JointID.HipLeft, size, skeletonId), ToVector2(JointID.KneeLeft, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.KneeLeft, size, skeletonId), ToVector2(JointID.AnkleLeft, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.AnkleLeft, size, skeletonId), ToVector2(JointID.FootLeft, size, skeletonId), color, position);
+    //Left foot
+    lb.Draw(spriteBatch, ToVector2(JointID.HipLeft, size, skeletonId), 
+        ToVector2(JointID.KneeLeft, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.KneeLeft, size, skeletonId), 
+        ToVector2(JointID.AnkleLeft, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.AnkleLeft, size, skeletonId), 
+        ToVector2(JointID.FootLeft, size, skeletonId), color, position);
 
-            //Right foot
-            lb.Draw(spriteBatch, ToVector2(JointID.HipRight, size, skeletonId), ToVector2(JointID.KneeRight, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.KneeRight, size, skeletonId), ToVector2(JointID.AnkleRight, size, skeletonId), color, position);
-            lb.Draw(spriteBatch, ToVector2(JointID.AnkleRight, size, skeletonId), ToVector2(JointID.FootRight, size, skeletonId), color, position);
-        }
+    //Right foot
+    lb.Draw(spriteBatch, ToVector2(JointID.HipRight, size, skeletonId), 
+        ToVector2(JointID.KneeRight, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.KneeRight, size, skeletonId), 
+        ToVector2(JointID.AnkleRight, size, skeletonId), color, position);
+    lb.Draw(spriteBatch, ToVector2(JointID.AnkleRight, size, skeletonId), 
+        ToVector2(JointID.FootRight, size, skeletonId), color, position);
+}
         #endregion
 
         #region Console
@@ -257,6 +345,16 @@ namespace Neat.Components
                 Console.WriteLine(ReceiveVideo.ToString());
             }
             else if (args[1].ToLower() == "open") OpenVideoStream();
+            else ReceiveVideo = bool.Parse(args[1]);
+        }
+
+        void k_depth(IList<string> args)
+        {
+            if (args.Count == 1)
+            {
+                Console.WriteLine(ReceiveVideo.ToString());
+            }
+            else if (args[1].ToLower() == "open") OpenDepthStream();
             else ReceiveVideo = bool.Parse(args[1]);
         }
         #endregion

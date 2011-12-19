@@ -22,6 +22,7 @@ namespace Neat.Components
         public void Write(string text="")
         {
             Debug.Write(text);
+            if (buffer == null) buffer = new List<string>();
             if (buffer.Count > 0) buffer[buffer.Count - 1] += text;
             else buffer.Add(text);
         }
