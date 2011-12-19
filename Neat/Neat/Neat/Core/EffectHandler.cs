@@ -34,7 +34,7 @@ namespace Neat
         public virtual void EndDraw(GameTime gameTime)
         {
             Game.PopTarget(true);
-            //Game.GraphicsDevice.Clear(Color.Black);
+            Game.GraphicsDevice.Clear(Color.Black);
             Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 null, DepthStencilState.None, RasterizerState.CullNone, Effect);
             Game.SpriteBatch.Draw(Target, Vector2.Zero, FinalTint);

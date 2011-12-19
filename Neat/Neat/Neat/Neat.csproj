@@ -55,7 +55,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\x86\Release</OutputPath>
-    <DefineConstants>TRACE;WINDOWS KINECT LIVE</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS KINECT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -117,7 +117,8 @@
     <Compile Include="Components\TextEffects.cs" />
     <Compile Include="Core\EffectChain.cs" />
     <Compile Include="Core\EffectHandler.cs" />
-    <Compile Include="Effects\Ripple.cs" />
+    <Compile Include="Effects\CropEffect.cs" />
+    <Compile Include="Effects\RippleEffect.cs" />
     <Compile Include="FormsAux\GraphicsDeviceService.cs" />
     <Compile Include="Game\CalibrationScreen.cs" />
     <Compile Include="Graphics\LineBrush.cs" />

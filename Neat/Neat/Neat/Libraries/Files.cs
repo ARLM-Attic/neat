@@ -97,8 +97,9 @@ namespace Neat
 
             LoadEffect("Effects\\ColorFilter");
             LoadEffect(@"Effects\Ripple");
-
-            //ElegantTextEngine.Initialize();
+            LoadEffect(@"Effects\Crop");
+            
+            ElegantTextEngine.LoadContent();
 
             Debug.WriteLine("Begin Screens LoadContent");
             foreach (var p in Screens)

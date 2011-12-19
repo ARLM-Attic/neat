@@ -161,6 +161,7 @@ namespace Neat.Components
         public ElegantMessageSortModes Sort = ElegantMessageSortModes.NewOnTop;
         public Vector2 Position;
         public bool Mute = false;
+        RenderTarget2D target;
         public ElegantTextEngine(NeatGame game)
             : base(game)
         {
@@ -194,6 +195,12 @@ namespace Neat.Components
                 Messages.AddLast(msg);
         }
 
+        public virtual void LoadContent()
+        {
+            target = new RenderTarget2D(Game.GraphicsDevice, Game.GameWidth, Game.GameHeight, false,
+                SurfaceFormat.Alpha8, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+        }
+
         public override void Update(GameTime gameTime)
         {
             var n = Messages.First;
@@ -221,7 +228,7 @@ namespace Neat.Components
             float y = Position.Y;
             const float vspacing = 4.0f;
             const float hspacing = 10.0f;
-            
+            Effect crop = Game.GetEffect("crop");
             while (n != null)
             {
                 Vector2 size = font.MeasureString(n.Value.Text);
@@ -233,17 +240,38 @@ namespace Neat.Components
                     n.Value.Dead = true;
                     PlayDeathSound();
                 }
-                Game.SpriteBatch.Draw(solid,
-                    new Rectangle(
+                Rectangle bounds = new Rectangle(
                         (int)((Align == ElegantMessageAlignModes.Left ? 0 : -size.X) - hspacing + Position.X),
-                        (int)(y), 
-                        (int)(rectWidth), 
-                        (int)(size.Y + 2.0f*vspacing)), BackColor);
+                        (int)(y),
+                        (int)(rectWidth),
+                        (int)(size.Y + 2.0f * vspacing));
+
+                Game.SpriteBatch.Draw(solid,
+                    bounds, BackColor);
                 y += vspacing;
+
+                Game.SpriteBatch.End();
+                Game.PushTarget(target);
+                Game.GraphicsDevice.Clear(Color.Transparent);
+                Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                 Game.SpriteBatch.DrawString(font, n.Value.Text,
-                    new Vector2((Align == ElegantMessageAlignModes.Left ? 0 : -size.X) + Position.X, 
+                    new Vector2((Align == ElegantMessageAlignModes.Left ? 0 : -size.X) + Position.X,
                         y),
                     ForeColor);
+                Game.SpriteBatch.End();
+                Game.PopTarget();
+                Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                    null, DepthStencilState.None, RasterizerState.CullNone, crop);
+                crop.Parameters["top"].SetValue((float)bounds.Top/(float)Game.GameHeight);
+                crop.Parameters["down"].SetValue((float)bounds.Bottom / (float)Game.GameHeight);
+                crop.Parameters["left"].SetValue((float)bounds.Left / (float)Game.GameWidth);
+                crop.Parameters["right"].SetValue((float)bounds.Right / (float)Game.GameWidth);
+                Game.SpriteBatch.Draw(target, Vector2.Zero, ForeColor);
+                /*Game.SpriteBatch.DrawString(font, n.Value.Text,
+                    new Vector2((Align == ElegantMessageAlignModes.Left ? 0 : -size.X) + Position.X, 
+                        y),
+                    ForeColor);*/
+                Game.RestartBatch();
                 y += vspacing + size.Y;
                 n = n.Next;
             }
