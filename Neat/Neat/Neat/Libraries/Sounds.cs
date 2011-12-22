@@ -116,7 +116,7 @@ namespace Neat
 
         public SFXList GetSFXList(string name)
         {
-            if (name == null || MuteAllSounds) return sounds["mute"];
+            if (name == null) return sounds["mute"];
             try
             {
                 name = name.ToLower();
