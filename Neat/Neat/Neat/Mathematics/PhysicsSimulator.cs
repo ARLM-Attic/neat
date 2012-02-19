@@ -34,6 +34,7 @@ namespace Neat.Mathematics
         public Vector2 MaxAcceleration = new Vector2(-1);
         public Vector2 GravityNormal = new Vector2(0, -1);
         public bool PreventSlippingOnSlopes = true; //Hopefully this is just temporary and I'll find the right way to do this
+        public bool Convex = false;
         float _mass = 0;
         Neat.Components.Console console;
         public float Mass
@@ -52,33 +53,35 @@ namespace Neat.Mathematics
                 _mass = value;
             }
         }
-        public object entity;
-        public PhysicsSimulator simulator;
-        public NeatGame game;
+        public object Entity;
+        public PhysicsSimulator Simulator;
+        public NeatGame Game;
 
         public Body(PhysicsSimulator i_sim, NeatGame i_game,
             object i_entity, Polygon i_mesh, float i_mass)
         {
-            simulator = i_sim;
-            game = i_game;
-            entity = i_entity;
+            Simulator = i_sim;
+            Game = i_game;
+            Entity = i_entity;
             Mass = i_mass;
             Mesh = i_mesh;
 
-            simulator.Bodies.Add(this);
+            Simulator.Bodies.Add(this);
             Stop();
+            Convex = Mesh.IsConvex();
         }
 
         public Body(PhysicsSimulator i_sim, NeatGame i_game,
             Polygon i_mesh, float i_mass)
         {
-            simulator = i_sim;
-            game = i_game;
+            Simulator = i_sim;
+            Game = i_game;
             Mass = i_mass;
             Mesh = i_mesh;
 
-            simulator.Bodies.Add(this);
+            Simulator.Bodies.Add(this);
             Stop();
+            Convex = Mesh.IsConvex();
         }
 
         public Body()
@@ -119,8 +122,8 @@ namespace Neat.Mathematics
         #region Console Commands
         public void AttachToConsole()
         {
-            if (game == null) return;
-            console = game.Console;
+            if (Game == null) return;
+            console = Game.Console;
             console.AddCommand("bd_static", bd_static);
             console.AddCommand("bd_free", bd_free);
             console.AddCommand("bd_gravity", bd_gravity);
@@ -181,12 +184,12 @@ namespace Neat.Mathematics
 
         void bd_detach(IList<string> args)
         {
-            simulator.Bodies.Remove(this);
+            Simulator.Bodies.Remove(this);
         }
 
         void bd_attach(IList<string> args)
         {
-            if (!simulator.Bodies.Contains(this)) simulator.Bodies.Add(this);
+            if (!Simulator.Bodies.Contains(this)) Simulator.Bodies.Add(this);
         }
         #endregion
     }
@@ -246,6 +249,7 @@ namespace Neat.Mathematics
                 p = r + position;
                 //Polygon nm = new Polygon(body.Mesh);
                 body.Mesh.AutoTriangulate = true;
+                if (body.Mesh.Triangles == null) body.Mesh.Triangulate();
                 body.Mesh.Offset(r);
 
                 if (!body.IsFree)
@@ -254,10 +258,35 @@ namespace Neat.Mathematics
                     {
                         var item = Bodies[j];
 
-                        #region SAT
                         if (i == j) continue;
+
+                        if (item.Convex && body.Convex)
+                        {
+                            var push = Vector2.Zero;
+
+                            if (Polygon.Collide(body.Mesh, item.Mesh, out push))
+                            {
+                                Vector2 pd = push;
+                                pd.Normalize();
+                                pd = push - AllowedPenetrationDepth * pd;
+                                if (body.PreventSlippingOnSlopes)
+                                    if (Math.Abs(pd.X) < StickCoef) pd.X = 0;
+                                /*
+                                 * EXPERIMENT:
+                                 * Move both bodies based on their weight
+                                 */
+
+
+                                body.Mesh.Offset(pd);
+                                if (body.Collide != null) body.Collide(item.Entity, pd);
+                            }
+                        }
+                        else
+                        #region SAT With Triangles
                         foreach (var tri1 in body.Mesh.Triangles)
                         {
+                            if (item.Mesh.Triangles == null)
+                                item.Mesh.Triangulate();
                             foreach (var tri2 in item.Mesh.Triangles)
                             {
                                 var p1 = tri1.ToPolygon();
@@ -272,7 +301,7 @@ namespace Neat.Mathematics
                                     if (body.PreventSlippingOnSlopes)
                                         if (Math.Abs(pd.X) < StickCoef) pd.X = 0;
                                     body.Mesh.Offset(pd);
-                                    if (body.Collide != null) body.Collide(item.entity,pd);
+                                    if (body.Collide != null) body.Collide(item.Entity,pd);
                                 }
                             }
                         }
