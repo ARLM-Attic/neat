@@ -16,199 +16,24 @@ using Neat.Graphics;
 
 namespace Neat.Mathematics
 {
-    public class Body
-    {
-        public Action<object,Vector2> Collide = null; 
-        public Polygon Mesh;
-        public bool IsStatic = true;
-        public bool IsFree = false;
-        //public bool Pushable = true;
-        public bool AttachToGravity = true;
-        public Vector2 Force;
-        public Vector2 Acceleration;
-        public Vector2 Velocity;
-        public float InverseMass = 0;
-        //public float Elasticity = 0; //[0=no elasticity, 1]
-        //public float FrictionCoef = 0.1f; //[0=no friction, 1]
-        public Vector2 MaxSpeed = new Vector2(-1);
-        public Vector2 MaxAcceleration = new Vector2(-1);
-        public Vector2 GravityNormal = new Vector2(0, -1);
-        public bool PreventSlippingOnSlopes = true; //Hopefully this is just temporary and I'll find the right way to do this
-        public bool Convex = false;
-        float _mass = 0;
-        Neat.Components.Console console;
-        public float Mass
-        {
-            get
-            {
-                return _mass;
-            }
-            set
-            {
-                if (value != 0) InverseMass = 1f / value;
-                else
-                {
-                    InverseMass = float.MaxValue - 1f;
-                }
-                _mass = value;
-            }
-        }
-        public object Entity;
-        public PhysicsSimulator Simulator;
-        public NeatGame Game;
-
-        public Body(PhysicsSimulator i_sim, NeatGame i_game,
-            object i_entity, Polygon i_mesh, float i_mass)
-        {
-            Simulator = i_sim;
-            Game = i_game;
-            Entity = i_entity;
-            Mass = i_mass;
-            Mesh = i_mesh;
-
-            Simulator.Bodies.Add(this);
-            Stop();
-            Convex = Mesh.IsConvex();
-        }
-
-        public Body(PhysicsSimulator i_sim, NeatGame i_game,
-            Polygon i_mesh, float i_mass)
-        {
-            Simulator = i_sim;
-            Game = i_game;
-            Mass = i_mass;
-            Mesh = i_mesh;
-
-            Simulator.Bodies.Add(this);
-            Stop();
-            Convex = Mesh.IsConvex();
-        }
-
-        public Body()
-        {
-        }
-
-        public void Stop()
-        {
-            Force = Vector2.Zero;
-            Acceleration = Vector2.Zero;
-            Velocity = Vector2.Zero;
-        }
-
-        public bool Moves
-        {
-            get
-            {
-                return Velocity != Vector2.Zero;
-            }
-        }
-
-        public void ApplyForce(Vector2 f)
-        {
-            Force += f;
-        }
-
-        public void ApplyForce(float x, float y)
-        {
-            Force.X += x;
-            Force.Y += y;
-        }
-
-        public void ApplyImpact(Vector2 p)
-        {
-            Velocity += p / Mass;
-        }
-
-        #region Console Commands
-        public void AttachToConsole()
-        {
-            if (Game == null) return;
-            console = Game.Console;
-            console.AddCommand("bd_static", bd_static);
-            console.AddCommand("bd_free", bd_free);
-            console.AddCommand("bd_gravity", bd_gravity);
-            console.AddCommand("bd_mass", bd_mass);
-            console.AddCommand("bd_selectmesh", bd_selectmesh);
-            console.AddCommand("bd_velocity", bd_velocity);
-            console.AddCommand("bd_impact", bd_impact);
-            console.AddCommand("bd_detach", bd_detach);
-            console.AddCommand("bd_attach", bd_attach);
-            console.AddCommand("bd_gravitynormal", bd_gravitynormal);
-        }
-
-        void bd_static(IList<string> args)
-        {
-            if (args.Count > 1) IsStatic = bool.Parse(args[1]);
-            else console.WriteLine(IsStatic.ToString());
-        }
-
-        void bd_free(IList<string> args)
-        {
-            if (args.Count > 1) IsFree = bool.Parse(args[1]);
-            else console.WriteLine(IsFree.ToString());
-        }
-
-        void bd_gravity(IList<string> args)
-        {
-            if (args.Count > 1) AttachToGravity = bool.Parse(args[1]);
-            else console.WriteLine(AttachToGravity.ToString());
-        }
-
-        void bd_mass(IList<string> args)
-        {
-            if (args.Count > 1) Mass = float.Parse(args[1]);
-            else console.WriteLine(Mass.ToString());
-        }
-
-        void bd_selectmesh(IList<string> args)
-        {
-            //TODO: Implement bd_selectmesh
-        }
-
-        void bd_velocity(IList<string> args)
-        {
-            if (args.Count > 1) Velocity = GeometryHelper.String2Vector(args[1]);
-            else console.WriteLine(GeometryHelper.Vector2String(Velocity));
-        }
-
-        void bd_gravitynormal(IList<string> args)
-        {
-            if (args.Count > 1) GravityNormal = GeometryHelper.String2Vector(args[1]);
-            else console.WriteLine(GeometryHelper.Vector2String(GravityNormal));
-        }
-
-        void bd_impact(IList<string> args)
-        {
-            ApplyImpact(GeometryHelper.String2Vector(args[1]));
-        }
-
-        void bd_detach(IList<string> args)
-        {
-            Simulator.Bodies.Remove(this);
-        }
-
-        void bd_attach(IList<string> args)
-        {
-            if (!Simulator.Bodies.Contains(this)) Simulator.Bodies.Add(this);
-        }
-        #endregion
-    }
-
     public class PhysicsSimulator : GameComponent
     {
         const float _epsilon = 1f;
         const float _bigNumber = 100f;
         Vector2 negativeOne = new Vector2(-1);
 
-        public float AllowedPenetrationDepth = -0.1f;
+        public float AllowedPenetrationDepth = 0;// -0.1f;
         public float DampingCoef = 0.95f;
         public Vector2 Gravity = new Vector2(0, 0.98f);
         public List<Body> Bodies = new List<Body>();
         public float SpeedCoef = 0.025f;
         public float StickCoef = 0.8f;
-        
-        float speed;
+        public short MaxUpdatePerBody = 1;
+
+
+        public float Speed { get; protected set; }
         public NeatGame game;
+        short[] bodyUpdateCount;
 
         Neat.Components.Console console { get { if (game == null) return null; else return game.Console; } set { game.Console = value; } }
 
@@ -223,6 +48,7 @@ namespace Neat.Mathematics
             AttachToConsole();
         }
 
+
         public override void Update(GameTime gameTime)
         {
             Update((float)(gameTime.ElapsedGameTime.Milliseconds + 1));
@@ -230,59 +56,94 @@ namespace Neat.Mathematics
 
         public void Update(float time)
         {
-            Vector2 a, v, p, r;
-            speed = (time * SpeedCoef);
+            bodyUpdateCount = new short[Bodies.Count];
+         
+            Speed = (time * SpeedCoef);
             for (int i = 0; i < Bodies.Count; i++)
+                UpdateBody(i);
+        }
+
+        void UpdateBody(int i)
+        {
+            if (MaxUpdatePerBody < ++bodyUpdateCount[i]) return;
+            Debug.Assert(bodyUpdateCount[i] != 2);
+
+            Vector2 a, v, p, r;
+            var body = Bodies[i];
+            //if (body.IsStatic) return;
+            
+            a = body.Force * body.InverseMass -
+                (body.AttachToGravity ?
+                new Vector2(Gravity.X * body.GravityNormal.X, Gravity.Y * body.GravityNormal.Y) :
+                Vector2.Zero);
+            v = a * Speed + body.Velocity;
+            Vector2 position, size;
+            body.Mesh.GetPositionAndSize(out position, out size);
+
+            v.X = MathHelper.Clamp(v.X, -body.MaxSpeed.X, body.MaxSpeed.X);
+            v.Y = MathHelper.Clamp(v.Y, -body.MaxSpeed.Y, body.MaxSpeed.Y);
+
+            r = v * Speed;
+            //r = 0.5f * a * Speed * Speed + body.Velocity * Speed;
+            p = r + position;
+            //Polygon nm = new Polygon(body.Mesh);
+            body.Mesh.AutoTriangulate = true;
+            if (body.Mesh.Triangles == null) body.Mesh.Triangulate();
+            body.Mesh.Offset(r);
+            
+            if (body.IsStatic) return;
+
+            if (!body.IsFree && !body.IsStatic)
             {
-                var body = Bodies[i];
-                if (body.IsStatic) continue;
-                a = body.Force * body.InverseMass -
-                    (body.AttachToGravity ? 
-                    new Vector2(Gravity.X * body.GravityNormal.X, Gravity.Y * body.GravityNormal.Y) : 
-                    Vector2.Zero);
-                v = a * speed + body.Velocity;
-                Vector2 position,size;
-                body.Mesh.GetPositionAndSize(out position, out size);
-
-                r = v * speed;
-                //r = 0.5f * a * Speed * Speed + body.Velocity * Speed;
-                p = r + position;
-                //Polygon nm = new Polygon(body.Mesh);
-                body.Mesh.AutoTriangulate = true;
-                if (body.Mesh.Triangles == null) body.Mesh.Triangulate();
-                body.Mesh.Offset(r);
-
-                if (!body.IsFree)
+                for (int j = 0; j < Bodies.Count; j++)
                 {
-                    for (int j = 0; j < Bodies.Count; j++)
+                    var item = Bodies[j];
+                    if (i == j) continue;
+
+                    var push = Vector2.Zero;
+                    bool collide = false;
+                    if (item.Convex && body.Convex)
                     {
-                        var item = Bodies[j];
-
-                        if (i == j) continue;
-
-                        if (item.Convex && body.Convex)
+                        if (Polygon.Collide(body.Mesh, item.Mesh, out push))
                         {
-                            var push = Vector2.Zero;
-
-                            if (Polygon.Collide(body.Mesh, item.Mesh, out push))
+                            Vector2 pd = push;
+                            pd.Normalize();
+                            pd = push - AllowedPenetrationDepth * pd;
+                            if (body.PreventSlippingOnSlopes)
+                                if (Math.Abs(pd.X) < StickCoef) pd.X = 0;
+                            if (GeometryHelper.IsNaN(pd)) pd = Vector2.Zero;
+                            /*
+                             * EXPERIMENT:
+                             * Move both bodies based on their weight
+                             */
+                            else if (item.IsStatic)
                             {
-                                Vector2 pd = push;
-                                pd.Normalize();
-                                pd = push - AllowedPenetrationDepth * pd;
-                                if (body.PreventSlippingOnSlopes)
-                                    if (Math.Abs(pd.X) < StickCoef) pd.X = 0;
-                                /*
-                                 * EXPERIMENT:
-                                 * Move both bodies based on their weight
-                                 */
-
-
-                                body.Mesh.Offset(pd);
+                                if (!item.IsFree) body.Mesh.Offset(pd);
                                 if (body.Collide != null) body.Collide(item.Entity, pd);
                             }
+                            else
+                            {
+                                //Lerp between masses
+
+                                var massSum = body.InverseMass + item.InverseMass;
+                                var bodyW = body.InverseMass / massSum;
+                                var itemW = bodyW - 1.0f;
+                                var bodyPV = pd * bodyW;
+                                var itemPV = pd * itemW;
+                                
+                                if (!item.IsFree)
+                                {
+                                    UpdateBody(j);
+                                    body.Mesh.Offset(bodyPV);
+                                }
+                                if (body.Collide != null) body.Collide(item.Entity, bodyPV);
+                                if (item.Collide != null) item.Collide(body.Entity, itemPV);
+                            }
                         }
-                        else
-                        #region SAT With Triangles
+                    }
+                    else
+                    {
+                    #region SAT With Triangles
                         foreach (var tri1 in body.Mesh.Triangles)
                         {
                             if (item.Mesh.Triangles == null)
@@ -292,7 +153,7 @@ namespace Neat.Mathematics
                                 var p1 = tri1.ToPolygon();
                                 var p2 = tri2.ToPolygon();
                                 var push = Vector2.Zero;
-                                
+
                                 if (Polygon.Collide(p1, p2, out push))
                                 {
                                     Vector2 pd = push;
@@ -300,43 +161,70 @@ namespace Neat.Mathematics
                                     pd = push - AllowedPenetrationDepth * pd;
                                     if (body.PreventSlippingOnSlopes)
                                         if (Math.Abs(pd.X) < StickCoef) pd.X = 0;
-                                    body.Mesh.Offset(pd);
-                                    if (body.Collide != null) body.Collide(item.Entity,pd);
+                                    /*
+                                     * EXPERIMENT:
+                                     * Move both bodies based on their weight
+                                     */
+                                    if (body.IsStatic) pd = Vector2.Zero;
+                                    else if (item.IsStatic)
+                                    {
+                                        body.Mesh.Offset(pd);
+                                        if (body.Collide != null) body.Collide(item.Entity, pd);
+                                    }
+                                    else
+                                    {
+                                        //Lerp between masses
+                                        var massSum = body.InverseMass + item.InverseMass;
+                                        var bodyW = body.InverseMass / massSum;
+                                        var itemW = bodyW - 1.0f;
+                                        var bodyPV = pd * bodyW;
+                                        var itemPV = pd * itemW;
+                                        body.Mesh.Offset(bodyPV);
+                                        item.Mesh.Offset(itemPV);
+                                        item.Collide(body.Entity, itemPV);
+                                        body.Collide(item.Entity, bodyPV);
+                                    }
                                 }
                             }
                         }
-                        #endregion
                     }
+                    #endregion
                 }
-
-                var newP = body.Mesh.GetPosition();
-                var movedDistance = newP-p;
-                if (movedDistance.Length() > _bigNumber) //We don't want no weird teleports, do we?
-                    body.Mesh.Offset(-movedDistance); //rollback
-                else
-                    v += movedDistance / speed;
-                body.Velocity = v*DampingCoef;
-                body.Acceleration = a;
-                
-                if (body.MaxSpeed.X >= 0 && Math.Abs(body.Velocity.X) > body.MaxSpeed.X)
-                    body.Velocity.X = body.MaxSpeed.X * Math.Sign(body.Velocity.X);
-                if (body.MaxSpeed.Y >= 0 && Math.Abs(body.Velocity.Y) > body.MaxSpeed.Y)
-                    body.Velocity.Y = body.MaxSpeed.Y * Math.Sign(body.Velocity.Y);
-
-                if (body.MaxAcceleration.X >= 0 && Math.Abs(body.Acceleration.X) > body.MaxAcceleration.X)
-                    body.Acceleration.X = body.MaxAcceleration.X * Math.Sign(body.Acceleration.X);
-                if (body.MaxAcceleration.Y >= 0 && Math.Abs(body.Velocity.Y) > body.MaxAcceleration.Y)
-                    body.Acceleration.Y = body.MaxAcceleration.Y * Math.Sign(body.Acceleration.Y);
-
-                body.Force = Vector2.Zero;
             }
+
+            var newP = body.Mesh.GetPosition();
+            var movedDistance = newP - p;
+            if (movedDistance.Length() > _bigNumber) //We don't want no weird teleports, do we?
+                body.Mesh.Offset(-movedDistance); //rollback
+            else
+                v += movedDistance / Speed;
+            body.Velocity = v * DampingCoef;
+            body.Acceleration = a;
+
+            /////////////////////
+            // Check for NaNs generated by bugs
+            /////////////////////
+            if (GeometryHelper.IsNaN(body.Velocity)) body.Velocity = Vector2.Zero;
+            if (GeometryHelper.IsNaN(body.Acceleration)) body.Acceleration = Vector2.Zero;
+
+            if (body.MaxSpeed.X >= 0 && Math.Abs(body.Velocity.X) > body.MaxSpeed.X)
+                body.Velocity.X = body.MaxSpeed.X * Math.Sign(body.Velocity.X);
+            if (body.MaxSpeed.Y >= 0 && Math.Abs(body.Velocity.Y) > body.MaxSpeed.Y)
+                body.Velocity.Y = body.MaxSpeed.Y * Math.Sign(body.Velocity.Y);
+
+            if (body.MaxAcceleration.X >= 0 && Math.Abs(body.Acceleration.X) > body.MaxAcceleration.X)
+                body.Acceleration.X = body.MaxAcceleration.X * Math.Sign(body.Acceleration.X);
+            if (body.MaxAcceleration.Y >= 0 && Math.Abs(body.Velocity.Y) > body.MaxAcceleration.Y)
+                body.Acceleration.Y = body.MaxAcceleration.Y * Math.Sign(body.Acceleration.Y);
+
+            body.Force = Vector2.Zero;
         }
 
         public void Collide(Body A, Body B, Triangle tA, Triangle tB)
         {
             if (A.IsStatic && B.IsStatic) return;
             Vector2 MTD, N;
-            float t = speed;
+            float t = Speed;
 
             if (Polygon.Collide(tA.ToPolygon(), tB.ToPolygon(), A.Velocity, B.Velocity, out N, ref t))
             {
