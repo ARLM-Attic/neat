@@ -63,6 +63,10 @@ namespace Neat.Mathematics
                 UpdateBody(i);
         }
 
+        void MoveBody(Vector2 r)
+        {
+        }
+
         void UpdateBody(int i)
         {
             if (MaxUpdatePerBody < ++bodyUpdateCount[i]) return;
@@ -101,10 +105,73 @@ namespace Neat.Mathematics
                     if (i == j) continue;
 
                     var push = Vector2.Zero;
-                    bool collide = false;
-                    if (item.Convex && body.Convex)
+
+                    List<KeyValuePair<Polygon, Polygon>> polys = new List<KeyValuePair<Polygon, Polygon>>();
+                    if (false && item.Convex && body.Convex)
                     {
                         if (Polygon.Collide(body.Mesh, item.Mesh, out push))
+                        {
+                            polys.Add(new KeyValuePair<Polygon,Polygon>(body.Mesh, item.Mesh));
+                        }
+                    }
+                    else
+                    {
+                    #region SAT With Triangles
+                        if (body.Convex)
+                        {
+                            if (item.Mesh.Triangles == null)
+                                item.Mesh.Triangulate();
+                            foreach (var tri in item.Mesh.Triangles)
+                            {
+                                var pTri = tri.ToPolygon();
+                                var temppush = Vector2.Zero;
+                                if (Polygon.Collide(body.Mesh, pTri, out temppush))
+                                {
+                                    if (polys.Count == 0) push = temppush;
+                                    polys.Add(new KeyValuePair<Polygon, Polygon>(body.Mesh, pTri));
+                                }
+                            }
+                        }
+                        else if (item.Convex)
+                        {
+                            foreach (var tri in body.Mesh.Triangles)
+                            {
+                                var pTri = tri.ToPolygon();
+                                var temppush = Vector2.Zero;
+                                if (Polygon.Collide(pTri, item.Mesh, out temppush))
+                                {
+                                    if (polys.Count == 0) push = temppush;
+                                    polys.Add(new KeyValuePair<Polygon, Polygon>(pTri, item.Mesh));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var tri1 in body.Mesh.Triangles)
+                            {
+                                if (item.Mesh.Triangles == null)
+                                    item.Mesh.Triangulate();
+                                var p1 = tri1.ToPolygon();
+                                foreach (var tri2 in item.Mesh.Triangles)
+                                {
+                                    var p2 = tri2.ToPolygon();
+
+                                    var temppush = Vector2.Zero;
+
+                                    if (Polygon.Collide(p1, p2, out temppush))
+                                    {
+                                        if (polys.Count == 0) push = temppush;
+                                        polys.Add(new KeyValuePair<Polygon, Polygon>(p1, p2));
+                                    }
+                                }
+                            }
+                        }
+                    #endregion
+                    }
+
+                    for (int pi = 0; pi < polys.Count; pi++)
+                    {
+                        if (pi == 0 || Polygon.Collide(polys[pi].Key, polys[pi].Value, out push))
                         {
                             Vector2 pd = push;
                             pd.Normalize();
@@ -130,7 +197,7 @@ namespace Neat.Mathematics
                                 var itemW = bodyW - 1.0f;
                                 var bodyPV = pd * bodyW;
                                 var itemPV = pd * itemW;
-                                
+
                                 if (!item.IsFree)
                                 {
                                     UpdateBody(j);
@@ -141,54 +208,6 @@ namespace Neat.Mathematics
                             }
                         }
                     }
-                    else
-                    {
-                    #region SAT With Triangles
-                        foreach (var tri1 in body.Mesh.Triangles)
-                        {
-                            if (item.Mesh.Triangles == null)
-                                item.Mesh.Triangulate();
-                            foreach (var tri2 in item.Mesh.Triangles)
-                            {
-                                var p1 = tri1.ToPolygon();
-                                var p2 = tri2.ToPolygon();
-                                var push = Vector2.Zero;
-
-                                if (Polygon.Collide(p1, p2, out push))
-                                {
-                                    Vector2 pd = push;
-                                    pd.Normalize();
-                                    pd = push - AllowedPenetrationDepth * pd;
-                                    if (body.PreventSlippingOnSlopes)
-                                        if (Math.Abs(pd.X) < StickCoef) pd.X = 0;
-                                    /*
-                                     * EXPERIMENT:
-                                     * Move both bodies based on their weight
-                                     */
-                                    if (body.IsStatic) pd = Vector2.Zero;
-                                    else if (item.IsStatic)
-                                    {
-                                        body.Mesh.Offset(pd);
-                                        if (body.Collide != null) body.Collide(item.Entity, pd);
-                                    }
-                                    else
-                                    {
-                                        //Lerp between masses
-                                        var massSum = body.InverseMass + item.InverseMass;
-                                        var bodyW = body.InverseMass / massSum;
-                                        var itemW = bodyW - 1.0f;
-                                        var bodyPV = pd * bodyW;
-                                        var itemPV = pd * itemW;
-                                        body.Mesh.Offset(bodyPV);
-                                        item.Mesh.Offset(itemPV);
-                                        item.Collide(body.Entity, itemPV);
-                                        body.Collide(item.Entity, bodyPV);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    #endregion
                 }
             }
 
