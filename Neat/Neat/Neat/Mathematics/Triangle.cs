@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Neat.Mathematics
 {
-    public class Triangle
+    public class Triangle : Polygon
     {
         public Vector2 A;
         public Vector2 B;
@@ -23,6 +23,7 @@ namespace Neat.Mathematics
 
         public Triangle()
         {
+            Vertices = new List<Vector2>(3);
         }
 
         public Triangle(Triangle t)
@@ -116,11 +117,7 @@ namespace Neat.Mathematics
 
         public Polygon ToPolygon()
         {
-            Polygon p = new Polygon();
-            p.Vertices.Add(A);
-            p.Vertices.Add(B);
-            p.Vertices.Add(C);
-            return p;
+            return new Polygon(A,B,C);
         }
 
         public void Draw(SpriteBatch spriteBatch, Graphics.LineBrush lineBrush, Color color)
