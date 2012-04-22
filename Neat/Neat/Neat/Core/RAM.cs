@@ -10,14 +10,19 @@ namespace Neat
 {
     public struct DVar
     {
-        public string value;
+        public string Value;
 
-        public int ReturnInt() { return int.Parse(value); }
-        public string ReturnString() { return value; }
-        public float ReturnFloat() { return float.Parse(value); }
-        public bool ReturnBool() { return bool.Parse(value); }
+        public int ReturnInt() { return int.Parse(Value); }
+        public string ReturnString() { return Value; }
+        public float ReturnFloat() { return float.Parse(Value); }
+        public bool ReturnBool() { return bool.Parse(Value); }
 
         //TODO: Implement Get/Set for the value: _value = Set(input); return Get(input)
+
+        public void SetValue(object value)
+        {
+            Value = value.ToString();
+        }
     };
 
     public class RAM : Dictionary<string,DVar>
@@ -60,7 +65,7 @@ namespace Neat
                 catch { }
             }
             DVar v = new DVar();
-            v.value = value;
+            v.Value = value;
             if (ContainsKey(key)) this[key] = v;
             else this.Add(key, v);
         }

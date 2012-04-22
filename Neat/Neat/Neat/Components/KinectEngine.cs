@@ -9,11 +9,10 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Research.Kinect;
+using Microsoft.Kinect;
 using Neat.Components;
 using Neat;
 using Neat.Mathematics;
-using Microsoft.Research.Kinect.Nui;
 using System.Diagnostics;
 using Neat.Graphics;
 
@@ -26,7 +25,7 @@ namespace Neat.Components
     {
         #region FIELDS
         Console Console;
-        public Runtime Nui;
+        public KinectSensor Nui;
         public bool ReceiveVideo = false;
         public bool ReceiveDepth = false;
         public Texture2D KinectRGB;
@@ -34,7 +33,8 @@ namespace Neat.Components
         public int[,] KinectDepths;
         int xMax = 640;
         int yMax = 480;
-        public SkeletonData[] Skeletons = new SkeletonData[2];
+        public Skeleton[] Skeletons;
+        public int[] TrackTime = new int[2];
         int trackedSkeletonsCount = 0;
         public int TrackedSkeletonsCount { get { return trackedSkeletonsCount; } }
         #endregion
@@ -68,11 +68,13 @@ namespace Neat.Components
 
             try
             {
-                Nui = Runtime.Kinects[0];
-                if (useDepth)
-                    Nui.Initialize(RuntimeOptions.UseSkeletalTracking | RuntimeOptions.UseColor | RuntimeOptions.UseDepthAndPlayerIndex);
-                else
-                    Nui.Initialize(RuntimeOptions.UseSkeletalTracking | RuntimeOptions.UseColor);
+                Nui = KinectSensor.KinectSensors[0];
+                Nui.SkeletonStream.Enable(new TransformSmoothParameters()
+                {
+                    Correction = 0.5f,
+                    Smoothing = 1.0f
+                });
+                Nui.Start();
             }
             catch
             {
@@ -80,17 +82,14 @@ namespace Neat.Components
                 throw;
             }
             NeatGame game = ((NeatGame)this.Game);
-            Nui.VideoFrameReady += new EventHandler<ImageFrameReadyEventArgs>(nui_VideoFrameReady);
+            Nui.ColorFrameReady += new EventHandler<ColorImageFrameReadyEventArgs>(nui_VideoFrameReady);
             Nui.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(nui_SkeletonFrameReady);
-            Nui.DepthFrameReady += new EventHandler<ImageFrameReadyEventArgs>(Nui_DepthFrameReady);
+            Nui.DepthFrameReady += new EventHandler<DepthImageFrameReadyEventArgs>(Nui_DepthFrameReady);
             KinectRGB = new Texture2D(game.GraphicsDevice, xMax, yMax);
             game.AssignTexture(new Sprite(KinectRGB), "kinectrgb");
 
-            if (useDepth)
-            {
-                KinectSkeletons = new Texture2D(game.GraphicsDevice, xMax, yMax);
-                game.AssignTexture(new Sprite(KinectSkeletons), "kinectskeletons");
-            }
+            KinectSkeletons = new Texture2D(game.GraphicsDevice, xMax, yMax);
+            game.AssignTexture(new Sprite(KinectSkeletons), "kinectskeletons");
             
             Console.WriteLine("Kinect initialized successfully!");
 
@@ -103,18 +102,46 @@ namespace Neat.Components
         #region Events
         void nui_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
-            var trackedSkeletons = from s in e.SkeletonFrame.Skeletons
+            bool receivedData = false;
+            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
+            {
+                if (skeletonFrame != null)
+                {
+                    if (Skeletons == null) //allocate the first time
+                    {
+                        Skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+                    }
+                    receivedData = true;
+                }
+                else
+                {
+                    // apps processing of skeleton data took too long; it got more than 2 frames behind.
+                    // the data is no longer avabilable.
+                }
+            }
+ 
+            if (receivedData)
+            {
+                
+            }
+ 
+
+            var frame = e.OpenSkeletonFrame();
+            var trackedSkeletons = from s in frame.Skeletons
                                     where
                                         s.TrackingState == SkeletonTrackingState.Tracked
                                     select s;
             trackedSkeletonsCount = trackedSkeletons.Count();
+            if (trackedSkeletonsCount == 1) TrackTime[1] = 0;
+            if (trackedSkeletonsCount == 0) TrackTime[0] = 0;
             for (int i = 0; i < trackedSkeletonsCount; i++)
             {
                 Skeletons[i] = trackedSkeletons.ElementAt(i);
+                TrackTime[i]++;
             }
         }
 
-        void Nui_DepthFrameReady(object sender, ImageFrameReadyEventArgs e)
+        void Nui_DepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
         {
             if (!ReceiveDepth) return;
             PlanarImage image = e.ImageFrame.Image;
@@ -143,7 +170,7 @@ namespace Neat.Components
             KinectSkeletons.SetData(bitmap);
         }
 
-        void nui_VideoFrameReady(object sender, ImageFrameReadyEventArgs e)
+        void nui_VideoFrameReady(object sender, ColorImageFrameReadyEventArgs e)
         {
             if (!ReceiveVideo) return;
             PlanarImage image = e.ImageFrame.Image;
@@ -167,7 +194,7 @@ namespace Neat.Components
         {
             try
             {
-                Nui.Uninitialize();
+                Nui.Stop();
                 Debug.WriteLine("Kinect uninitialized.");
             }
             catch (Exception e)
@@ -181,17 +208,18 @@ namespace Neat.Components
         #region Functions
         public void OpenVideoStream()
         {
-            Nui.VideoStream.Open(ImageStreamType.Video, 2, ImageResolution.Resolution640x480, ImageType.Color);
+            Nui.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
             ReceiveVideo = true;
         }
         public void OpenDepthStream()
         {
-            Nui.DepthStream.Open(ImageStreamType.Depth, 2, ImageResolution.Resolution320x240, ImageType.DepthAndPlayerIndex);
+            Nui.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
             ReceiveDepth = true;
+
         }
         public void Tilt(int degrees)
         {
-            Nui.NuiCamera.ElevationAngle = degrees;
+            Nui.ElevationAngle = degrees;
         }
         #endregion
 

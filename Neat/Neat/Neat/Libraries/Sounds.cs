@@ -56,7 +56,27 @@ namespace Neat
         }
 
         Dictionary<string, SFXList> sounds;
-        public bool MuteAllSounds = false;
+        bool muteAllSounds = false;
+        float oldMediaVolume;
+
+        public bool MuteAllSounds
+        {
+            get { return muteAllSounds; }
+            set
+            {
+                if (!value)
+                    if (oldMediaVolume == 0)
+                        MediaPlayer.Volume = 1.0f;
+                    else
+                        MediaPlayer.Volume = oldMediaVolume;
+                else
+                {
+                    oldMediaVolume = MediaPlayer.Volume;
+                    MediaPlayer.Volume = 0;
+                }
+                muteAllSounds = value;
+            }
+        }
         public SFXList LoadSound(string spath)
         {
             return LoadSound(getNameFromPath(spath), Content.Load<SoundEffect>(spath));

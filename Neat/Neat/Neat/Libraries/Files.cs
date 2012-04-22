@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
 using System.Diagnostics;
+using Neat.Graphics;
  
 namespace Neat
 {
@@ -31,6 +32,8 @@ namespace Neat
 
         public ContentDuplicateBehaviors ContentDuplicateBehavior = 
             ContentDuplicateBehaviors.Replace;
+
+        public LineBrush BasicLine;
 
         protected override void LoadContent()
         {
@@ -69,9 +72,16 @@ namespace Neat
             LoadTexture("Sprites\\msgbox_buttonFocus", "MessageBoxWindow_ButtonFocused");
             LoadTexture("Sprites\\checked", "checkedbox");
             LoadTexture("Sprites\\Checkbox", "uncheckedbox");
-            LoadTexture("Sprites\\mouse", "mousePointer");
             LoadTexture("Sprites\\icon");
             LoadTexture("Sprites\\neatlogo");
+
+            //LoadTexture("Sprites\\mouse", "mousePointer");
+            LoadTexture("Sprites\\pointers");
+            CreateSprite("mousepointer", "pointers", new Rectangle(1, 33, 17, 32));
+            CreateSprite("handleft", "pointers", new Rectangle(33, 1, 32, 32));
+            CreateSprite("handright", "pointers", new Rectangle(1, 1, 32, 32));
+            CreateSprite("handleft_pushed", "pointers", new Rectangle(33, 1, 32, 32));
+            CreateSprite("handright_pushed", "pointers", new Rectangle(1, 1, 32, 32));
 
             LoadTexture("Sprites\\WindowSheet");
             CreateSprite("window_tl", "windowsheet", new Rectangle(0, 0, 11, 35));
@@ -98,12 +108,19 @@ namespace Neat
             LoadEffect("Effects\\ColorFilter");
             LoadEffect(@"Effects\Ripple");
             LoadEffect(@"Effects\Crop");
-            
+            LoadEffect(@"Effects\TextureWrapper");
+            LoadEffect(@"Effects\Circle");
+
+            BasicLine = new LineBrush(GraphicsDevice, 1);
+
             ElegantTextEngine.LoadContent();
 
             Debug.WriteLine("Begin Screens LoadContent");
             foreach (var p in Screens)
+            {
+                Debug.WriteLine("LoadContent: " + p.Key);
                 p.Value.LoadContent();
+            }
             Debug.WriteLine("End NeatGame.LoadContent");
         }
 

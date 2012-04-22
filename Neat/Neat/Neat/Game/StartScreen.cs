@@ -78,7 +78,7 @@ namespace Neat
             {
                 var t = game.GetTexture("neatlogo");
                 Vector2 p = new Vector2((game.GameWidth - t.Width) / 2f, (game.GameHeight - t.Height) / 2f);
-                game.GetEffect("ColorFilter").Parameters["mulColor"].SetValue(new Vector4(MathHelper.Clamp(alpha, 0.0f, 1.0f)));
+                game.GetEffect("ColorFilter").Parameters["color"].SetValue(new Vector4(MathHelper.Clamp(alpha, 0.0f, 1.0f)));
                 game.UseEffect("ColorFilter");
                 game.SpriteBatch.Draw(t, p, Color.White);
                 game.RestartBatch();

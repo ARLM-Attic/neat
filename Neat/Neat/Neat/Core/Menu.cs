@@ -33,6 +33,7 @@ namespace Neat
         public SpriteFont Font;
         public string BackgroundScreen;
         public Color ShadeColor = new Color(255, 255, 255, 0);
+        public float MenuOffsetY = -100;
         public override void Initialize()
         {
             Reset();
@@ -46,20 +47,29 @@ namespace Neat
                 Font);
             CreateMenu();
         }
+
         public virtual void CreateMenu()
         {
         }
+
         public override void Activate()
         {
             base.Activate();
             System.Enable();
-            System.Position = new Vector2(game.GameWidth / 2, game.GameHeight / 2 - 100);
+            System.Position = new Vector2(game.GameWidth / 2, game.GameHeight / 2 + MenuOffsetY);
         }
+
         public override void Behave(GameTime gameTime)
         {
             System.Update(gameTime);
             //System.RecalculateSizes();
             base.Behave(gameTime);
+        }
+
+        public override void HandleInput(GameTime gameTime)
+        {
+            System.HandleInput(gameTime);
+            base.HandleInput(gameTime);
         }
 
         public override void LoadContent()

@@ -39,21 +39,18 @@ namespace Neat.Graphics
             spriteBatch.DrawString(spriteFont, text, position, foreColor);
         }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        public static Color GetShadowColorFromAlpha(float alpha)
-        {
-            Vector3 c = Color.Black.ToVector3();
-            return new Color(new Vector4(c, alpha));
-        }
         public static Color GetColorWithAlpha(Color col, float alpha)
         {
-            Vector3 c = col.ToVector3();
-            return new Color(new Vector4(c, alpha));
+            var c = col.ToVector4();
+            return new Color(c * new Vector4(Vector3.One, alpha));
         }
-        public static Color GetRandomColor()
+        public static Color GetRandomColor(int min=0, int max=255)
         {
-            return new Color((byte)randomGenerator.Next(0, 255),
-                    (byte)randomGenerator.Next(0, 255),
-                    (byte)randomGenerator.Next(0, 255));
+            return new Color((byte)randomGenerator.Next(min, max),
+                    (byte)randomGenerator.Next(min, max),
+                    (byte)randomGenerator.Next(min, max));
         }
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
     }
 }

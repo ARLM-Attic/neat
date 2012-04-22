@@ -48,6 +48,7 @@ namespace Neat.GUI
         public Color MouseHoverColor = Color.YellowGreen  ;
         public Color MouseHoldColor = Color.Yellow  ;
         public Color DisabledColor = Color.Silver;
+        public Color ShadowColor = Color.Black;
 
         public bool IsMouseHold = false;
         public bool IsMouseHovered = false;
@@ -56,10 +57,15 @@ namespace Neat.GUI
         {
         }
 
-        public event XEventHandler OnPress;
+/*        public event XEventHandler OnPress;
         public event XEventHandler OnHold;
         public event XEventHandler OnHover;
-        public event XEventHandler OnRelease;
+        public event XEventHandler OnRelease;*/
+
+        public Action OnPress;
+        public Action OnHold;
+        public Action OnHover;
+        public Action OnRelease;
 
         public string OnPressRun, OnReleaseRun;
 
@@ -73,19 +79,20 @@ namespace Neat.GUI
             _font = newFont;
         }
 
-        public virtual void Pressed()
+        public virtual void Pressed(Vector2 pos = new Vector2())
         {
             if (!Enabled) return;
             if (OnPressRun != null) Game.Console.Run(OnPressRun);
             if (OnPress != null) OnPress();
         }
-        public virtual void Released() { 
+        public virtual void Released(Vector2 pos = new Vector2())
+        { 
             if (!Enabled) return; Game.GetSound(PushSound).Play(1f, 0f, 0f); if (OnRelease != null)  OnRelease();
             if (OnReleaseRun != null) Game.Console.Run(OnReleaseRun);
         }
 
-        public virtual void Holded() { if (!Enabled) return; if (OnHold != null)  OnHold(); }
-        public virtual void Hovered() { if (!Enabled) return; if (OnHover != null)  OnHover(); }
+        public virtual void Holded(Vector2 pos = new Vector2()) { if (!Enabled) return; if (OnHold != null)  OnHold(); }
+        public virtual void Hovered(Vector2 pos = new Vector2()) { if (!Enabled) return; if (OnHover != null)  OnHover(); }
         public virtual void Initialize() { }
 
         public virtual void Draw(GameTime gameTime,SpriteBatch spriteBatch)
@@ -98,7 +105,7 @@ namespace Neat.GUI
                 ( Enabled ?( IsMouseHold ? MouseHoldColor :
                 ( IsMouseHovered ? MouseHoverColor :
                 ForeColor)):DisabledColor),
-                Color.Black ); 
+                ShadowColor); 
         }
 
         public virtual void Resize(Vector2 newSize)

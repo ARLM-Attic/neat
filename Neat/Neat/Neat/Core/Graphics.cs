@@ -151,10 +151,9 @@ namespace Neat
 
         protected override void Draw(GameTime gameTime)
         {
+            gamestime = gameTime;
             if (!Disable2DRendering)
             {
-                gamestime = gameTime;
-
                 //if (Landscape || StretchMode != StretchModes.None)
                     GraphicsDevice.SetRenderTarget(_renderTarget);
 
@@ -229,11 +228,14 @@ namespace Neat
                     SpriteBatch.End();
                 }
             }
+
             base.Draw(gameTime);
         }
+        public Color MouseTint = Color.White;
         protected virtual void DrawMouse(Vector2 pos)
         {
-            SpriteBatch.Draw(GetTexture("mousePointer"), pos, Color.White);
+            var tx = GetSlice("mousePointer");
+            SpriteBatch.Draw(tx.Texture, pos, tx.Crop, MouseTint);
         }
         protected virtual void Render(GameTime gameTime)
         {
@@ -248,6 +250,45 @@ namespace Neat
         public void Write(string text, Vector2 position)
         {
             GraphicsHelper.DrawShadowedString(SpriteBatch, NormalFont, text, position, Color.White);
+        }
+
+        public void DrawCircle(Vector2 center, float radius, Color color, Vector2 offset, float thickness=1)
+        {
+            var fx = GetEffect("circle");
+            if (AutoDraw) SpriteBatch.End();
+
+            fx.CurrentTechnique = fx.Techniques["DrawCircle"];
+            fx.Parameters["thickness"].SetValue(thickness / radius);
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null,
+                null, null, fx);
+            SpriteBatch.Draw(GetTexture("solid"), GeometryHelper.Vectors2Rectangle(
+                offset + center - new Vector2(radius), new Vector2(radius * 2)), color);
+            if (AutoDraw) RestartBatch();
+            else SpriteBatch.End();
+        }
+
+        public void DrawCircle(Vector2 center, float radius, Color color, float thickness=1)
+        {
+            DrawCircle(center, radius, color, Vector2.Zero, thickness);
+        }
+
+        public void FillCircle(Vector2 center, float radius, Color color, Vector2 offset)
+        {
+            var fx = GetEffect("circle");
+            if (AutoDraw) SpriteBatch.End();
+
+            fx.CurrentTechnique = fx.Techniques["FillCircle"];
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null,
+                null, null, fx);
+            SpriteBatch.Draw(GetTexture("solid"), GeometryHelper.Vectors2Rectangle(
+                offset + center - new Vector2(radius), new Vector2(radius * 2)), color);
+            if (AutoDraw) RestartBatch();
+            else SpriteBatch.End();
+        }
+
+        public void FillCircle(Vector2 center, float radius, Color color)
+        {
+            FillCircle(center, radius, color, Vector2.Zero);
         }
     }
 }

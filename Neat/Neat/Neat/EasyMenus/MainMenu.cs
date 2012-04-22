@@ -37,7 +37,7 @@ namespace Neat.EasyMenus
             System.AddItem("Quit", true, null, "sh quitconfirm");
             System.GetLastMenuItem().Forecolor = Color.Red;
             System.ItemsOffset = new Vector2(0, 100);
-            Activate();
+            //Activate();
             base.CreateMenu();
         }
 

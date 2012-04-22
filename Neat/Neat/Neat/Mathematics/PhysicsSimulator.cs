@@ -16,6 +16,12 @@ using Neat.Graphics;
 
 namespace Neat.Mathematics
 {
+    public class Rope
+    {
+        public Body A;
+        public Body B;
+        public float Length;
+    }
     public class PhysicsSimulator : GameComponent
     {
         const float _epsilon = 1f;
@@ -30,10 +36,11 @@ namespace Neat.Mathematics
         public float StickCoef = 0.8f;
         public short MaxUpdatePerBody = 1;
 
-
         public float Speed { get; protected set; }
         public NeatGame game;
         short[] bodyUpdateCount;
+
+        public List<Rope> Ropes = new List<Rope>();
 
         Neat.Components.Console console { get { if (game == null) return null; else return game.Console; } set { game.Console = value; } }
 
@@ -48,7 +55,6 @@ namespace Neat.Mathematics
             AttachToConsole();
         }
 
-
         public override void Update(GameTime gameTime)
         {
             Update((float)(gameTime.ElapsedGameTime.Milliseconds + 1));
@@ -61,25 +67,54 @@ namespace Neat.Mathematics
             Speed = (time * SpeedCoef);
             for (int i = 0; i < Bodies.Count; i++)
                 UpdateBody(i);
+
+            UpdateRopes();
         }
 
-        void MoveBody(Vector2 r)
+        void UpdateRopes()
         {
+            for (int i = 0; i < Ropes.Count; i++)
+            {
+                var rope = Ropes[i];
+                Vector2 posA, sizeA, posB, sizeB;
+                rope.A.Mesh.GetPositionAndSize(out posA, out sizeA);
+                rope.B.Mesh.GetPositionAndSize(out posB, out sizeB);
+                Vector2 cA = posA + sizeA / 2.0f;
+                Vector2 cB = posB + sizeB / 2.0f;
+                Vector2 d = cB - cA;
+                if (d.Length() <= rope.Length) continue;
+
+                if (!rope.B.IsStatic)
+                {
+                    d.Normalize();
+                    d *= rope.Length;
+
+                    rope.B.ApplyForce((posA + d - posB) * rope.B.Mass);
+                    rope.B.Mesh.Offset(posA + d - posB);
+                }
+                else if (!rope.A.IsStatic)
+                {
+                    d.Normalize();
+                    d *= -rope.Length;
+
+                    rope.A.ApplyForce((posB + d - posA) * rope.A.Mass);
+                    rope.A.Mesh.Offset(posB + d - posA);
+                }
+            }
         }
 
         void UpdateBody(int i)
         {
             if (MaxUpdatePerBody < ++bodyUpdateCount[i]) return;
-            Debug.Assert(bodyUpdateCount[i] != 2);
 
             Vector2 a, v, p, r;
             var body = Bodies[i];
             //if (body.IsStatic) return;
-            
+
             a = body.Force * body.InverseMass -
                 (body.AttachToGravity ?
                 new Vector2(Gravity.X * body.GravityNormal.X, Gravity.Y * body.GravityNormal.Y) :
-                Vector2.Zero);
+                Vector2.Zero) + body.Acceleration;
             v = a * Speed + body.Velocity;
             Vector2 position, size;
             body.Mesh.GetPositionAndSize(out position, out size);
@@ -88,14 +123,16 @@ namespace Neat.Mathematics
             v.Y = MathHelper.Clamp(v.Y, -body.MaxSpeed.Y, body.MaxSpeed.Y);
 
             r = v * Speed;
-            //r = 0.5f * a * Speed * Speed + body.Velocity * Speed;
             p = r + position;
-            //Polygon nm = new Polygon(body.Mesh);
+
             body.Mesh.AutoTriangulate = true;
-            if (body.Mesh.Triangles == null) body.Mesh.Triangulate();
+            if (!body.Convex && body.Mesh.Triangles == null) body.Mesh.Triangulate();
+            
             body.Mesh.Offset(r);
             
             if (body.IsStatic) return;
+
+            List<KeyValuePair<Polygon, Polygon>> polys = new List<KeyValuePair<Polygon, Polygon>>();
 
             if (!body.IsFree && !body.IsStatic)
             {
@@ -105,9 +142,10 @@ namespace Neat.Mathematics
                     if (i == j) continue;
 
                     var push = Vector2.Zero;
-
-                    List<KeyValuePair<Polygon, Polygon>> polys = new List<KeyValuePair<Polygon, Polygon>>();
-                    if (false && item.Convex && body.Convex)
+                    
+                    polys.Clear();
+                    
+                    if (item.Convex && body.Convex)
                     {
                         if (Polygon.Collide(body.Mesh, item.Mesh, out push))
                         {
@@ -121,9 +159,8 @@ namespace Neat.Mathematics
                         {
                             if (item.Mesh.Triangles == null)
                                 item.Mesh.Triangulate();
-                            foreach (var tri in item.Mesh.Triangles)
+                            foreach (var pTri in item.Mesh.Triangles)
                             {
-                                var pTri = tri.ToPolygon();
                                 var temppush = Vector2.Zero;
                                 if (Polygon.Collide(body.Mesh, pTri, out temppush))
                                 {
@@ -134,9 +171,8 @@ namespace Neat.Mathematics
                         }
                         else if (item.Convex)
                         {
-                            foreach (var tri in body.Mesh.Triangles)
+                            foreach (var pTri in body.Mesh.Triangles)
                             {
-                                var pTri = tri.ToPolygon();
                                 var temppush = Vector2.Zero;
                                 if (Polygon.Collide(pTri, item.Mesh, out temppush))
                                 {
@@ -147,15 +183,12 @@ namespace Neat.Mathematics
                         }
                         else
                         {
-                            foreach (var tri1 in body.Mesh.Triangles)
+                            foreach (var p1 in body.Mesh.Triangles)
                             {
                                 if (item.Mesh.Triangles == null)
                                     item.Mesh.Triangulate();
-                                var p1 = tri1.ToPolygon();
-                                foreach (var tri2 in item.Mesh.Triangles)
+                                foreach (var p2 in item.Mesh.Triangles)
                                 {
-                                    var p2 = tri2.ToPolygon();
-
                                     var temppush = Vector2.Zero;
 
                                     if (Polygon.Collide(p1, p2, out temppush))
@@ -191,7 +224,6 @@ namespace Neat.Mathematics
                             else
                             {
                                 //Lerp between masses
-
                                 var massSum = body.InverseMass + item.InverseMass;
                                 var bodyW = body.InverseMass / massSum;
                                 var itemW = bodyW - 1.0f;
@@ -237,15 +269,18 @@ namespace Neat.Mathematics
                 body.Acceleration.Y = body.MaxAcceleration.Y * Math.Sign(body.Acceleration.Y);
 
             body.Force = Vector2.Zero;
+            body.Acceleration = Vector2.Zero;
         }
 
+        // I can't recall if we use this method anymore :-|
+        // This probably should be deleted.
         public void Collide(Body A, Body B, Triangle tA, Triangle tB)
         {
             if (A.IsStatic && B.IsStatic) return;
             Vector2 MTD, N;
             float t = Speed;
 
-            if (Polygon.Collide(tA.ToPolygon(), tB.ToPolygon(), A.Velocity, B.Velocity, out N, ref t))
+            if (Polygon.Collide(tA, tB, A.Velocity, B.Velocity, out N, ref t))
             {
                 if (t < 0.0f)
                 {

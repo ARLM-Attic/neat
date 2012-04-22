@@ -71,8 +71,10 @@ namespace Neat
             public Color DefaultItemColor = Color.CornflowerBlue;
             public Color SelectedItemForeground = Color.Yellow;
             public Color DisabledItemForeground = Color.Silver;
+            public Color ShadowColor = Color.Black;
+            public bool DrawShadow = true;
             float longestItem = 0f;
-            
+            public bool FixedAlpha = false;
             public MenuSystem(NeatGame g, Vector2 b, SpriteFont f)
             {
                 font = f;
@@ -103,7 +105,7 @@ namespace Neat
                 if (enabled)
                 {
                     Behave(gameTime);
-                    HandleInput(gameTime);
+                    //HandleInput(gameTime);
                 }
             }
 
@@ -126,39 +128,42 @@ namespace Neat
                     if (bracketDistance < 0) bracketDistanceIncreasing = !bracketDistanceIncreasing;
                 }
 
-                foreach (MenuItem item in Items)
+                if (!FixedAlpha)
                 {
-                    item.Alpha += item.AlphaV;
-                    if (item.Alpha > maxItemAlpha )
+                    foreach (MenuItem item in Items)
                     {
-                        item.AlphaV *= -1f;
-                        item.Alpha = maxItemAlpha;
+                        item.Alpha += item.AlphaV;
+                        if (item.Alpha > maxItemAlpha)
+                        {
+                            item.AlphaV *= -1f;
+                            item.Alpha = maxItemAlpha;
+                        }
+                        else if (item.Alpha < minItemAlpha)
+                        {
+                            item.AlphaV *= -1f;
+                            item.Alpha = minItemAlpha;
+                        }
                     }
-                    else if (item.Alpha < minItemAlpha )
+                    Vector3 c = SelectedItemForeground.ToVector3();
+                    if (selectedItemColor > 1f)
                     {
-                        item.AlphaV *= -1f;
-                        item.Alpha = minItemAlpha;
-                    }
-                }
-                Vector3 c = SelectedItemForeground.ToVector3();
-                if (selectedItemColor > 1f)
-                {
-                    selectedItemColor = 1f;
-                    selectedItemColorRate = -Math.Abs(selectedItemColorRate);
-                
-                }
-                else if (c.Y < 0.5f)
-                {
-                    selectedItemColor = 0.5f;
-                    selectedItemColorRate = Math.Abs(selectedItemColorRate);
+                        selectedItemColor = 1f;
+                        selectedItemColorRate = -Math.Abs(selectedItemColorRate);
 
+                    }
+                    else if (c.Y < 0.5f)
+                    {
+                        selectedItemColor = 0.5f;
+                        selectedItemColorRate = Math.Abs(selectedItemColorRate);
+
+                    }
+                    selectedItemColor += selectedItemColorRate;
+                    c.Y = selectedItemColor;
+                    SelectedItemForeground = new Color(c);
                 }
-                selectedItemColor += selectedItemColorRate;
-                c.Y = selectedItemColor;
-                SelectedItemForeground = new Color(c);
             }
 
-            void HandleInput(GameTime gameTime)
+            public void HandleInput(GameTime gameTime)
             {
                 if (game.IsTapped(Keys.Enter) || game.IsTapped(Buttons.A) || game.IsTapped(Buttons.Start))
                 { 
@@ -197,13 +202,26 @@ namespace Neat
 
 #endif
 #if WINDOWS
-                /*if (game.IsMouseClicked())
+                if (game.IsMouseClicked())
                 {
-                    foreach (var item in Items)
+                    for (int i = 0; i < Items.Count; i++)
                     {
-                        //if (item.GetBounds()
+                        if (!Items[i].Enabled) continue;
+                        bool isSelected = (SelectedItem == i);
+                        var ipos = (Position - centerOffset) + i * ItemsOffset + (isSelected ? SelectedItemOffset : Vector2.Zero) - new Vector2(10,0);
+                        var size = font.MeasureString(Items[i].Caption) + new Vector2(20, 0);
+
+                        if (GeometryHelper.Vectors2Rectangle(ipos, size).Contains(
+                            GeometryHelper.Vector2Point(game.MousePosition)))
+                        {
+                            game.PlaySound("bleep3");
+                            Items[i].Selected();
+                            if (Items[i].Enabled && !string.IsNullOrEmpty(Items[i].OnSelectScript))
+                                game.Console.Run(Items[i].OnSelectScript);
+                            break;
+                        }
                     }
-                }*/
+                }
 #endif
             }
             void Bleep()
@@ -296,7 +314,7 @@ namespace Neat
                         (Items[i].Caption),
                         (Position-centerOffset)+i*ItemsOffset+(isSelected?SelectedItemOffset:Vector2.Zero),
                         (isSelected?SelectedItemForeground :drawColor),
-                        (isSelected ? Color.Black :GraphicsHelper.GetShadowColorFromAlpha(Items[i].Alpha ))
+                        (DrawShadow ? (isSelected ? Color.Black : GraphicsHelper.GetColorWithAlpha(ShadowColor, Items[i].Alpha)) : Color.Transparent)
                         );
                     if (isSelected)
                     {
@@ -322,7 +340,7 @@ namespace Neat
             }
 
             Vector2 centerOffset=Vector2.Zero;
-            public void AddItem(string Caption, bool Enabled=true, string OnFocusScript=null, string OnSelectScript=null)
+            public MenuItem AddItem(string Caption, bool Enabled = true, string OnFocusScript = null, string OnSelectScript = null)
             {
                 Items.Add(new MenuItem(this, Caption, Enabled));
                 RecalculateSizes();
@@ -332,6 +350,7 @@ namespace Neat
                 lastItem.AlphaV = itemAlphaRate;
                 lastItem.OnFocusScript = OnFocusScript;
                 lastItem.OnSelectScript = OnSelectScript;
+                return lastItem;
             }
 
             public void RecalculateSizes()

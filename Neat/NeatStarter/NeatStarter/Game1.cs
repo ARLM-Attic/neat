@@ -34,6 +34,12 @@ namespace NeatStarter
             ConsoleKey = Keys.OemTilde;
             Graphics.ApplyChanges();
             Window.Title = "NeatStarter";
+            Console.AddCommand("greet", greet_func);
+        }
+
+        void greet_func(IList<string> args)
+        {
+           Console.WriteLine("Hello "+args[1]+"!");
         }
 
         protected override void LoadContent()

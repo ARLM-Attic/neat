@@ -4,9 +4,17 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace Neat.Mathematics
 {
+    public enum Turns
+    {
+        None=0,
+        Clockwise=-1,
+        CounterClockwise=1
+    }
+
     public static class GeometryHelper
     {
 #if WINDOWS
@@ -19,6 +27,19 @@ namespace Neat.Mathematics
             return new Rectangle(Mouse.GetState().X, Mouse.GetState().Y, 1, 1);
         }
 #endif
+
+        public static float Cross(Vector2 p, Vector2 q, Vector2 r)
+        {
+            return (p.X - q.X) * (q.Y - r.Y) - (p.Y - q.Y) * (q.X - r.X);
+        }
+
+        public static Turns WhichSide(Vector2 p, Vector2 q, Vector2 r)
+        {
+            var c = Cross(p, q, r);
+            if (c == 0) return Turns.None;
+            if (c < 0) return (Turns)(-1);
+            return (Turns)(1);
+        }
 
         public static Vector2 GetIntersectionPoint(Vector2 line1_a, Vector2 line1_b, Vector2 line2_a, Vector2 line2_b)
         {
@@ -110,12 +131,12 @@ namespace Neat.Mathematics
                 return new Vector2(float.NaN);
         }
 
-        public static Vector2 MoveInCircle(GameTime gameTime, float speed)
+        public static Vector2 MoveInCircle(TimeSpan time, Vector2 speed)
         {
-            double time = gameTime.TotalGameTime.TotalSeconds * speed;
+            double t = time.TotalSeconds;
 
-            float x = (float)Math.Cos(time);
-            float y = (float)Math.Sin(time);
+            float x = (float)Math.Cos(t * speed.X);
+            float y = (float)Math.Sin(t * speed.Y);
            
             return new Vector2(x, y);
         }

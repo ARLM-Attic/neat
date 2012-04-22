@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Diagnostics;
 
 namespace Neat.Mathematics
 {
@@ -26,50 +27,63 @@ namespace Neat.Mathematics
             Convex,
             Concave
         }
+
         public List<Vector2> Vertices;
         
         const float _epsilon = 0.0000001f;
         public bool AutoTriangulate = false;
-
-        //PolygonCollisionClass collisionClass = PolygonCollisionClass.Concave;
-        //public PolygonCollisionClass CollisionClass { get { return collisionClass; } }
-
+        
         private int n { get { return Vertices.Count; } }
 
         public Polygon()
         {
+            Initialize();
+        }
+
+        protected virtual void Initialize()
+        {
             Vertices = new List<Vector2>();
+        }
+
+        public Polygon(int InitialVertexCount)
+        {
+            Vertices = new List<Vector2>(InitialVertexCount);
         }
 
         public Polygon(List<Vector2> vs)
         {
-            Vertices = new List<Vector2>();
+            Vertices = new List<Vector2>(vs.Count);
+            foreach (var item in vs)
+                Vertices.Add(item);
+        }
+
+        public Polygon(params Vector2[] vs)
+        {
+            Vertices = new List<Vector2>(vs.Length);
             foreach (var item in vs)
                 Vertices.Add(item);
         }
 
         public Polygon(Polygon source)
         {
-            Vertices = new List<Vector2>();
+            Vertices = new List<Vector2>(source.Vertices.Count);
             foreach (var item in source.Vertices)
                 Vertices.Add(item);
             if (source.Triangles != null)
             {
-                Triangles = new List<Triangle>();
+                Triangles = new List<Triangle>(source.Triangles.Count);
                 foreach (var item in source.Triangles)
                     Triangles.Add(new Triangle(item));
             }
             AutoTriangulate = source.AutoTriangulate;
-            //collisionClass = source.CollisionClass;
         }
 
         public Polygon(Polygon source, Vector2 offset)
         {
-            Vertices = new List<Vector2>();
+            Vertices = new List<Vector2>(source.n);
             foreach (var item in source.Vertices)
                 Vertices.Add(item+offset);
             AutoTriangulate = source.AutoTriangulate;
-            //collisionClass = source.CollisionClass;
             Triangulate();
         }
 
@@ -80,7 +94,7 @@ namespace Neat.Mathematics
 
         public static Polygon BuildRectangle(float x, float y, float width, float height)
         {
-            Polygon result = new Polygon();// { collisionClass = PolygonCollisionClass.Rectangle };
+            Polygon result = new Polygon(4);
             result.AddVertex(x, y);
             result.AddVertex(x + width, y);
             result.AddVertex(x + width, y + height);
@@ -90,7 +104,7 @@ namespace Neat.Mathematics
 
         public static Polygon BuildCircle(int vertices, Vector2 center, float radius)
         {
-            Polygon result = new Polygon();// { collisionClass = PolygonCollisionClass.Convex };
+            Polygon result = new Polygon(vertices);
             for (double i = 0; i < MathHelper.TwoPi; i += (float)MathHelper.TwoPi / (float)vertices)
             {
                 result.AddVertex(center + radius * new Vector2((float)(Math.Cos(i)), (float)(Math.Sin(i))));
@@ -110,11 +124,11 @@ namespace Neat.Mathematics
             if (AutoTriangulate) Triangulate();
         }
 
-        public Polygon Offset(Vector2 amount)
+        public virtual Polygon Offset(Vector2 amount)
         {
             for (int i = 0; i < n; i++)
                 Vertices[i] += amount;
-            if (AutoTriangulate && Triangles != null)
+            if (AutoTriangulate)
             {
                 if (Triangles != null)
                     for (int i = 0; i < Triangles.Count; i++)
@@ -125,8 +139,8 @@ namespace Neat.Mathematics
             }
             return this;
         }
-
-        public Polygon Scale(Vector2 amount)
+        
+        public virtual Polygon Scale(Vector2 amount)
         {
             for (int i = 0; i < n; i++)
                 Vertices[i] *= amount;
@@ -175,41 +189,59 @@ namespace Neat.Mathematics
 
         public List<LineSegment> GetEdges()
         {
-            List<LineSegment> result = new List<LineSegment>();
+            List<LineSegment> result = new List<LineSegment>(n-1);
             for (int p = n - 1, q = 0; q < n; p = q++) result.Add(new LineSegment(Vertices[p], Vertices[q]));
             return result;
         }
 
-        public float GetArea()
+        public virtual float GetArea()
         {
             float a = 0f;
             for (int p = n - 1, q = 0; q < n; p = q++)
-                a += Vertices[p].X * Vertices[q].Y - Vertices[q].X * Vertices[p].Y; //Outer Product
+                a += Vertices[p].X * Vertices[q].Y - Vertices[q].X * Vertices[p].Y; //Cross Product
             return (a * 0.5f);
         }
 
-        public List<Vector2> GetVerticesCounterClockwise()
+        public virtual List<Vector2> GetVerticesCounterClockwise()
         {
             if (GetArea() < 0f || Vertices.Count == 1) return Vertices;
             else
             {
-                var V = new List<Vector2>();
+                var V = new List<Vector2>(n);
                 for (int i = n - 1; i >= 0; i--)
                     V.Add(Vertices[i]);
                 return V;
             }
         }
 
-        public List<Vector2> GetVerticesClockwise()
+        public virtual List<Vector2> GetVerticesClockwise()
         {
             if (GetArea() > 0f || Vertices.Count == 1) return Vertices;
             else
             {
-                var V = new List<Vector2>();
+                var V = new List<Vector2>(n);
                 for (int i = n - 1; i >= 0; i--)
                     V.Add(Vertices[i]);
                 return V;
             }
+        }
+
+        public bool IsConvex()
+        {
+            int turn = (int)GeometryHelper.WhichSide(Vertices[0], Vertices[1], Vertices[2]);
+            for (int i = 1; i < Vertices.Count; i++)
+            {
+                int j = (i + 1) % Vertices.Count;
+                int k = (j + 1) % Vertices.Count;
+                int nextTurn = (int)GeometryHelper.WhichSide(Vertices[i], Vertices[j], Vertices[k]);
+                if (nextTurn != 0)
+                {
+                    if (turn != 0 && turn == -nextTurn)
+                        return false;
+                    nextTurn = turn;
+                }
+            }
+            return true;
         }
     }
 }

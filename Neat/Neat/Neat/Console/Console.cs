@@ -14,6 +14,7 @@ namespace Neat.Components
 {
     public partial class Console : GameComponent 
     {
+        public static List<Console> Consoles = new List<Console>();
         private const char eval_open = '(';
         private const char eval_close= ')';
         private List<string> commandsbuffer;
@@ -53,6 +54,7 @@ namespace Neat.Components
         {
             game = _game;
             Ram = game.Ram;
+            Consoles.Add(this);
             //Initialize();
         }
 
@@ -62,6 +64,7 @@ namespace Neat.Components
             game = new NeatGame(game);
             Ram = new RAM();
             standAlone = true;
+            Consoles.Add(this);
         }
 
         public override void Initialize()

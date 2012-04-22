@@ -14,7 +14,7 @@ using Neat.Mathematics;
 using Neat.Graphics;
 using Neat.GUI;
 using Neat.Components;
-using Microsoft.Research.Kinect.Nui;
+using Microsoft.Kinect.Nui;
 namespace Neat
 {
     public partial class CalibrateScreen : Screen
@@ -49,6 +49,8 @@ namespace Neat
             skeletonImage.BackgroundImage = "kinectskeletons";
 
             game.Console.AddCommand("k_smooth", k_smooth);
+
+            Form.Kinect = Kinect;
         }
 
         void k_smooth(IList<string> args)

@@ -26,7 +26,7 @@ namespace Neat.Mathematics
     {
         public List<Triangle> Triangles;
 
-        public void Triangulate()
+        public virtual void Triangulate()
         {
             Triangles = new List<Triangle>();
 
@@ -85,9 +85,9 @@ namespace Neat.Mathematics
             return true;
         }
 
-        public bool IsInside(Vector2 p)
+        public virtual bool IsInside(Vector2 p)
         {
-            Triangle t = new Triangle();
+            Triangle t;
             return IsInside(p, out t);
         }
 

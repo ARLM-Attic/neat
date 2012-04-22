@@ -61,12 +61,11 @@ namespace Neat.Mathematics
             if (A.Triangles == null) A.Triangulate();
             if (B.Triangles == null) B.Triangulate();
 
-            foreach (var triA in A.Triangles)
+            foreach (var pA in A.Triangles)
             {
-                Polygon pA = triA.ToPolygon();
-                foreach (var triB in B.Triangles)
+                foreach (var pB in B.Triangles)
                 {
-                    if (Polygon.Collide(pA, triB.ToPolygon(), out MTD))
+                    if (Polygon.Collide(pA, pB, out MTD))
                     {
                         return true;
                     }

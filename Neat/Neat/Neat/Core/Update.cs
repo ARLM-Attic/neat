@@ -21,10 +21,16 @@ namespace Neat
 {
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
+        public bool InputEnabled = true;
+        public bool ConsoleDisablesInput = true;
+#if WINDOWS
+        public bool HasMouse = true;
+#endif
 #if LIVE
         public bool NeedSignIn = true;
 #endif
         public bool IsPaused = false;
+        int secondCounter = 0;
         
         void UpdateGame(GameTime gameTime)
         {
@@ -34,14 +40,21 @@ namespace Neat
 #endif
             GetInputState();
 
-            if (MediaPlayer.State == MediaState.Playing && MuteAllSounds)
+            //Apparently MediaPlayer.GetState sucks as it's shown in
+            //memory profiling. so let's check these conditions every
+            //second instead of every frame.
+
+            /*if (secondCounter != gameTime.TotalGameTime.Seconds)
             {
-                MediaPlayer.Pause();
-            }
-            else if (MediaPlayer.State == MediaState.Paused && !MuteAllSounds)
-            {
-                MediaPlayer.Resume();
-            }
+                if (MediaPlayer.State == MediaState.Playing && MuteAllSounds)
+                {
+                    MediaPlayer.Pause();
+                }
+                else if (MediaPlayer.State == MediaState.Paused && !MuteAllSounds)
+                {
+                    MediaPlayer.Resume();
+                }
+            }*/
 
 #if WINDOWS
             if (HasConsole && IsTapped(ConsoleKey))
@@ -56,6 +69,8 @@ namespace Neat
             }
             base.Update(gameTime);
             SaveInputState();
+
+            secondCounter = gameTime.TotalGameTime.Seconds;
         }
         public void UpdateManually(GameTime gameTime)
         {
@@ -77,14 +92,11 @@ namespace Neat
                 if ((SignedInGamer.SignedInGamers.Count > 0 || !ForceSignIn) && !Guide.IsVisible)
                 {
                     UpdateGame(gameTime);
-                    Debug.Write("Googooli");
                 }
                 else
                 {
                     if (!Guide.IsVisible)
                     {
-                        Debug.Write("Looli");
-                        //Window.Title = "F" + Frame;
                         Guide.ShowSignIn(1, false);
                     }
                 }
@@ -96,7 +108,32 @@ namespace Neat
             //if (ShowMouse)
             {
 #if WINDOWS
-                MousePosition = new Vector2((float)Mouse.GetState().X, (float)Mouse.GetState().Y);
+                if (HasMouse)
+                {
+                    RealMousePosition.X = currentMouseState.X;
+                    RealMousePosition.Y = currentMouseState.Y;
+
+                    if (StretchMode == StretchModes.None)
+                        MousePosition = RealMousePosition;
+                    else /*if (StretchMode == StretchModes.Center)
+                        MousePosition = RealMousePosition + new Vector2(
+                            OutputResolution.X - GameWidth,
+                            OutputResolution.Y - GameHeight) / 2.0f;
+
+                    else /*if (StretchMode == StretchModes.Stretch)
+                    MousePosition = new Vector2(
+                        (RealMousePosition.X / OutputResolution.X) * (float)GameWidth,
+                        (RealMousePosition.Y / OutputResolution.Y) * (float)GameHeight);
+                else if (StretchMode == StretchModes.Fit)*/
+                    {
+                        MousePosition = new Vector2(
+                            (RealMousePosition.X / _vecSize.X) * (float)GameWidth,
+                            (RealMousePosition.Y / _vecSize.Y) * (float)GameHeight);
+                        MousePosition += new Vector2(
+                            MousePosition.X / _vecSize.X, MousePosition.Y / _vecSize.Y) * _vecDest;
+                    }
+                }
+                //MousePosition = VirtualMousePosition;
 #elif ZUNE
                 MoveZuneMouse();
                 
@@ -133,9 +170,11 @@ namespace Neat
         }
 #endif
         public Vector2 MousePosition = Vector2.Zero;
+        public Vector2 RealMousePosition = Vector2.Zero;
         protected virtual void Behave(GameTime gameTime)
         {
-            if (!IsPaused && ActiveScreen != null && Screens.ContainsKey(ActiveScreen)) Screens[ActiveScreen].Update(gameTime);
+            if (!IsPaused && ActiveScreen != null && Screens.ContainsKey(ActiveScreen)) 
+                Screens[ActiveScreen].Update(gameTime, InputEnabled && !(Console.IsActive && ConsoleDisablesInput));
         }
     }
 }

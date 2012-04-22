@@ -37,7 +37,7 @@ namespace Neat.GUI
             base.Initialize();
         }
 
-        public override void Released()
+        public override void Released(Vector2 pos = new Vector2())
         {
             Checked = !Checked;
             if (Checked)

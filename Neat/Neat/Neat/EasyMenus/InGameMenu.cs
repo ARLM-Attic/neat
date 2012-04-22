@@ -41,7 +41,7 @@ namespace Neat.EasyMenus
             System.GetLastMenuItem().Forecolor = Color.PaleVioletRed;
             System.Enable();
             System.ItemsOffset = new Vector2(0, 100);
-            Activate();
+            //Activate();
             game.Console.AddCommand("m_gamescreen", m_gamescreen);
             base.CreateMenu();
         }
@@ -53,9 +53,24 @@ namespace Neat.EasyMenus
 
         public override void HandleInput(GameTime gameTime)
         {
-            if (game.IsTapped(Keys.Escape) || game.IsTapped(Buttons.Back))
+            if (game.IsReleased(Keys.Escape) || game.IsReleased(Buttons.Back))
                 game.Console.Run("sh game");
             base.HandleInput(gameTime);
+        }
+
+        bool oldAnimationState;
+        public override void Activate()
+        {
+            oldAnimationState = game.FreezeAnimations;
+            game.FreezeAnimations = true;
+            BackgroundScreen = game.PreviousScreen;
+            base.Activate();
+        }
+
+        public override void Deactivate(string nextScreen)
+        {
+            game.FreezeAnimations = oldAnimationState;
+            base.Deactivate(nextScreen);
         }
     }
 }

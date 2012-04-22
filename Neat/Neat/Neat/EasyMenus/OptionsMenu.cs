@@ -26,17 +26,80 @@ namespace Neat.EasyMenus
 {
     public class OptionsMenu : Menu
     {
-        public OptionsMenu(NeatGame G)
-            : base(G)
-        {
-        }
-
-
         int gameWidth2, gameHeight2;
         bool fullscreen2;
         MenuItem resolutionItem;
         List<Point> resolutions;
         int selectedResolution = 0;
+
+        public OptionsMenu(NeatGame G)
+            : base(G)
+        {
+        }
+
+        public override void Activate()
+        {
+            OpenOptionsMenu();
+            base.Activate();
+        }
+
+        public override void CreateMenu()
+        {
+            gameWidth2 = game.GameWidth;
+            gameHeight2 = game.GameHeight;
+
+            if (game.StretchMode != NeatGame.StretchModes.None)
+            {
+                gameWidth2 = game.OutputResolution.X;
+                gameHeight2 = game.OutputResolution.Y;
+            }
+            fullscreen2 = game.FullScreen;
+
+            var fullscreenItem = System.AddItem("Fullscreen: " + (fullscreen2 ? "ON" : "OFF"));
+            fullscreenItem.OnSelect = o =>
+            {
+                fullscreen2 = !fullscreen2;
+                o.Caption = ("Fullscreen: " + (fullscreen2 ? "ON  " : "OFF  "));
+            };
+#if !WINDOWS
+            fullscreenItem.Enabled = false;
+#endif
+
+            var soundsItem = System.AddItem("Sounds: " + (game.MuteAllSounds ? "OFF" : "ON"));
+            soundsItem.OnSelect = o =>
+            {
+                game.MuteAllSounds = !game.MuteAllSounds;
+                o.Caption = ("Sounds: " + (game.MuteAllSounds ? "OFF" : "ON"));
+            };
+
+            resolutionItem = System.AddItem("Resolution: ", true);
+            resolutionItem.Caption += gameWidth2.ToString() + "x" + gameHeight2.ToString();
+            resolutionItem.OnSelect = o =>
+            {
+                selectedResolution = (selectedResolution + 1) % resolutions.Count;
+                resolutionItem.Caption = ("Resolution: " + resolutions[selectedResolution].X.ToString() + "x" + resolutions[selectedResolution].Y.ToString());
+            };
+
+            var applyItem = System.AddItem("Apply Settings", true);
+            applyItem.OnSelect = o => ApplySettings();
+            System.AddItem("Back", true, null, "sh mainmenu");
+#if !WINDOWS
+            resolutionItem.Enabled = false;
+#endif
+
+            System.ItemsOffset = new Vector2(0, 100);
+            //Activate();
+            base.CreateMenu();
+        }
+
+        public override void HandleInput(GameTime gameTime)
+        {
+            if (game.IsTapped(Keys.Escape) || game.IsTapped(Buttons.Back))
+                game.Console.Run("sh mainmenu");
+
+            base.HandleInput(gameTime);
+        }
+
         void OpenOptionsMenu()
         {
             gameWidth2 = game.GameWidth;
@@ -79,99 +142,32 @@ namespace Neat.EasyMenus
             }
         }
 
-        public override void Activate()
+        public Action<StreamWriter> OptionalSave = null;
+        void ApplySettings()
         {
-            OpenOptionsMenu();
-            base.Activate();
-        }
+            StreamWriter sw = new StreamWriter("options.nsc");
 
-        public override void CreateMenu()
-        {
-            gameWidth2 = game.GameWidth;
-            gameHeight2 = game.GameHeight;
-            if (game.StretchMode != NeatGame.StretchModes.None)
+            if (OptionalSave != null) OptionalSave(sw);
+
+            sw.WriteLine("g_res " + resolutions[selectedResolution].X.ToString() + " " + resolutions[selectedResolution].Y.ToString());
+            sw.WriteLine("g_fullscreen " + fullscreen2.ToString());
+            sw.WriteLine("a_mutesounds " + game.MuteAllSounds.ToString());
+            sw.WriteLine("g_reinit");
+
+            sw.Close();
+            if (game.StretchMode == NeatGame.StretchModes.None)
             {
-                gameWidth2 = game.OutputResolution.X;
-                gameHeight2 = game.OutputResolution.Y;
+                game.GameWidth = resolutions[selectedResolution].X;
+                game.GameHeight = resolutions[selectedResolution].Y;
             }
-            fullscreen2 = game.FullScreen;
-            System.AddItem("Fullscreen: " + (fullscreen2 ? "ON" : "OFF"));
-#if !WINDOWS
-            System.GetLastMenuItem().Enabled = false;
-#endif
-            System.AddItem("Sounds: " + (game.MuteAllSounds ? "OFF" : "ON"));
-            System.AddItem("Resolution: ", true);
-            resolutionItem = System.GetLastMenuItem();
-            resolutionItem.Caption += gameWidth2.ToString() + "x" + gameHeight2.ToString();
-            System.AddItem("Apply Settings", true);
-            System.AddItem("Back");
-#if !WINDOWS
-            resolutionItem.Enabled = false;
-#endif
-            System.ItemsOffset = new Vector2(0, 100);
-            Activate();
-            base.CreateMenu();
-        }
-
-        public override void HandleInput(GameTime gameTime)
-        {
-            if (game.IsTapped(Keys.Escape) || game.IsTapped(Buttons.Back))
-                game.Console.Run("sh mainmenu");
-
-            if (game.IsTapped(Keys.Enter) || game.IsTapped(Buttons.A))
+            else
             {
-                SelectItem();
+                game.OutputResolution = resolutions[selectedResolution];
             }
-            base.HandleInput(gameTime);
-        }
-
-        void SelectItem()
-        {
-            switch (System.SelectedItem)
-            {
-                case 0:
-                    fullscreen2 = !fullscreen2;
-                    System.Items[0].Caption = ("Fullscreen: " + (fullscreen2 ? "ON  " : "OFF  "));
-#if WINDOWS
-                    //game.ToggleFullScreen();
-#endif
-                    //optionsMenu.recalculateSizes();
-                    break;
-                case 1:
-                    game.MuteAllSounds = !game.MuteAllSounds;
-                    System.Items[1].Caption=("Sounds: " + (game.MuteAllSounds ? "OFF" : "ON"));
-                    break;
-                case 2:
-                    selectedResolution = (selectedResolution + 1) % resolutions.Count;
-                    resolutionItem.Caption = ("Resolution: " + resolutions[selectedResolution].X.ToString() + "x" + resolutions[selectedResolution].Y.ToString());
-                    //optionsMenu.recalculateSizes();
-                    break;
-                case 3:
-#if WINDOWS
-                    StreamWriter sw = new StreamWriter("options.nsc");
-                    sw.WriteLine("g_res " + resolutions[selectedResolution].X.ToString() + " " + resolutions[selectedResolution].Y.ToString());
-                    sw.WriteLine("g_fullscreen " + fullscreen2.ToString());
-                    sw.WriteLine("a_mutesounds " + game.MuteAllSounds.ToString());
-                    sw.WriteLine("g_reinit");
-                    sw.Close();
-                    if (game.StretchMode == NeatGame.StretchModes.None)
-                    {
-                        game.GameWidth = resolutions[selectedResolution].X;
-                        game.GameHeight = resolutions[selectedResolution].Y;
-                    }
-                    else
-                    {
-                        game.OutputResolution = resolutions[selectedResolution];
-                    }
-                    game.FullScreen = fullscreen2;
-                    game.InitializeGraphics();
-                    Reset();
-#endif
-                    break;
-                case 4:
-                    game.Console.Run("sh mainmenu");
-                    break;
-            }
+            game.FullScreen = fullscreen2;
+            game.InitializeGraphics();
+            Reset();
+            game.Console.Run("sh optionsmenu");
         }
 
         public override void Render(GameTime gameTime)

@@ -35,6 +35,7 @@ namespace Neat
         public List<GameComponent> Components = new List<GameComponent>();
         public EffectChain EffectChain;
         public bool RenderFormWithEffects = true;
+        public bool InputEnabled = true;
 #endregion
 
 #region Initialize
@@ -71,9 +72,9 @@ namespace Neat
 #endregion 
 
 #region Loop
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime, bool ForceInputEnable=true)
         {
-            HandleInput(gameTime);
+            if (InputEnabled && ForceInputEnable) HandleInput(gameTime);
             Behave(gameTime);
             foreach (var item in Components)
             {

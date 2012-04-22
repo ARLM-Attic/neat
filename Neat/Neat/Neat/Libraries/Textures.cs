@@ -23,9 +23,11 @@ namespace Neat
 {
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
+        public TimeSpan TotalTime { get { return gamestime == null ? new TimeSpan(0) : gamestime.TotalGameTime; } }
         protected GameTime gamesTime;
         Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
-        
+        public Dictionary<string, Sprite> Sprites { get { return sprites; } }
+
         public void LoadTexture(string path, string name=null, bool viaContentManager=true)
         {
             try
@@ -152,6 +154,34 @@ namespace Neat
             sprites[name] = new Sprite(framerate, frames);
         }
 
+        public void CreateSprite(string name, string spritesheet, Vector2 size, double frameRate,
+            params Vector2[] positions)
+        {
+            if (positions.Length == 0) return;
+            name = name.ToLower();
+            if (sprites.ContainsKey(name))
+            {
+                if (ContentDuplicateBehavior != ContentDuplicateBehaviors.Replace)
+                    return;
+            }
+
+            List<Sprite.Slice> frames = new List<Sprite.Slice>();
+            Texture2D tex = GetTexture(spritesheet);
+            for (int i = 0; i < positions.Length; i++)
+            {
+                if (positions[i].X + size.X > tex.Width ||
+                    positions[i].Y + size.Y > tex.Height ||
+                    positions[i].X < 0 || positions[i].Y < 0)
+                {
+                    SayMessage("Slice is outside texture boundaries (" + name + ")", true);
+                    return;
+                }
+                frames.Add(new Sprite.Slice(tex, GeometryHelper.Vectors2Rectangle(positions[i], size)));
+            }
+
+            sprites[name] = new Sprite(frameRate, frames);
+        }
+
         public void CreateSprite(string name, double frameRate, KeyValuePair<string, Rectangle>[] slices)
         {
             name = name.ToLower();
@@ -211,20 +241,36 @@ namespace Neat
         {
             LoadTexture(name, frameRate, true, paths);
         }
-        
+
+        uint _freezedFrame;
+        bool _freezeAnimations;
+        GameTime _freezedGameTime = new GameTime(TimeSpan.Zero, TimeSpan.Zero, false);
+        public bool FreezeAnimations
+        {
+            get
+            {
+                return _freezeAnimations;
+            }
+            set
+            {
+                if (value) _freezedFrame = Frame;
+                _freezeAnimations = value;
+            }
+        }
+
         public Sprite.Slice GetSlice(string name)
         {
             try
             {
                 name = name.ToLower();
                 if (sprites.ContainsKey(name))
-                    return sprites[name].GetSlice(Frame);
+                    return sprites[name].GetSlice(FreezeAnimations ? _freezedFrame : Frame);
                 else
-                    return sprites["error"].GetSlice(Frame);
+                    return sprites["error"].GetSlice(FreezeAnimations ? _freezedFrame : Frame);
             }
             catch
             {
-                return sprites["error"].GetSlice(Frame);
+                return sprites["error"].GetSlice(FreezeAnimations ? _freezedFrame : Frame);
             }
         } //Texture using default time
         public Sprite.Slice GetSlice(string name, GameTime gt)
@@ -233,13 +279,13 @@ namespace Neat
             {
                 name = name.ToLower();
                 if (sprites.ContainsKey(name))
-                    return sprites[name].GetSlice(gt);
+                    return sprites[name].GetSlice(FreezeAnimations ? _freezedGameTime : gt);
                 else
-                    return sprites["error"].GetSlice(gt);
+                    return sprites["error"].GetSlice(FreezeAnimations ? _freezedGameTime : gt);
             }
             catch
             {
-                return sprites["error"].GetSlice(gt);
+                return sprites["error"].GetSlice(FreezeAnimations ? _freezedGameTime : gt);
             }
         }
 
@@ -264,6 +310,33 @@ namespace Neat
             {
                 return sprites["error"];
             }
+        }
+
+        public Sprite.AnimationModes GetAnimationMode(string name)
+        {
+            if (sprites.ContainsKey(name = name.ToLower()))
+                return sprites[name].AnimationMode;
+            return Sprite.AnimationModes.Illegal;
+        }
+
+        public bool SetAnimationMode(string name, Sprite.AnimationModes mode)
+        {
+            if (sprites.ContainsKey(name = name.ToLower()))
+            {
+                sprites[name].AnimationMode = mode;
+                return true;
+            }
+            return false;
+        }
+
+        public bool RewindAnimation(string name)
+        {
+            if (sprites.ContainsKey(name = name.ToLower()))
+            {
+                sprites[name].Rewind(gamesTime,Frame);
+                return true;
+            }
+            return false;
         }
     }
 }

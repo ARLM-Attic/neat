@@ -21,7 +21,11 @@ namespace Neat.Components
         void e_show(IList<string> args)
         {
             try { game.ActivateScreen(Args2Str(args, 1)); }
-            catch { WriteLine("Error in " + Args2Str(args, 0)); }
+            catch (Exception e)
+            {
+                WriteLine("Error in " + Args2Str(args, 0));
+                WriteLine(e.Source + ": " + e.Message);
+            }
         }
 
 #if LIVE

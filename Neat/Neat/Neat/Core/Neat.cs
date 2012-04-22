@@ -32,35 +32,19 @@ namespace Neat
 
     public partial class NeatGame : Microsoft.Xna.Framework.Game
     {
-        public NeatGame(string[] args = null, GraphicsDevice device=null, ContentManager content=null)
-        {
-            Debug.WriteLine("NeatGame Constructed.");
-            _graphicsDevice = device;
-            _content = content;
-            Create();
-        }
+        public static List<NeatGame> Games = new List<NeatGame>();
+
+        public uint Frame = 0;
+        public const uint MaxFrame = uint.MaxValue - 2;
 
         GraphicsDevice _graphicsDevice = null;
         ContentManager _content = null;
         public Components.TextEffects TextEffects = null;
         public Components.ElegantTextEngine ElegantTextEngine = null;
-        public new GraphicsDevice GraphicsDevice
-        {
-            get { if (_graphicsDevice != null) return _graphicsDevice; else return base.GraphicsDevice; }
-        }
-        public new ContentManager Content
-        {
-            get { if (_content != null) return _content; else return base.Content; }
-        }
+
         public Neat.Components.Console Console;
         public bool HasConsole = true;
         public Keys ConsoleKey = Keys.OemTilde;
-#if WINDOWS
-        public bool IsWideScreen()
-        {
-            return (GraphicsDevice.DisplayMode.AspectRatio > 1.5);
-        }
-#endif
 
         public bool Freezed = false;
 
@@ -77,9 +61,9 @@ namespace Neat
         public NetworkHelper networkHelper;
 #endif
 
-        public Dictionary<string,Screen> Screens;
-        public string ActiveScreen;
-
+        public Dictionary<string, Screen> Screens;
+        public string ActiveScreen, PreviousScreen = null;
+        
 #if WINDOWS_PHONE
         public int GameWidth
         {
@@ -92,11 +76,39 @@ namespace Neat
             set{}
         }
 #else
-        public int 
-            GameWidth   =   1024,
-            GameHeight  =   768;
+        public int
+            GameWidth = 1024,
+            GameHeight = 768;
 #endif
         public bool FullScreen = false;
+
+        bool standAlone = true;
+
+        public SpriteFont NormalFont;
+
+        public NeatGame(string[] args = null, GraphicsDevice device=null, ContentManager content=null)
+        {
+            Debug.WriteLine("NeatGame Constructed.");
+            _graphicsDevice = device;
+            _content = content;
+            Create();
+            Games.Add(this);
+        }
+
+        public new GraphicsDevice GraphicsDevice
+        {
+            get { if (_graphicsDevice != null) return _graphicsDevice; else return base.GraphicsDevice; }
+        }
+        public new ContentManager Content
+        {
+            get { if (_content != null) return _content; else return base.Content; }
+        }
+#if WINDOWS
+        public bool IsWideScreen()
+        {
+            return (GraphicsDevice.DisplayMode.AspectRatio > 1.5);
+        }
+#endif
 
 #if WINDOWS
         public virtual void InitializeGraphics()
@@ -144,8 +156,6 @@ namespace Neat
             fullscreen = graphics.IsFullScreen;
         }
 #endif
-        bool standAlone = true;
-        
         public void Create()
         {
             Ram = new RAM(this);
@@ -200,26 +210,24 @@ namespace Neat
         {
         }
 
-        public uint Frame = 0;
-        public const uint MaxFrame = uint.MaxValue - 2;
-
         public void ActivateScreen(string screen)
         {
+            Debug.WriteLine("ActivateScreen(" + screen + ")");
             if (Screens.ContainsKey(screen))
             {
                 if (ActiveScreen != null && Screens.ContainsKey(ActiveScreen))
                 {
                     Screens[ActiveScreen].Deactivate(screen);
+                    PreviousScreen = ActiveScreen;
                 }
                 Screens[screen].Activate();
                 ActiveScreen = screen;
             }
         }
 
-        public SpriteFont NormalFont;
-
         protected override void BeginRun()
         {
+            Debug.WriteLine("BeginRun()");
             base.BeginRun();
             InitializeScreens();
             ActivateScreen("mainmenu");
@@ -260,7 +268,10 @@ namespace Neat
         public virtual void InitializeScreens()
         {
             foreach (var p in Screens)
+            {
+                Debug.WriteLine("InitializeScreens(" + p.Key + ")");
                 p.Value.Initialize();
+            }
         }
     }
 }

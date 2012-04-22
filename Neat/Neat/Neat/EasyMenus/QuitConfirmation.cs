@@ -42,7 +42,7 @@ namespace Neat.EasyMenus
             System.DisabledItemForeground = Color.White;
             System.ItemsOffset = new Vector2(0, 100);
             System.SelectedItem = 1;
-            Activate();
+            //Activate();
             base.CreateMenu();
         }
 
