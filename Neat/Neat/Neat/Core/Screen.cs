@@ -52,6 +52,8 @@ namespace Neat
             {
                 item.Initialize();
             }
+
+            EffectHandler.Game = game;
         }
 
         public virtual void Activate()
@@ -77,6 +79,10 @@ namespace Neat
             if (InputEnabled && ForceInputEnable) HandleInput(gameTime);
             Behave(gameTime);
             foreach (var item in Components)
+            {
+                item.Update(gameTime);
+            }
+            foreach (var item in EffectChain)
             {
                 item.Update(gameTime);
             }

@@ -11,7 +11,7 @@ namespace Neat
     {
         protected Effect Effect;
         protected RenderTarget2D Target;
-        protected NeatGame Game;
+        public static NeatGame Game;
         protected Color FinalTint;
         public EffectHandler()
         {
@@ -24,6 +24,10 @@ namespace Neat
             
             Target = new RenderTarget2D(Game.GraphicsDevice, Game.GameWidth, Game.GameHeight, 
                 false, SurfaceFormat.Color, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
         }
 
         public virtual void BeginDraw(GameTime gameTime)

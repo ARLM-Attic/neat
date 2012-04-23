@@ -76,9 +76,35 @@ namespace Neat
             set{}
         }
 #else
-        public int
-            GameWidth = 1024,
-            GameHeight = 768;
+        int _gameWidth = 1024,
+            _gameHeight = 768;
+
+        public int GameWidth
+        {
+            get
+            {
+                return _gameWidth;
+            }
+            set
+            {
+                _gameWidth = value;
+                ResetRenderTarget();
+            }
+        }
+        public int GameHeight
+        {
+            get
+            {
+                return _gameHeight;
+            }
+            set
+            {
+                _gameHeight = value;
+                ResetRenderTarget();
+            }
+        }
+
+
 #endif
         public bool FullScreen = false;
 
@@ -99,6 +125,7 @@ namespace Neat
         {
             get { if (_graphicsDevice != null) return _graphicsDevice; else return base.GraphicsDevice; }
         }
+
         public new ContentManager Content
         {
             get { if (_content != null) return _content; else return base.Content; }
@@ -210,7 +237,8 @@ namespace Neat
         {
         }
 
-        public void ActivateScreen(string screen)
+        public Transition DefaultTransition = null;
+        public void ActivateScreen(string screen, Transition trans = null)
         {
             Debug.WriteLine("ActivateScreen(" + screen + ")");
             if (Screens.ContainsKey(screen))
@@ -222,6 +250,15 @@ namespace Neat
                 }
                 Screens[screen].Activate();
                 ActiveScreen = screen;
+            }
+
+            Transition = trans;
+            if (trans == null) Transition = DefaultTransition;
+
+            if (Transition != null)
+            {
+                EffectHandler.Game = this;
+                Transition.Initialize(gamestime);
             }
         }
 
@@ -272,6 +309,11 @@ namespace Neat
                 Debug.WriteLine("InitializeScreens(" + p.Key + ")");
                 p.Value.Initialize();
             }
+        }
+
+        public bool GetRandomBool()
+        {
+            return RandomGenerator.Next(RandomGenerator.Next()) % 2 == 0;
         }
     }
 }

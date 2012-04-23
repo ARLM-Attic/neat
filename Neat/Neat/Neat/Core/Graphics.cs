@@ -81,6 +81,12 @@ namespace Neat
 
         void ResetRenderTarget()
         {
+            if (GraphicsDevice == null)
+            {
+                Debug.WriteLine("GraphicsDevice is null. Cannot ResetRenderTarget();");
+                return;
+            }
+
             _renderTarget = new RenderTarget2D(GraphicsDevice, GameWidth, GameHeight, 
                 false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 1, RenderTargetUsage.PreserveContents);
             if (StretchMode == StretchModes.Center)
@@ -237,14 +243,25 @@ namespace Neat
             var tx = GetSlice("mousePointer");
             SpriteBatch.Draw(tx.Texture, pos, tx.Crop, MouseTint);
         }
+
+        public Transition Transition = null;
         protected virtual void Render(GameTime gameTime)
         {
             if (Screens.ContainsKey(ActiveScreen))
             {
-                Screens[ActiveScreen].BeforeRender(gameTime);
-                Screens[ActiveScreen].Render(gameTime);
-                Screens[ActiveScreen].AfterRender(gameTime);
+                if (Transition == null || Transition.Finished)
+                    RenderScreen(ActiveScreen, gameTime);
+                else
+                    Transition.Draw(gameTime);
             }
+        }
+
+        
+        public void RenderScreen(string name, GameTime gameTime)
+        {
+            Screens[name].BeforeRender(gameTime);
+            Screens[name].Render(gameTime);
+            Screens[name].AfterRender(gameTime);
         }
         
         public void Write(string text, Vector2 position)

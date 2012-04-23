@@ -125,7 +125,13 @@
     <Compile Include="Components\TextEffects.cs" />
     <Compile Include="Core\EffectChain.cs" />
     <Compile Include="Core\EffectHandler.cs" />
+    <Compile Include="Core\Transition.cs" />
     <Compile Include="Effects\CropEffect.cs" />
+    <Compile Include="Effects\ScaleEffect.cs" />
+    <Compile Include="Transitions\Crop.cs" />
+    <Compile Include="Transitions\Enter.cs" />
+    <Compile Include="Transitions\Exit.cs" />
+    <Compile Include="Transitions\Fader.cs" />
     <Compile Include="Effects\RippleEffect.cs" />
     <Compile Include="FormsAux\GraphicsDeviceControl.cs">
       <SubType>Component</SubType>
@@ -199,6 +205,7 @@
     <Compile Include="FormsAux\ServiceContainer.cs" />
     <Compile Include="Core\Sprite.cs" />
     <Compile Include="Core\Update.cs" />
+    <Compile Include="Transitions\Push.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

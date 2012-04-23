@@ -53,17 +53,8 @@ namespace Neat
         /***********************************************/
         public Effect GetEffect(string name)
         {
-            try
-            {
-                name = name.ToLower();
-                if (effects.ContainsKey(name)) return effects[name];
-                else return effects["none"];
-            }
-            catch
-            {
-                SayMessage("GetEffect(string): Couldn't find effect " + name);
-                return effects["none"];
-            }
+            name = name.ToLower();
+            return effects[name];
         }
         public int GetEffectPassesCount(string name)
         {

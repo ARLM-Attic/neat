@@ -105,8 +105,6 @@ namespace Neat
             UpdateGame(gameTime);
 #endif
             
-            //if (ShowMouse)
-            {
 #if WINDOWS
                 if (HasMouse)
                 {
@@ -115,17 +113,7 @@ namespace Neat
 
                     if (StretchMode == StretchModes.None)
                         MousePosition = RealMousePosition;
-                    else /*if (StretchMode == StretchModes.Center)
-                        MousePosition = RealMousePosition + new Vector2(
-                            OutputResolution.X - GameWidth,
-                            OutputResolution.Y - GameHeight) / 2.0f;
-
-                    else /*if (StretchMode == StretchModes.Stretch)
-                    MousePosition = new Vector2(
-                        (RealMousePosition.X / OutputResolution.X) * (float)GameWidth,
-                        (RealMousePosition.Y / OutputResolution.Y) * (float)GameHeight);
-                else if (StretchMode == StretchModes.Fit)*/
-                    {
+                    else  {
                         MousePosition = new Vector2(
                             (RealMousePosition.X / _vecSize.X) * (float)GameWidth,
                             (RealMousePosition.Y / _vecSize.Y) * (float)GameHeight);
@@ -133,12 +121,9 @@ namespace Neat
                             MousePosition.X / _vecSize.X, MousePosition.Y / _vecSize.Y) * _vecDest;
                     }
                 }
-                //MousePosition = VirtualMousePosition;
-#elif ZUNE
-                MoveZuneMouse();
-                
 #endif
-            }
+
+            if (Transition != null && !Transition.Finished) Transition.Update(gameTime);
         }
 #if ZUNE
         public Vector2 mouseSens = new Vector2(6f,6f);
