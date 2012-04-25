@@ -83,7 +83,7 @@ namespace Neat
                 game.SpriteBatch.Draw(t, p, Color.White);
                 game.RestartBatch();
             }
-            game.Write("Press ~ to open console.", new Vector2(0, game.GameHeight - 20));
+            game.Write("Press ~ to open the console. \nPress Alt-F4 to quit.", new Vector2(0, game.GameHeight - 40));
             base.Render(gameTime);
         }
     }
