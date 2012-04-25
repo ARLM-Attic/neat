@@ -57,7 +57,8 @@ namespace Neat
 
         Dictionary<string, SFXList> sounds;
         bool muteAllSounds = false;
-        float oldMediaVolume;
+        bool muteMediaPlayer = false;
+        /*
         bool muteMediaPlayer = false;
 
         public bool MuteMediaPlayer
@@ -80,25 +81,27 @@ namespace Neat
                 muteMediaPlayer = value;
             }
         }
-
+        */
+        public bool MuteMediaPlayer
+        {
+            get
+            {
+                return muteMediaPlayer;
+            }
+            set
+            {
+                if (!muteAllSounds) MediaPlayer.IsMuted = value;
+                muteMediaPlayer = value;
+            }
+        }
         public bool MuteAllSounds
         {
             get { return muteAllSounds; }
             set
             {
-                if (!value)
-                    if (oldMediaVolume == 0)
-                        MediaPlayer.Volume = 1.0f;
-                    else
-                        MediaPlayer.Volume = oldMediaVolume;
-                else
-                {
-                    oldMediaVolume = MediaPlayer.Volume;
-                    MediaPlayer.Volume = 0;
-                }
+                if (!value) MediaPlayer.IsMuted = muteMediaPlayer;
+                if (value) MediaPlayer.IsMuted = true;
                 muteAllSounds = value;
-
-                MuteMediaPlayer = muteMediaPlayer;
             }
         }
         public SFXList LoadSound(string spath)

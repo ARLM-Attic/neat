@@ -270,9 +270,10 @@ namespace Neat
             FirstTime();
 
             if (File.Exists("autoexec.nsc")) Console.Run("call autoexec.nsc");
-
+#if DEBUG
             Console.Run("et_echo Engine Initialization Complete.$_" +
                 "et_echo This is Neat.");
+#endif
         }
 
         protected override void Initialize()
