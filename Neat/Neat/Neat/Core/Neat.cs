@@ -196,6 +196,7 @@ namespace Neat
             Console = new Neat.Components.Console(this);
             TextEffects = new Neat.Components.TextEffects(this);
             ElegantTextEngine = new Neat.Components.ElegantTextEngine(this);
+            Event.Engine = this;
 
             Components.Add(Console);
             Components.Add(TextEffects);

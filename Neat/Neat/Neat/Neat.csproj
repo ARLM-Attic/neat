@@ -126,6 +126,7 @@
     <Compile Include="Components\TextEffects.cs" />
     <Compile Include="Core\EffectChain.cs" />
     <Compile Include="Core\EffectHandler.cs" />
+    <Compile Include="Core\Event.cs" />
     <Compile Include="Core\Transition.cs" />
     <Compile Include="Effects\CropEffect.cs" />
     <Compile Include="Effects\ScaleEffect.cs" />
