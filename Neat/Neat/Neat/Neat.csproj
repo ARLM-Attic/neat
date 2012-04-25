@@ -119,6 +119,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\CreditsScreen.cs" />
     <Compile Include="Components\KinectEngine.cs" />
     <Compile Include="Components\Kintouch.cs" />
     <Compile Include="Components\SpeechEngine.cs" />

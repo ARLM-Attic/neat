@@ -107,10 +107,9 @@ namespace Neat
 
 #endif
         public bool FullScreen = false;
-
         bool standAlone = true;
-
         public SpriteFont NormalFont;
+        public Transition DefaultTransition = null;
 
         public NeatGame(string[] args = null, GraphicsDevice device=null, ContentManager content=null)
         {
@@ -237,7 +236,6 @@ namespace Neat
         {
         }
 
-        public Transition DefaultTransition = null;
         public void ActivateScreen(string screen, Transition trans = null)
         {
             Debug.WriteLine("ActivateScreen(" + screen + ")");

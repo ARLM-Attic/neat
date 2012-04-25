@@ -245,7 +245,7 @@ namespace Neat.Components
             RunCommand(command);
         }
 
-        public void RunCommand(string rawcommand)
+        protected void RunCommand(string rawcommand)
         {
             if (Echo) WriteLine("  > " + rawcommand);
             try
@@ -304,7 +304,7 @@ namespace Neat.Components
                 else if (args[1] == "purple") cl = Color.Purple;
                 else if (args[1] == "brown") cl = Color.Brown;
                 else if (args[1] == "white") cl = Color.White;
-                else if (args[1] == "gray") cl = Color.Gray;
+                else if (args[1] == "gray" || args[1] == "grey") cl = Color.Gray;
                 else if (args[1] == "transparent") cl = Color.Transparent;
                 else if (args.Count > 2) // custom color - float, float, float [, float(alpha) ]
                 {

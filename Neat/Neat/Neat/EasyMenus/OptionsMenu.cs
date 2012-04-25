@@ -12,10 +12,6 @@ using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
 using Microsoft.Xna.Framework.Input.Touch;
 #endif
-#if WINDOWS
- 
- 
-#endif
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;

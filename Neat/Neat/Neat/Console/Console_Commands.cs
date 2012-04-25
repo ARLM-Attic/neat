@@ -121,6 +121,7 @@ namespace Neat.Components
                 {"a_mediaplay"          ,a_mediaplay},
                 {"a_songinfo"           ,a_songinfo},
                 {"a_mutesounds"         ,a_mutesounds},
+                {"a_mutesongs"          ,(o)=>game.MuteMediaPlayer = bool.Parse(o[1])},
                 {"a_mediashuffle"       ,a_mediashuffle},
                 {"a_mediarepeat"        ,a_mediarepeat},
 
