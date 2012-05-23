@@ -12,9 +12,6 @@ using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
 using Microsoft.Xna.Framework.Input.Touch;
 #endif
-#if KINECT
-using Microsoft.Research.Kinect.Nui;
-#endif
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
@@ -27,7 +24,7 @@ namespace Neat.GUI
     public class Form
     {
 #if KINECT
-        public static KinectEngine Kinect;
+        public KinectEngine Kinect { get { return game.Kinect; } }
         public Kintouch Touch;
         public bool TrackKinect = true;
 #endif

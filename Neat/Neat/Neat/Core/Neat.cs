@@ -17,7 +17,10 @@ using Neat;
 using Neat.MenuSystem;
 using System.IO;
 using System.Diagnostics;
- 
+
+#if KINECT
+    using Microsoft.Kinect;
+#endif
 
 namespace Neat
 {
@@ -45,6 +48,10 @@ namespace Neat
         public Neat.Components.Console Console;
         public bool HasConsole = true;
         public Keys ConsoleKey = Keys.OemTilde;
+
+#if KINECT
+        public KinectEngine Kinect;
+#endif
 
         public bool Freezed = false;
 
@@ -201,6 +208,14 @@ namespace Neat
             Components.Add(Console);
             Components.Add(TextEffects);
             Components.Add(ElegantTextEngine);
+
+#if KINECT
+            Components.Add(
+                Kinect = new KinectEngine(this, 
+                    ColorImageFormat.RgbResolution640x480Fps30, 
+                    DepthImageFormat.Resolution640x480Fps30));
+#endif
+
 #if LIVE
             Components.Add(new GamerServicesComponent(this));
 #endif

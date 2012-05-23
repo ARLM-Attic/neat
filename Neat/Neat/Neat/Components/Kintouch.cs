@@ -9,11 +9,10 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Research.Kinect;
+using Microsoft.Kinect;
 using Neat.Components;
 using Neat;
 using Neat.Mathematics;
-using Microsoft.Research.Kinect.Nui;
 using System.Diagnostics;
 using Neat.Graphics;
 
@@ -23,8 +22,8 @@ namespace Neat.Components
     {
         public class TrackPointData
         {
-            public JointID TrackJoint = JointID.HandLeft;
-            public JointID BaseJoint = JointID.Head;
+            public JointType TrackJoint = JointType.HandLeft;
+            public JointType BaseJoint = JointType.Head;
             public float Z = 0.450f; //mm
             public int SkeletonId = 0;
             public string TextureName = "handleft";
@@ -50,13 +49,13 @@ namespace Neat.Components
             {
                 new TrackPointData(),
                 new TrackPointData() {
-                    TrackJoint = JointID.HandRight,
+                    TrackJoint = JointType.HandRight,
                     TextureName = "handright",
                     PushedTextureName = "handright_pushed" },
                 new TrackPointData() {
                     SkeletonId = 1, Tint = Color.Red },
                 new TrackPointData() {
-                    TrackJoint = JointID.HandRight,
+                    TrackJoint = JointType.HandRight,
                     TextureName = "handright",
                     PushedTextureName = "handright_pushed",
                     SkeletonId = 1, Tint = Color.Red }
@@ -71,7 +70,8 @@ namespace Neat.Components
             {
                 var point = TrackPoints[i];
                 point.LastPosition = point.Position;
-                if (Kinect.TrackTime[point.SkeletonId] > 5)
+                //if (Game.Frame - Kinect.LastSkeletonFrame > 5)
+                if (point.SkeletonId < Kinect.TrackedSkeletonsIndices.Count)
                 {
                     var trackPos = Kinect.ToVector3(point.TrackJoint, point.SkeletonId);
                     var basePos = Kinect.ToVector3(point.BaseJoint, point.SkeletonId);
@@ -96,12 +96,16 @@ namespace Neat.Components
             for (int i = 0; i < TrackPoints.Count; i++)
             {
                 var point = TrackPoints[i];
-                if (Kinect.TrackTime[point.SkeletonId] > 5)
+                //if (Game.Frame - Kinect.LastSkeletonFrame > 5)
+                if (point.SkeletonId < Kinect.TrackedSkeletonsIndices.Count)
                 {
                     var tx = Game.GetSlice((point.TrackTime > Delay ? point.PushedTextureName : point.TextureName), gameTime);
 
                     var trackPos = Kinect.ToVector3(point.TrackJoint, point.SkeletonId);
                     var basePos = Kinect.ToVector3(point.BaseJoint, point.SkeletonId);
+
+                    Game.Window.Title = GeometryHelper.Vector2String(trackPos);
+
                     var scaleFactor = 2 - (MathHelper.Clamp(basePos.Z - trackPos.Z, 0, point.Z)) / (point.Z);
                     var alpha = -scaleFactor + 2;
                     //scaleFactor += 2;

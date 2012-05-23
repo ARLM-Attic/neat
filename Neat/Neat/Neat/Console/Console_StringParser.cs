@@ -211,7 +211,7 @@ namespace Neat.Components
                     }
                 }
             }
-            bool found = false;
+
             int currentOrder = 0;
             Operator selectedOperator = operators[0];
             int minIdx = -1;

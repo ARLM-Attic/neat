@@ -28,7 +28,7 @@ namespace Neat
         Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
         public Dictionary<string, Sprite> Sprites { get { return sprites; } }
 
-        public void LoadTexture(string path, string name=null, bool viaContentManager=true)
+        public Texture2D LoadTexture(string path, string name=null, bool viaContentManager=true)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace Neat
                     if (ContentDuplicateBehavior == ContentDuplicateBehaviors.Replace)
                         sprites.Remove(name);
                     else
-                        return;
+                        return sprites[name].Textures[0].Texture;
                 }
 
                 if (viaContentManager)
@@ -54,11 +54,15 @@ namespace Neat
                         sprites.Add(name, new Sprite(Texture2D.FromStream(GraphicsDevice, titleStream)));
                     }
                 }
+
+                return sprites[name].Textures[0].Texture;
             }
             catch
             {
                 if (viaContentManager && File.Exists(path)) LoadTexture(path, name, false);
                 SayMessage("Cannot load {" + name + "}");
+
+                return null;
             }
         }
 

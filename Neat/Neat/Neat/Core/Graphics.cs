@@ -158,6 +158,8 @@ namespace Neat
         protected override void Draw(GameTime gameTime)
         {
             gamestime = gameTime;
+
+
             if (!Disable2DRendering)
             {
                 //if (Landscape || StretchMode != StretchModes.None)
@@ -172,6 +174,13 @@ namespace Neat
 
 #if LIVE
             if (SignedInGamer.SignedInGamers.Count > 0 || !NeedSignIn || !ForceSignIn)
+#endif
+
+#if KINECT
+            if (Kinect.Draw)
+            {
+                Kinect.Render(gameTime);
+            }
 #endif
             Render(gameTime);
             if (!Disable2DRendering)

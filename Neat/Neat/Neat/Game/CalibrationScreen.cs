@@ -14,7 +14,8 @@ using Neat.Mathematics;
 using Neat.Graphics;
 using Neat.GUI;
 using Neat.Components;
-using Microsoft.Kinect.Nui;
+using Microsoft.Kinect;
+
 namespace Neat
 {
     public partial class CalibrateScreen : Screen
@@ -27,6 +28,13 @@ namespace Neat
             : base(game)
         {
             
+        }
+
+        public override void Activate()
+        {
+            if (game.Kinect.ColorStream == null) game.Kinect.OpenColorStream();
+
+            base.Activate();
         }
 
         public override void LoadContent()
@@ -43,16 +51,15 @@ namespace Neat
             tiltLabel.Position = new Vector2(tiltLabel.Position.X, game.GameHeight / 2.0f - tiltLabel.Size.Y / 2.0f);
 
             kinectImage = Form.NewControl("kinectimage", new Image()).ToImage();
-            kinectImage.BackgroundImage = "kinectrgb";
+            kinectImage.BackgroundImage = "kinectcolor";
 
-            skeletonImage = Form.NewControl("skeletonimage", new Image()).ToImage();
-            skeletonImage.BackgroundImage = "kinectskeletons";
+            //skeletonImage = Form.NewControl("skeletonimage", new Image()).ToImage();
+            //skeletonImage.BackgroundImage = "kinectskeletons";
 
-            game.Console.AddCommand("k_smooth", k_smooth);
+            //game.Console.AddCommand("k_smooth", k_smooth);
 
-            Form.Kinect = Kinect;
         }
-
+        /*
         void k_smooth(IList<string> args)
         {
             float value = float.Parse(args[2]);
@@ -64,14 +71,14 @@ namespace Neat
             else if (args[1][0] == 's') s.Smoothing = value;
             else game.Console.WriteLine("Invalid value");
             Kinect.Nui.SkeletonEngine.SmoothParameters = s;
-        }
+        }*/
 
         public override void Behave(GameTime gameTime)
         {
             if (Kinect == null) return; // this.Kinect = ((KineatGame)game).Kinect;
-            tiltLabel.Caption = "Tilt: " + Kinect.Nui.NuiCamera.ElevationAngle;
+            tiltLabel.Caption = "Tilt: " + Kinect.Sensor.ElevationAngle;
             kinectImage.Center();
-            skeletonImage.Center();
+            //skeletonImage.Center();
 
             base.Behave(gameTime);
         }
@@ -84,19 +91,19 @@ namespace Neat
 
             base.Render(gameTime);
 
-            game.Write(
+            /*game.Write(
                 "Correction: " + Kinect.Nui.SkeletonEngine.SmoothParameters.Correction + "\n" +
                 "Jitter Radius: " + Kinect.Nui.SkeletonEngine.SmoothParameters.JitterRadius + "\n" +
                 "Max Deviation: " + Kinect.Nui.SkeletonEngine.SmoothParameters.MaxDeviationRadius + "\n" +
                 "Prediction: " + Kinect.Nui.SkeletonEngine.SmoothParameters.Prediction + "\n" +
-                "Smoothing: " + Kinect.Nui.SkeletonEngine.SmoothParameters.Smoothing, new Vector2(10, 100));
-            if (Kinect.TrackedSkeletonsCount > 0)
+                "Smoothing: " + Kinect.Nui.SkeletonEngine.SmoothParameters.Smoothing, new Vector2(10, 100));*/
+            if (Kinect.Skeletons.Length > 0)
             {
                 var skeleton = Kinect.Skeletons[0];
 
                 string predicted = "";
-                string zs = "";
-                for (JointID i = 0; i < JointID.Count; i++)
+                string zs = "";/*
+                for (JointType i = 0; i < JointType.Count; i++)
                 {
                     var v = Kinect.ToVector3(i, new Vector3(640, 480, 256));
                     int r = 0;// (int)v.Z - ((int)(v.Z / 256) * 256);
@@ -113,7 +120,7 @@ namespace Neat
                 }
 
                 Kinect.DrawSkeleton(SpriteBatch, lb, offset, new Vector2(640, 480), Color.Gray);
-                game.Write(zs + "\n\n\n\n\n\n" + predicted, new Vector2(200, 100));
+                */game.Write(zs + "\n\n\n\n\n\n" + predicted, new Vector2(200, 100));
             }
         }
     }

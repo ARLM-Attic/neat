@@ -130,6 +130,10 @@ namespace Neat
             Screens.Add("quitconfirm", new EasyMenus.QuitConfirmationMenu(this));
             Screens.Add("optionsmenu", new EasyMenus.OptionsMenu(this));
             Screens.Add("ingamemenu", new EasyMenus.InGameMenu(this));
+
+#if KINECT
+            Screens["kinect"] = new CalibrateScreen(this);
+#endif
         }
 
         protected string getNameFromPath(string path)

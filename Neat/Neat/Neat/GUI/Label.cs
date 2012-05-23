@@ -47,7 +47,7 @@ namespace Neat.GUI
             Caption = Caption.ToString();
         }
 
-        public Color ShadowColor = Color.Black;
+        //public Color ShadowColor = Color.Black;
         public bool DrawShadow = true;
         public void SetColor(Color color)
         {

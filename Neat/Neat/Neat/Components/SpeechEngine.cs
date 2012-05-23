@@ -128,6 +128,7 @@ namespace Neat.Components
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
+                Console.Run("et_echo Error initializing speech.");
                 recognizing = false;
             }
         }
