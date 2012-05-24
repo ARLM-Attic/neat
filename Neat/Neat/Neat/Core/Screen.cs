@@ -59,6 +59,9 @@ namespace Neat
         public virtual void Activate()
         {
             if (game.HasConsole && Form != null) Form.AttachToConsole();
+#if KINECT
+            game.Touch.Reset();
+#endif
         }
 
         public virtual void Deactivate(string nextScreen)

@@ -23,19 +23,22 @@ namespace Neat
         {
         }
 
-        public override void LoadContent()
-        {
-            //game.LoadTexture(@"Sprites\Credits");
-            base.LoadContent();
-        }
-
         public override void HandleInput(GameTime gameTime)
         {
             if (game.IsTapped(Keys.Space, Keys.Enter, Keys.Escape) || game.IsMouseClicked())
-                game.ActivateScreen("mainmenu", trans);
-                //game.Console.Run("sh mainmenu");
-
+                finish();
+#if KINECT
+            foreach (var item in game.Touch.TrackPoints)
+            {
+                if (item.Hold) finish();
+            }
+#endif
             base.HandleInput(gameTime);
+        }
+
+        void finish()
+        {
+            game.ActivateScreen("mainmenu", trans);
         }
 
         public override void Activate()

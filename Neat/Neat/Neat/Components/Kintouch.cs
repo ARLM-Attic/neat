@@ -23,22 +23,28 @@ namespace Neat.Components
         public class TrackPointData
         {
             public JointType TrackJoint = JointType.HandLeft;
-            public JointType BaseJoint = JointType.Head;
+            public JointType BaseJoint = JointType.ShoulderCenter;
             public float Z = 0.450f; //mm
             public int SkeletonId = 0;
             public string TextureName = "handleft";
             public string PushedTextureName = "handleft_pushed";
             public bool Pushed = false;
+            public bool Hold = false;
+            public bool LastHold = false;
+            public bool LastPushed = false;
             public Vector2 Position, LastPosition;
-            public int TrackTime = 0;
-            public Color Tint = Color.Blue;
+            //public int TrackTime = 0;
+            public TimeSpan TrackTime = TimeSpan.Zero;
+            public Color Tint = Color.Yellow;
         }
 
         protected new NeatGame Game;
         public KinectEngine Kinect;
         public List<TrackPointData> TrackPoints;
-        public Vector2 Sensitivity = new Vector2(1.3f);
-        public int Delay = 20;
+        public Vector2 Sensitivity = new Vector2(1.4f,2.5f);
+        //public int Delay = 20;
+        public TimeSpan Delay = new TimeSpan(0, 0, 0, 0, 600);
+        public float TouchThreshold = 10; //Distance
 
         public Kintouch(NeatGame game, KinectEngine kinect=null) : base(game)
         {
@@ -53,46 +59,77 @@ namespace Neat.Components
                     TextureName = "handright",
                     PushedTextureName = "handright_pushed" },
                 new TrackPointData() {
-                    SkeletonId = 1, Tint = Color.Red },
+                    SkeletonId = 1, Tint = Color.Pink },
                 new TrackPointData() {
                     TrackJoint = JointType.HandRight,
                     TextureName = "handright",
                     PushedTextureName = "handright_pushed",
-                    SkeletonId = 1, Tint = Color.Red }
+                    SkeletonId = 1, Tint = Color.Pink }
             };
+        }
+
+        public void Reset()
+        {
+            Reset(TimeSpan.Zero);
+        }
+
+        public void Reset(TimeSpan t)
+        {
+            for (int i = 0; i < TrackPoints.Count; i++)
+            {
+                var point = TrackPoints[i];
+                point.LastHold = point.Hold = false;
+                point.LastPushed = point.Pushed = false;
+                point.TrackTime = -t;
+            }
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (Kinect == null) return;
+            if (Kinect == null || !Kinect.IsSensorReady) return;
             Vector2 Size = new Vector2(Game.GameWidth, Game.GameHeight);
+            var touchDiffSq = TouchThreshold * TouchThreshold;
+
             for (int i = 0; i < TrackPoints.Count; i++)
             {
                 var point = TrackPoints[i];
                 point.LastPosition = point.Position;
+                point.LastPushed = point.Pushed;
+                point.LastHold = point.Hold;
+                Joint jt;
                 //if (Game.Frame - Kinect.LastSkeletonFrame > 5)
-                if (point.SkeletonId < Kinect.TrackedSkeletonsIndices.Count)
+                if (point.SkeletonId < Kinect.TrackedSkeletonsIndices.Count && (Kinect.TryGetJoint(point.TrackJoint, out jt, point.SkeletonId) && jt.TrackingState == JointTrackingState.Tracked))
                 {
                     var trackPos = Kinect.ToVector3(point.TrackJoint, point.SkeletonId);
                     var basePos = Kinect.ToVector3(point.BaseJoint, point.SkeletonId);
-                    point.Pushed = trackPos.Z < basePos.Z - point.Z;
-                    var newPos = Size * (Sensitivity * new Vector2(trackPos.X, trackPos.Y));
+
+                    point.Pushed = (trackPos.Z < basePos.Z - point.Z);
+                    var newPos = Size * (Sensitivity * new Vector2(trackPos.X-basePos.X, trackPos.Y-basePos.Y));
                     newPos.Y = Size.Y - newPos.Y;
+                    newPos += new Vector2(Game.GameWidth, -Game.GameHeight) * 0.5f;
 
                     point.Position.X = MathHelper.Lerp(newPos.X, point.Position.X, 0.9f);
                     point.Position.Y = MathHelper.Lerp(newPos.Y, point.Position.Y, 0.9f);
+
+                    var lengthDiffSq = (point.Position - point.LastPosition).LengthSquared();
+                    if (point.Pushed && lengthDiffSq < touchDiffSq) point.Position = point.LastPosition;
                     
-                    if (point.Pushed) point.TrackTime++;
-                    else point.TrackTime = 0;
+                    point.Pushed = point.Pushed && (lengthDiffSq < touchDiffSq);
+
+                    if (point.Pushed) point.TrackTime += gameTime.ElapsedGameTime;
+                    else point.TrackTime = TimeSpan.Zero;
                 }
-                else point.TrackTime = 0;
+                else point.TrackTime = TimeSpan.Zero;
+
+                if (point.TrackTime == TimeSpan.Zero) point.Pushed = false;
+                point.Hold = point.TrackTime > Delay;
             }
             base.Update(gameTime);
         }
 
         public virtual void Draw(GameTime gameTime)
         {
-            if (Kinect == null) return;
+            if (Kinect == null || !Kinect.IsSensorReady) return;
             for (int i = 0; i < TrackPoints.Count; i++)
             {
                 var point = TrackPoints[i];
@@ -104,15 +141,13 @@ namespace Neat.Components
                     var trackPos = Kinect.ToVector3(point.TrackJoint, point.SkeletonId);
                     var basePos = Kinect.ToVector3(point.BaseJoint, point.SkeletonId);
 
-                    Game.Window.Title = GeometryHelper.Vector2String(trackPos);
-
                     var scaleFactor = 2 - (MathHelper.Clamp(basePos.Z - trackPos.Z, 0, point.Z)) / (point.Z);
                     var alpha = -scaleFactor + 2;
                     //scaleFactor += 2;
                     var size = tx.Crop.HasValue ? new Vector2(tx.Crop.Value.Width, tx.Crop.Value.Height) :
                         new Vector2(tx.Texture.Width, tx.Texture.Height);
                     Game.SpriteBatch.Draw(tx.Texture, point.Position - size / 2.0f, tx.Crop,
-                        point.TrackTime > Delay ? Color.Black : GraphicsHelper.GetColorWithAlpha(point.Tint, alpha), 0, Vector2.Zero, scaleFactor, SpriteEffects.None, 0);
+                        point.TrackTime > Delay ? Color.Red : GraphicsHelper.GetColorWithAlpha(point.Tint, alpha), 0, Vector2.Zero, scaleFactor, SpriteEffects.None, 0);
                 }
             }
         }

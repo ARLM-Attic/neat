@@ -25,7 +25,7 @@ namespace Neat.GUI
     {
 #if KINECT
         public KinectEngine Kinect { get { return game.Kinect; } }
-        public Kintouch Touch;
+        public Kintouch Touch { get { return game.Touch; } }
         public bool TrackKinect = true;
 #endif
         public Dictionary<String, Control> Controls;
@@ -52,9 +52,11 @@ namespace Neat.GUI
             Controls = new Dictionary<string, Control>();
             controlChain = new LinkedList<Control>();
             game = g;
+            /*
 #if KINECT
             Touch = new Kintouch(game);
 #endif
+             */
             HasMouse = game.ShowMouse;
         }
 
@@ -75,6 +77,7 @@ namespace Neat.GUI
         {
             if (MainForm)
                 ClickHandled = false;
+            /*
 #if KINECT
             if (TrackKinect && Kinect != null)
             {
@@ -82,7 +85,7 @@ namespace Neat.GUI
                 Touch.Update(gameTime);
             }
 #endif
-
+            */
             var n = controlChain.First;
             while (n != null)
             {
@@ -112,36 +115,67 @@ namespace Neat.GUI
                         }
                     }
 #if KINECT
-                    foreach (var item in Touch.TrackPoints)
+                    if (Touch.Enabled)
                     {
-                        if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
-                            new Rectangle((int)(item.LastPosition.X), (int)(item.LastPosition.Y), 1, 1)) && !
-                            GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
-                            new Rectangle((int)(item.Position.X), (int)(item.Position.Y), 1, 1)) &&
-                            item.TrackTime > Touch.Delay)
+                        foreach (var item in Touch.TrackPoints)
                         {
-                            n.Value.Released(item.Position);
-                            ClickHandled = true;
-                        }
+                            if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                                new Rectangle((int)(item.Position.X), (int)(item.Position.Y), 32, 32)))
+                            {
+                                if (item.Pushed)
+                                {
+                                    n.Value.Holded(item.Position);
+                                }
+                                else
+                                {
+                                    n.Value.Hovered(item.Position);
+                                }
+                                if (item.LastHold && !item.Hold)
+                                {
+                                    n.Value.Released(item.Position);
+                                    //Touch.Reset();
+                                    ClickHandled = true;
+                                }
+                                else if (!item.LastHold && item.Hold)
+                                {
+                                    n.Value.Pressed(item.Position);
+                                    //Touch.Reset();
+                                    ClickHandled = true;
+                                }
+                            }
 
-                        if (!GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
-                            new Rectangle((int)(item.LastPosition.X), (int)(item.LastPosition.Y), 1, 1)) &&
-                            GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
-                            new Rectangle((int)(item.Position.X), (int)(item.Position.Y), 1, 1)) &&
-                            item.TrackTime == Touch.Delay)
-                        {
-                            n.Value.Pressed(item.Position);
-                            ClickHandled = true;
-                        }
+                            /*if (//GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                                //new Rectangle((int)(item.LastPosition.X), (int)(item.LastPosition.Y), 1, 1)) && !
+                                GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                                new Rectangle((int)(item.Position.X), (int)(item.Position.Y), 1, 1)) &&
+                                //item.TrackTime > Touch.Delay)
+                                (item.LastHold && !item.Hold))
+                            {
+                                n.Value.Released(item.Position);
+                                ClickHandled = true;
+                            }
 
-                        if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
-                            new Rectangle((int)(item.Position.X), (int)(item.Position.Y), 1, 1)))
-                        {
-                            if (item.TrackTime > Touch.Delay)
-                                n.Value.Holded(item.Position);
-                            else
-                                n.Value.Hovered(item.Position);
-                            ClickHandled = true;
+                            if (//!GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                                //new Rectangle((int)(item.LastPosition.X), (int)(item.LastPosition.Y), 1, 1)) &&
+                                GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                                new Rectangle((int)(item.Position.X), (int)(item.Position.Y), 1, 1)) &&
+                                //item.TrackTime > Touch.Delay)
+                                (!item.LastHold && item.Hold))
+                            {
+                                n.Value.Pressed(item.Position);
+                                ClickHandled = true;
+                            }
+
+                            if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                                new Rectangle((int)(item.Position.X), (int)(item.Position.Y), 1, 1)))
+                            {
+                                //if (item.TrackTime > Touch.Delay)
+                                if (item.Pushed)
+                                    n.Value.Holded(item.Position);
+                                else
+                                    n.Value.Hovered(item.Position);
+                                ClickHandled = true;
+                            }*/
                         }
                     }
 #endif
@@ -198,9 +232,11 @@ namespace Neat.GUI
                     n.Value.Draw(gameTime, game.SpriteBatch);
                 n = n.Previous;
             }
+            /*
 #if KINECT
             if (TrackKinect) Touch.Draw(gameTime);
 #endif
+             */
         }
 
         public Control NewControl(string name, Control item)

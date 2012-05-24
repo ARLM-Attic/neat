@@ -17,7 +17,7 @@ using Neat;
 using Neat.MenuSystem;
 using System.IO;
 using System.Diagnostics;
-
+using Neat.Components;
 #if KINECT
     using Microsoft.Kinect;
 #endif
@@ -51,6 +51,7 @@ namespace Neat
 
 #if KINECT
         public KinectEngine Kinect;
+        public Kintouch Touch;
 #endif
 
         public bool Freezed = false;
@@ -214,6 +215,8 @@ namespace Neat
                 Kinect = new KinectEngine(this, 
                     ColorImageFormat.RgbResolution640x480Fps30, 
                     DepthImageFormat.Resolution640x480Fps30));
+            Components.Add(
+                Touch = new Kintouch(this, Kinect));
 #endif
 
 #if LIVE

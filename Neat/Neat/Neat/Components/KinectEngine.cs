@@ -96,8 +96,20 @@ public class KinectEngine : GameComponent
         });
         Console.AddCommand("k_status", o => Console.WriteLine(GetStatus()));
         Console.AddCommand("k_draw", o => Draw = bool.Parse(o[1]));
+        Console.AddCommand("k_seated", o => SeatedMode = bool.Parse(o[1]));
     }
 
+    public bool SeatedMode
+    {
+        get
+        {
+            return Sensor.SkeletonStream.TrackingMode == SkeletonTrackingMode.Seated;
+        }
+        set
+        {
+            Sensor.SkeletonStream.TrackingMode = value ? SkeletonTrackingMode.Seated : SkeletonTrackingMode.Default;
+        }
+    }
     public void Uninitialize()
     {
         if (this.Sensor != null)
@@ -287,6 +299,18 @@ public class KinectEngine : GameComponent
     {
         if (!this.IsSensorReady) return int.MaxValue;
         return Skeletons[skeletonId].Joints.Where(o => o.TrackingState != JointTrackingState.Tracked).ToList().Count;
+    }
+
+    public bool TryGetJoint(JointType jointId, out Joint joint, int skeletonId = 0)
+    {
+        if (TrackedSkeletonsIndices.Count == 0 || skeletonId >= TrackedSkeletonsIndices.Count)
+        {
+            joint = new Joint();
+            return false;
+        }
+        joint = Skeletons[TrackedSkeletonsIndices[skeletonId]].Joints[jointId];
+        return true;
+
     }
 
     protected override void Dispose(bool disposing)

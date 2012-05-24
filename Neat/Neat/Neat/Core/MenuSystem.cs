@@ -75,6 +75,9 @@ namespace Neat
             public bool DrawShadow = true;
             float longestItem = 0f;
             public bool FixedAlpha = false;
+            public static string SelectSound = "bleep3";
+            public static string BleepSound = "bleep10";
+
             public MenuSystem(NeatGame g, Vector2 b, SpriteFont f)
             {
                 font = f;
@@ -163,14 +166,19 @@ namespace Neat
                 }
             }
 
+            void select(int i)
+            {
+                game.PlaySound(SelectSound);
+                Items[i].Selected();
+                if (Items[i].Enabled && !string.IsNullOrEmpty(Items[i].OnSelectScript))
+                    game.Console.Run(Items[i].OnSelectScript);
+            }
+
             public void HandleInput(GameTime gameTime)
             {
                 if (game.IsTapped(Keys.Enter) || game.IsTapped(Buttons.A) || game.IsTapped(Buttons.Start))
-                { 
-                    game.PlaySound("bleep3");
-                    Items[SelectedItem].Selected();
-                    if (Items[SelectedItem].Enabled && !string.IsNullOrEmpty(Items[SelectedItem].OnSelectScript))
-                        game.Console.Run(Items[SelectedItem].OnSelectScript);
+                {
+                    select(SelectedItem);
                 }
                 if (game.IsTapped(Keys.Down) || game.IsTapped(Buttons.DPadDown) || game.IsTapped(Buttons.LeftThumbstickDown))
                     { Bleep(); NextItem(); }
@@ -214,12 +222,41 @@ namespace Neat
                         if (GeometryHelper.Vectors2Rectangle(ipos, size).Contains(
                             GeometryHelper.Vector2Point(game.MousePosition)))
                         {
-                            game.PlaySound("bleep3");
-                            Items[i].Selected();
-                            if (Items[i].Enabled && !string.IsNullOrEmpty(Items[i].OnSelectScript))
-                                game.Console.Run(Items[i].OnSelectScript);
+                            select(i);
                             break;
                         }
+
+
+                    }
+                }
+#endif
+
+#if KINECT
+                if (game.Touch.Enabled)
+                {
+                    for (int i = 0; i < Items.Count; i++)
+                    {
+                        bool breakAll = false;
+                        if (!Items[i].Enabled) continue;
+                        bool isSelected = (SelectedItem == i);
+                        var ipos = (Position - centerOffset) + i * ItemsOffset + (isSelected ? SelectedItemOffset : Vector2.Zero) - new Vector2(10, 0);
+                        var size = font.MeasureString(Items[i].Caption) + new Vector2(20, 0);
+
+                        foreach (var item in game.Touch.TrackPoints)
+                        {
+                            if (GeometryHelper.Vectors2Rectangle(ipos, size).Intersects(
+                                new Rectangle((int)(item.Position.X), (int)(item.Position.Y), 32, 32)) &&
+                                item.Hold && !item.LastHold)
+                            {
+                                select(i);
+                                game.Touch.Reset(new TimeSpan(0,0,0,1));
+                                //item.Hold = item.LastHold;
+                                breakAll = true;
+                                break;
+                            }
+                        }
+
+                        if (breakAll) break;
                     }
                 }
 #endif
@@ -227,7 +264,7 @@ namespace Neat
             void Bleep()
             {
                 if (EnableSoundEffects)
-                    game.PlaySound("bleep10");
+                    game.PlaySound(BleepSound);
             }
             void HandleShortcuts()
             {
