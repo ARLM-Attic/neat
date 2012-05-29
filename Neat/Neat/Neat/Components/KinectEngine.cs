@@ -13,6 +13,8 @@ using System;
 using Console = Neat.Components.Console;
 #if WINDOWS
 using System.Windows.Forms;
+using Neat.Mathematics;
+using Neat.Graphics;
 #endif
 public class KinectEngine : GameComponent
 {
@@ -312,22 +314,85 @@ public class KinectEngine : GameComponent
         return (ToVector3(joint, skeletonId) * half * new Vector3(1, -1, 1)) + half;
     }
 
+    public int TrackedSkeletonsCount { get { return TrackedSkeletonsIndices.Count; } }
+
     public int GetInferredJointsCount(int skeletonId = 0)
     {
         if (!this.IsSensorReady) return int.MaxValue;
         return Skeletons[skeletonId].Joints.Where(o => o.TrackingState != JointTrackingState.Tracked).ToList().Count;
     }
 
-    public bool TryGetJoint(JointType jointId, out Joint joint, int skeletonId = 0)
+    public bool TryGetJoint(JointType JointType, out Joint joint, int skeletonId = 0)
     {
         if (TrackedSkeletonsIndices.Count == 0 || skeletonId >= TrackedSkeletonsIndices.Count)
         {
             joint = new Joint();
             return false;
         }
-        joint = Skeletons[TrackedSkeletonsIndices[skeletonId]].Joints[jointId];
+        joint = Skeletons[TrackedSkeletonsIndices[skeletonId]].Joints[JointType];
         return true;
 
+    }
+
+    public void DrawSkeleton(SpriteBatch spriteBatch, LineBrush lb, Vector2 position, Vector2 size, Color color, int skeletonId = 0)
+    {
+        if (Skeletons.Length <= skeletonId || Skeletons[skeletonId] == null)
+        {
+            //Skeleton not found. Draw an X
+            lb.Draw(spriteBatch, position, position + size, color);
+            lb.Draw(spriteBatch, new LineSegment(position.X + size.X, position.Y, position.X, position.Y + size.Y), color);
+            return;
+        }
+
+        //Right Hand
+        lb.Draw(spriteBatch, ToVector2(JointType.HandRight, size, skeletonId),
+            ToVector2(JointType.WristRight, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.WristRight, size, skeletonId),
+            ToVector2(JointType.ElbowRight, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.ElbowRight, size, skeletonId),
+            ToVector2(JointType.ShoulderRight, size, skeletonId), color, position);
+
+        //Head & Shoulders
+        lb.Draw(spriteBatch, ToVector2(JointType.ShoulderRight, size, skeletonId),
+            ToVector2(JointType.ShoulderCenter, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.Head, size, skeletonId),
+            ToVector2(JointType.ShoulderCenter, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.ShoulderCenter, size, skeletonId),
+            ToVector2(JointType.ShoulderLeft, size, skeletonId), color, position);
+
+        //Left Hand
+        lb.Draw(spriteBatch, ToVector2(JointType.HandLeft, size, skeletonId),
+            ToVector2(JointType.WristLeft, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.WristLeft, size, skeletonId),
+            ToVector2(JointType.ElbowLeft, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.ElbowLeft, size, skeletonId),
+            ToVector2(JointType.ShoulderLeft, size, skeletonId), color, position);
+
+        //Hips & Spine
+        lb.Draw(spriteBatch, ToVector2(JointType.HipLeft, size, skeletonId),
+            ToVector2(JointType.HipCenter, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.HipRight, size, skeletonId),
+            ToVector2(JointType.HipCenter, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.Spine, size, skeletonId),
+            ToVector2(JointType.HipCenter, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.Spine, size, skeletonId),
+            ToVector2(JointType.ShoulderCenter, size, skeletonId), color, position);
+
+        //Left foot
+        lb.Draw(spriteBatch, ToVector2(JointType.HipLeft, size, skeletonId),
+            ToVector2(JointType.KneeLeft, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.KneeLeft, size, skeletonId),
+            ToVector2(JointType.AnkleLeft, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.AnkleLeft, size, skeletonId),
+            ToVector2(JointType.FootLeft, size, skeletonId), color, position);
+
+        //Right foot
+        lb.Draw(spriteBatch, ToVector2(JointType.HipRight, size, skeletonId),
+            ToVector2(JointType.KneeRight, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.KneeRight, size, skeletonId),
+            ToVector2(JointType.AnkleRight, size, skeletonId), color, position);
+        lb.Draw(spriteBatch, ToVector2(JointType.AnkleRight, size, skeletonId),
+            ToVector2(JointType.FootRight, size, skeletonId), color, position);
     }
 
     protected override void Dispose(bool disposing)
