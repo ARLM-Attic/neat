@@ -11,7 +11,9 @@ using Neat.Components.KinectForWindows;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Console = Neat.Components.Console;
-
+#if WINDOWS
+using System.Windows.Forms;
+#endif
 public class KinectEngine : GameComponent
 {
     /// <summary>
@@ -40,6 +42,8 @@ public class KinectEngine : GameComponent
         {
             this.colorImageFormat = colorFormat;
             this.depthImageFormat = depthFormat;
+
+            Debug.WriteLine("KinectEngine object created.", "Kinect");
 
             KinectSensor.KinectSensors.StatusChanged += this.KinectSensors_StatusChanged;
             this.DiscoverSensor();
@@ -107,13 +111,25 @@ public class KinectEngine : GameComponent
         }
         set
         {
-            Sensor.SkeletonStream.TrackingMode = value ? SkeletonTrackingMode.Seated : SkeletonTrackingMode.Default;
+            if (IsSensorReady)
+                Sensor.SkeletonStream.TrackingMode = value ? SkeletonTrackingMode.Seated : SkeletonTrackingMode.Default;
+            else
+            {
+                Console.Run("g_fullscreen false$_g_reinit");
+#if WINDOWS //of course it's windows, we don't need this!
+                MessageBox.Show("Kinect initialization failed.\n" + GetStatus());
+#endif
+            }
         }
     }
     public void Uninitialize()
     {
+        Debug.WriteLine("KinectEngine.Uninitialize()", "Kinect");
         if (this.Sensor != null)
+        {
+            Debug.WriteLine("Sensor active, stopping it.", "Kinect");
             this.Sensor.Stop();
+        }
     }
 
     public string GetStatus()
@@ -138,6 +154,7 @@ public class KinectEngine : GameComponent
     {
         NormalStartup = false;
 
+        Debug.WriteLine("");
         Debug.WriteLine("KinectEngine.DiscoverSensor(enableColor="+enableColor+", enableDepth="+enableDepth+") Started.", "Kinect");
 
         // Grab any available sensor

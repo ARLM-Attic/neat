@@ -149,11 +149,16 @@ namespace Neat
         {
             try
             {
+#if KINECT
+                Kinect.Uninitialize();
+#endif
                 //Unload any non ContentManager content here
                 base.UnloadContent();
             }
-            catch
+            catch (Exception e)
             {
+                Debug.WriteLine("Error in NeatGame.UnloadContent", "Content");
+                Debug.WriteLine(e, "Content");
             }
         }
     }
