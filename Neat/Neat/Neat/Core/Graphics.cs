@@ -194,11 +194,12 @@ namespace Neat
 #if WINDOWS
                     DrawMouse(MousePosition);
 #endif
-#if KINECT
-                    if (Touch.Enabled) Touch.Draw(gameTime);
-#endif
-                }
 
+                }
+#if KINECT
+                if (Touch.Enabled)
+                    Touch.Draw(gameTime);
+#endif
                 if (AutoDraw)
                     SpriteBatch.End();
 #if WINDOWS
