@@ -91,14 +91,25 @@ namespace Neat.GUI
             if (OnReleaseRun != null) Game.Console.Run(OnReleaseRun);
         }
 
-        public virtual void Holded(Vector2 pos = new Vector2()) { if (!Enabled) return; if (OnHold != null)  OnHold(); }
-        public virtual void Hovered(Vector2 pos = new Vector2()) { if (!Enabled) return; if (OnHover != null)  OnHover(); }
+        public virtual void Holded(Vector2 pos = new Vector2()) { 
+            if (!Enabled) return;
+            //IsMouseHold = true;
+            if (OnHold != null) OnHold(); 
+        }
+
+        public virtual void Hovered(Vector2 pos = new Vector2()) { 
+            if (!Enabled) return;
+            //IsMouseHovered = true;
+            if (OnHover != null)  OnHover();
+        }
         public virtual void Initialize() { }
 
         public virtual void Draw(GameTime gameTime,SpriteBatch spriteBatch)
         {
             Rectangle bounds = new Rectangle((int)(Position.X), (int)(Position.Y), (int)(Size.X), (int)(Size.Y));
-            spriteBatch.Draw(Game.GetTexture(BackgroundImage), bounds, TintColor); // Draw Background
+
+            var sprite = Game.GetSlice(BackgroundImage);
+            spriteBatch.Draw(sprite.Texture, bounds, sprite.Crop, TintColor); // Draw Background
             
             Vector2 textsize = Game.GetFont(Font).MeasureString(Caption);
             GraphicsHelper.DrawShadowedString(spriteBatch,Game.GetFont(Font), Caption, Position + new Vector2(Size.X / 2 - textsize.X / 2, Size.Y / 2 - textsize.Y / 2),
@@ -132,16 +143,16 @@ namespace Neat.GUI
         {
             if (Enabled)
             {
-                IsMouseHovered = GeometryHelper.IsVectorInRectangle(Position, Size, Parent.MousePosition) && (Parent.Size == Vector2.Zero ||
-                    GeometryHelper.IsVectorInRectangle(Vector2.Zero, Parent.Size, Parent.MousePosition));
+                //IsMouseHovered = GeometryHelper.IsVectorInRectangle(Position, Size, Parent.MousePosition) && (Parent.Size == Vector2.Zero ||
+                //    GeometryHelper.IsVectorInRectangle(Vector2.Zero, Parent.Size, Parent.MousePosition));
 #if WINDOWS
-                IsMouseHold = (IsMouseHovered) && (Mouse.GetState().LeftButton == ButtonState.Pressed);
+                //IsMouseHold = (IsMouseHovered) && (Mouse.GetState().LeftButton == ButtonState.Pressed);
 #elif ZUNE
             isMouseHold = (isMouseHovered) && (game.IsPressed(Buttons.A));
 #endif
 
-                if (IsMouseHovered) Hovered();
-                if (lastMouseHold && !IsMouseHold && IsMouseHovered) Released();
+                //if (IsMouseHovered) Hovered();
+                //if (lastMouseHold && !IsMouseHold && IsMouseHovered) Released();
 
                 if (IsMouseHold)
                 {

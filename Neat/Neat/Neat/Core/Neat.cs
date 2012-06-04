@@ -111,7 +111,8 @@ namespace Neat
                 ResetRenderTarget();
             }
         }
-
+        public Vector2 GameSize { get { return new Vector2(GameWidth, GameHeight); } }
+        public Vector2 GameCenter { get { return new Vector2(GameWidth / 2.0f, GameHeight / 2.0f); } }
 
 #endif
         public bool FullScreen = false;

@@ -92,6 +92,12 @@ namespace Neat
             CreateSprite("window_br", "windowsheet", new Rectangle(57, 61, 5, 5));
             CreateSprite("window_h", "windowsheet", new Rectangle(19, 62, 25, 4));
 
+            LoadTexture("Sprites\\kinect\\tiltbuttons");
+            CreateSprite("tilt_up", "tiltbuttons", new Rectangle(0, 0, 128, 128));
+            CreateSprite("tilt_down", "tiltbuttons", new Rectangle(0, 128, 128, 128));
+            CreateSprite("kinect_seated", "tiltbuttons", new Rectangle(128, 128, 128, 128));
+            CreateSprite("kinect_standing", "tiltbuttons", new Rectangle(128, 0, 128, 128));
+
             NormalFont = Content.Load<SpriteFont>("Fonts\\normal");
             LoadFont("Normal", NormalFont);
             LoadFont("Fonts\\smallFont");

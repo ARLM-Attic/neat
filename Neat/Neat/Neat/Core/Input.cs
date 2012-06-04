@@ -160,25 +160,31 @@ namespace Neat
             currentMouseState = Mouse.GetState();
         }
 
-        public bool IsMouseClicked()
+        public bool IsMouseClicked(bool released = true)
         {
-            return currentMouseState.LeftButton == ButtonState.Released && lastMouseState.LeftButton == ButtonState.Pressed;
+            if (released)
+                return currentMouseState.LeftButton == ButtonState.Released && lastMouseState.LeftButton == ButtonState.Pressed;
+            return currentMouseState.LeftButton == ButtonState.Pressed && lastMouseState.LeftButton == ButtonState.Released;
         }
         public bool IsMousePressed()
         {
             return currentMouseState.LeftButton == ButtonState.Pressed;
         }
-        public bool IsRightMouseClicked()
+        public bool IsRightMouseClicked(bool released = true)
         {
-            return currentMouseState.RightButton == ButtonState.Released && lastMouseState.RightButton == ButtonState.Pressed;
+            if (released)
+                return currentMouseState.RightButton == ButtonState.Released && lastMouseState.RightButton == ButtonState.Pressed;
+            return currentMouseState.RightButton == ButtonState.Pressed && lastMouseState.RightButton == ButtonState.Released;
         }
         public bool IsRightMousePressed()
         {
             return currentMouseState.RightButton == ButtonState.Pressed;
         }
-        public bool IsMidMouseClicked()
+        public bool IsMidMouseClicked(bool released = true)
         {
-            return currentMouseState.MiddleButton == ButtonState.Released && lastMouseState.MiddleButton == ButtonState.Pressed;
+            if (released)
+                return currentMouseState.MiddleButton == ButtonState.Released && lastMouseState.MiddleButton == ButtonState.Pressed;
+            return currentMouseState.MiddleButton == ButtonState.Pressed && lastMouseState.MiddleButton == ButtonState.Released;
         }
         public bool IsMidMousePressed()
         {

@@ -20,21 +20,41 @@ namespace Neat
 {
     public partial class CalibrateScreen : Screen
     {
-        public static KinectEngine Kinect;
+        KinectEngine Kinect { get { return game.Kinect; } }
         Label tiltLabel;
-        Image kinectImage, skeletonImage;
+        Image kinectImage;
         LineBrush lb;
+
+        Button tiltUp, tiltDown;
+        Button seated, standing;
+        Button back;
+
         public CalibrateScreen(NeatGame game)
             : base(game)
         {
             
         }
 
+        bool oldTouch, oldDraw;
         public override void Activate()
         {
             if (game.Kinect.ColorStream == null) game.Kinect.OpenColorStream();
 
+            oldTouch = game.Touch.Enabled;
+            game.Touch.Enabled = true;
+
+            oldDraw = game.Kinect.Draw;
+            game.Kinect.Draw = true;
+
             base.Activate();
+        }
+
+        public override void Deactivate(string nextScreen)
+        {
+            base.Deactivate(nextScreen);
+
+            game.Touch.Enabled = oldTouch;
+            game.Kinect.Draw = oldDraw;
         }
 
         public override void LoadContent()
@@ -49,14 +69,60 @@ namespace Neat
             tiltLabel = Form.NewControl("tiltlabel", new Label()).ToLabel();
             tiltLabel.Caption = "Tilt:";
             tiltLabel.Position = new Vector2(tiltLabel.Position.X, game.GameHeight / 2.0f - tiltLabel.Size.Y / 2.0f);
+            tiltLabel.Visible = false;
 
             kinectImage = Form.NewControl("kinectimage", new Image()).ToImage();
             kinectImage.BackgroundImage = "kinectcolor";
+            kinectImage.Size = new Vector2(320,240) * 1.5f;
+            kinectImage.AutoSize = false;   
 
-            //skeletonImage = Form.NewControl("skeletonimage", new Image()).ToImage();
-            //skeletonImage.BackgroundImage = "kinectskeletons";
+            Form.NewControl("tiltup", tiltUp = new Button());
+            tiltUp.BackgroundImage = "tilt_up";
+            tiltUp.Size = new Vector2(64);
+            tiltUp.Caption = "";
+            tiltUp.OnPress = () =>
+                {
+                    try
+                    {
+                        Kinect.Sensor.ElevationAngle += 5;
+                    }
+                    catch
+                    {
+                    }
+                    //game.Touch.Reset(new TimeSpan(0, 0, 0, 2));
+                };
 
-            //game.Console.AddCommand("k_smooth", k_smooth);
+            Form.NewControl("tiltdown", tiltDown = new Button());
+            tiltDown.BackgroundImage = "tilt_down";
+            tiltDown.Size = new Vector2(64);
+            tiltDown.Caption = "";
+            tiltDown.OnPress = () => 
+                {
+                    try
+                    {
+                        Kinect.Sensor.ElevationAngle -= 5;
+                    }
+                    catch { }
+                    //game.Touch.Reset(new TimeSpan(0, 0, 0, 2));
+                };
+
+            Form.NewControl("seated", seated = new Button());
+            seated.BackgroundImage = "kinect_seated";
+            seated.Size = new Vector2(64);
+            seated.Caption = "";
+            seated.OnPress = () => Kinect.SeatedMode = true;
+
+            Form.NewControl("standing", standing = new Button());
+            standing.BackgroundImage = "kinect_standing";
+            standing.Size = new Vector2(64);
+            standing.Caption = "";
+            standing.OnPress = () => Kinect.SeatedMode = false;
+
+            Form.NewControl("back", back = new Button());
+            back.Caption = "Back";
+            back.Size = new Vector2(64 + 64 + 10, 64);
+            back.OnPress = () => game.ActivateScreen(game.PreviousScreen);
+            back.TintColor = new Color(42, 171, 225);
 
         }
         /*
@@ -77,8 +143,20 @@ namespace Neat
         {
             if (Kinect == null) return; // this.Kinect = ((KineatGame)game).Kinect;
             tiltLabel.Caption = "Tilt: " + Kinect.Sensor.ElevationAngle;
-            kinectImage.Center();
+            //kinectImage.Center();
             //skeletonImage.Center();
+
+
+            var gc = game.GameCenter;
+            var kic = kinectImage.Size / 2.0f;
+            const float margin = 16;
+
+            kinectImage.Position = gc - kic;
+            tiltUp.Position = new Vector2(kinectImage.Position.X, gc.Y - (kic.Y + tiltUp.Size.Y + margin));
+            tiltDown.Position = new Vector2(kinectImage.Position.X, gc.Y + kic.Y + margin);
+            seated.Position = new Vector2(kinectImage.Position.X + kinectImage.Size.X, tiltUp.Position.Y);
+            standing.Position = seated.Position - new Vector2(standing.Size.X + 10, 0);
+            back.Position = new Vector2(standing.Position.X, tiltDown.Position.Y);
 
             base.Behave(gameTime);
         }
@@ -86,42 +164,7 @@ namespace Neat
         public override void Render(GameTime gameTime)
         {
             if (Kinect == null) return;
-            Vector2 offset = kinectImage.Position;
-            Vector2 size = kinectImage.Size;
-
             base.Render(gameTime);
-
-            /*game.Write(
-                "Correction: " + Kinect.Nui.SkeletonEngine.SmoothParameters.Correction + "\n" +
-                "Jitter Radius: " + Kinect.Nui.SkeletonEngine.SmoothParameters.JitterRadius + "\n" +
-                "Max Deviation: " + Kinect.Nui.SkeletonEngine.SmoothParameters.MaxDeviationRadius + "\n" +
-                "Prediction: " + Kinect.Nui.SkeletonEngine.SmoothParameters.Prediction + "\n" +
-                "Smoothing: " + Kinect.Nui.SkeletonEngine.SmoothParameters.Smoothing, new Vector2(10, 100));*/
-            if (Kinect.Skeletons.Length > 0)
-            {
-                var skeleton = Kinect.Skeletons[0];
-
-                string predicted = "";
-                string zs = "";/*
-                for (JointType i = 0; i < JointType.Count; i++)
-                {
-                    var v = Kinect.ToVector3(i, new Vector3(640, 480, 256));
-                    int r = 0;// (int)v.Z - ((int)(v.Z / 256) * 256);
-                    int g = 0; // (int)(v.Z / 256) - ((int)(v.Z / 256) / 256) * 256;
-                    int b = (int)(v.Z);// ((int)(v.Z / 256) / 256);
-                    r = g = b;
-                    var p = Polygon.BuildCircle(10, Kinect.ToVector2(i, new Vector2(v.X, v.Y)), 5);
-                    //p.Draw(SpriteBatch, lb, offset+Vector2.One, Color.Black);
-                    Color c = new Color(r, g, b);
-                    p.Draw(SpriteBatch, lb, offset, skeleton.Joints[i].TrackingState == JointTrackingState.Inferred ? Color.Yellow : c);
-                    if (skeleton.Joints[i].TrackingState != JointTrackingState.Tracked)
-                        predicted += i.ToString() + "\n";
-                    zs += i.ToString() + (int)v.Z + "\n";
-                }
-
-                Kinect.DrawSkeleton(SpriteBatch, lb, offset, new Vector2(640, 480), Color.Gray);
-                */game.Write(zs + "\n\n\n\n\n\n" + predicted, new Vector2(200, 100));
-            }
         }
     }
 }
