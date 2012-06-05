@@ -75,7 +75,6 @@ namespace Neat
             LoadTexture("Sprites\\icon");
             LoadTexture("Sprites\\neatlogo");
 
-            //LoadTexture("Sprites\\mouse", "mousePointer");
             LoadTexture("Sprites\\pointers");
             CreateSprite("mousepointer", "pointers", new Rectangle(1, 33, 17, 32));
             CreateSprite("handleft", "pointers", new Rectangle(33, 1, 32, 32));

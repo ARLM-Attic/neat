@@ -112,7 +112,7 @@ namespace Neat.GUI
                 }
                 else if (Mouse.GetState().LeftButton == ButtonState.Pressed && !Parent.ClickHandled)
                 {
-                    Holded(Parent.MousePosition);
+                    Held(Parent.MousePosition);
                 }
 
                 
@@ -121,7 +121,7 @@ namespace Neat.GUI
             base.HandleInput(gameTime);
         }
 
-        public override void Holded(Vector2 pos = new Vector2())
+        public override void Held(Vector2 pos = new Vector2())
         {
             var br = Game.GetSlice(BottomRightSprite);
             var vbr = new Vector2(br.Crop.Value.Width, br.Crop.Value.Height) * 3.0f;
@@ -145,7 +145,7 @@ namespace Neat.GUI
                 if (size.X > MinSize.X) _size.X = size.X;
                 if (size.Y > MinSize.Y) _size.Y = size.Y;
             }
-            base.Holded();
+            base.Held();
         }
 
         public override void Move(Vector2 newPos)

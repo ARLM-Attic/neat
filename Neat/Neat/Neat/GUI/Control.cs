@@ -91,7 +91,7 @@ namespace Neat.GUI
             if (OnReleaseRun != null) Game.Console.Run(OnReleaseRun);
         }
 
-        public virtual void Holded(Vector2 pos = new Vector2()) { 
+        public virtual void Held(Vector2 pos = new Vector2()) { 
             if (!Enabled) return;
             //IsMouseHold = true;
             if (OnHold != null) OnHold(); 
@@ -160,7 +160,7 @@ namespace Neat.GUI
                     {
                         Parent.ClickHandled = true;
                         if (!lastMouseHold) Pressed();
-                        Holded();
+                        Held();
                     }
                 }
 

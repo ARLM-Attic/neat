@@ -102,7 +102,7 @@ namespace Neat.GUI
 
                         if (game.IsPressed(Keys.Space, Buttons.A) || game.IsMousePressed())
                         {
-                            n.Value.Holded(MousePosition);
+                            n.Value.Held(MousePosition);
                         }
                         else n.Value.IsMouseHold = false;
 
@@ -133,7 +133,7 @@ namespace Neat.GUI
                                 if (item.Pushed)
                                 {
                                     n.Value.IsMouseHold = true;
-                                    n.Value.Holded(pos);
+                                    n.Value.Held(pos);
                                 }
 
                                 if (item.LastHold && !item.Hold)
