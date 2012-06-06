@@ -15,6 +15,7 @@ using Neat.Graphics;
 using Neat.GUI;
 using Neat.Components;
 using Microsoft.Kinect;
+using System.Diagnostics;
 
 namespace Neat
 {
@@ -28,6 +29,8 @@ namespace Neat
         Button tiltUp, tiltDown;
         Button seated, standing;
         Button back;
+
+        Trackbar trackBar1;
 
         public CalibrateScreen(NeatGame game)
             : base(game)
@@ -124,6 +127,10 @@ namespace Neat
             back.OnPress = () => game.ActivateScreen(game.PreviousScreen);
             back.TintColor = new Color(42, 171, 225);
 
+            Form.NewControl("trackbar1", trackBar1 = new Trackbar());
+            trackBar1.Size = new Vector2(500, 32);
+            trackBar1.Position = new Vector2(32);
+            trackBar1.OnRelease = () => Debug.WriteLine(trackBar1.Percent);
         }
         /*
         void k_smooth(IList<string> args)

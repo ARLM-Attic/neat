@@ -91,6 +91,19 @@ namespace Neat
             CreateSprite("window_br", "windowsheet", new Rectangle(57, 61, 5, 5));
             CreateSprite("window_h", "windowsheet", new Rectangle(19, 62, 25, 4));
 
+            CreateSprite("trackbar_lu", "windowsheet", new Rectangle(68, 2, 17, 20));
+            CreateSprite("trackbar_lc", "windowsheet", new Rectangle(68, 22, 17, 15));
+            CreateSprite("trackbar_lb", "windowsheet", new Rectangle(68, 37, 17, 22));
+            CreateSprite("trackbar_ct", "windowsheet", new Rectangle(85, 2, 14, 20));
+            CreateSprite("trackbar_cc", "windowsheet", new Rectangle(85, 22, 14, 15));
+            CreateSprite("trackbar_cb", "windowsheet", new Rectangle(85, 37, 14, 22));
+            CreateSprite("trackbar_ru", "windowsheet", new Rectangle(215, 2, 17, 20));
+            CreateSprite("trackbar_rc", "windowsheet", new Rectangle(215, 22, 17, 15));
+            CreateSprite("trackbar_rb", "windowsheet", new Rectangle(215, 37, 17, 22));
+            CreateSprite("trackbar_gu", "windowsheet", new Rectangle(232, 2, 21, 20));
+            CreateSprite("trackbar_gc", "windowsheet", new Rectangle(232, 22, 21, 15));
+            CreateSprite("trackbar_gb", "windowsheet", new Rectangle(232, 37, 21, 22));
+
             LoadTexture("Sprites\\kinect\\tiltbuttons");
             CreateSprite("tilt_up", "tiltbuttons", new Rectangle(0, 0, 128, 128));
             CreateSprite("tilt_down", "tiltbuttons", new Rectangle(0, 128, 128, 128));

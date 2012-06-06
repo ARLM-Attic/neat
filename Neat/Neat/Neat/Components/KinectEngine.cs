@@ -319,7 +319,7 @@ public class KinectEngine : GameComponent
     public int GetInferredJointsCount(int skeletonId = 0)
     {
         if (!this.IsSensorReady) return int.MaxValue;
-        return Skeletons[skeletonId].Joints.Where(o => o.TrackingState != JointTrackingState.Tracked).ToList().Count;
+        return Skeletons[TrackedSkeletonsIndices[skeletonId]].Joints.Where(o => o.TrackingState != JointTrackingState.Tracked).ToList().Count;
     }
 
     public bool TryGetJoint(JointType JointType, out Joint joint, int skeletonId = 0)

@@ -12,16 +12,13 @@ using Microsoft.Xna.Framework.Input;
 #if WINDOWS_PHONE
 using Microsoft.Xna.Framework.Input.Touch;
 #endif
-#if WINDOWS
- 
- 
-#endif
 using Microsoft.Xna.Framework.Media;
 using Neat;
 using Neat.MenuSystem;
 using Neat.EasyMenus;
 using Neat.Graphics;
 using Neat.Mathematics;
+
 namespace Neat.GUI
 {
     public class Control
@@ -53,21 +50,21 @@ namespace Neat.GUI
         public bool IsMouseHold = false;
         public bool IsMouseHovered = false;
 
-        public Control()
-        {
-        }
-
-/*        public event XEventHandler OnPress;
-        public event XEventHandler OnHold;
-        public event XEventHandler OnHover;
-        public event XEventHandler OnRelease;*/
-
         public Action OnPress;
         public Action OnHold;
         public Action OnHover;
         public Action OnRelease;
 
         public string OnPressRun, OnReleaseRun;
+        
+        private bool lastMouseHovered;
+        private bool lastMouseHold;
+        private Vector2 lastMousePosition;
+
+        public Control()
+        {
+        }
+
 
         public virtual void CaptionChanged(string newCaption)
         {
@@ -143,17 +140,6 @@ namespace Neat.GUI
         {
             if (Enabled)
             {
-                //IsMouseHovered = GeometryHelper.IsVectorInRectangle(Position, Size, Parent.MousePosition) && (Parent.Size == Vector2.Zero ||
-                //    GeometryHelper.IsVectorInRectangle(Vector2.Zero, Parent.Size, Parent.MousePosition));
-#if WINDOWS
-                //IsMouseHold = (IsMouseHovered) && (Mouse.GetState().LeftButton == ButtonState.Pressed);
-#elif ZUNE
-            isMouseHold = (isMouseHovered) && (game.IsPressed(Buttons.A));
-#endif
-
-                //if (IsMouseHovered) Hovered();
-                //if (lastMouseHold && !IsMouseHold && IsMouseHovered) Released();
-
                 if (IsMouseHold)
                 {
                     if (!Parent.ClickHandled)
@@ -169,15 +155,9 @@ namespace Neat.GUI
                 lastMousePosition = Parent.MousePosition;
             }
         }
-        //Privates
-        bool lastMouseHovered;
-        bool lastMouseHold;
-        Vector2 lastMousePosition;
 
         protected Color GetColorWithAlpha(Color col, float alpha)
         {
-            //Vector3 c = col.ToVector3();
-            //return new Color(new Vector4(c, alpha));
             return GraphicsHelper.GetColorWithAlpha(col, alpha);
         }
 
@@ -202,6 +182,7 @@ namespace Neat.GUI
             return ((Image)this);
         }
 
+        #region Console
         public virtual void AttachToConsole()
         {
             Game.Console.AddCommand("fc_enabled", fc_enabled);
@@ -378,5 +359,6 @@ namespace Neat.GUI
             if (Parent == null) Game.Console.WriteLine("Orphan Control. Cannot attach parent to the console.");
             else Parent.AttachToConsole();
         }
+        #endregion
     }
 }

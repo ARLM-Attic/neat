@@ -29,7 +29,7 @@ namespace Neat.Components
 
             public JointType TrackJoint = JointType.HandLeft;
             public JointType BackupJoint = JointType.WristLeft;
-            public float Z = 0.450f; //mm
+            public static float Z = 0.450f; //mm
             public int SkeletonId = 0;
             public string TextureName = "handleft";
             public string PushedTextureName = "handleft_pushed";
@@ -78,6 +78,8 @@ namespace Neat.Components
                     PushedTextureName = "handright_pushed",
                     SkeletonId = 1, Tint = Color.Pink }
             };
+
+
         }
 
         public void Reset()
@@ -128,7 +130,7 @@ namespace Neat.Components
 
                     point.BasePos /= new Vector3(TrackPointData.BaseJoints.Length);
 
-                    point.Pushed = (trackPos.Z < point.BasePos.Z - point.Z);
+                    point.Pushed = (trackPos.Z < point.BasePos.Z - TrackPointData.Z /*point.Z*/);
                     var newPos = Size * (Sensitivity * new Vector2(trackPos.X - point.BasePos.X, trackPos.Y - point.BasePos.Y));
                     newPos.Y = Size.Y - newPos.Y;
                     newPos += new Vector2(Game.GameWidth, -Game.GameHeight) * 0.5f;
@@ -165,6 +167,7 @@ namespace Neat.Components
         public virtual void Draw(GameTime gameTime)
         {
             if (Kinect == null || !Kinect.IsSensorReady) return;
+            var Z = TrackPointData.Z;
             for (int i = 0; i < TrackPoints.Count; i++)
             {
                 var point = TrackPoints[i];
@@ -176,7 +179,7 @@ namespace Neat.Components
                     var trackPos = Kinect.ToVector3(point.TrackJoint, point.SkeletonId);
                     //var basePos = Kinect.ToVector3(point.BaseJoint, point.SkeletonId);
 
-                    var scaleFactor = 2 - (MathHelper.Clamp(point.BasePos.Z - trackPos.Z, 0, point.Z)) / (point.Z);
+                    var scaleFactor = 2 - (MathHelper.Clamp(point.BasePos.Z - trackPos.Z, 0, Z)) / (Z);
                     var alpha = -scaleFactor + 2;
                     //scaleFactor += 2;
 

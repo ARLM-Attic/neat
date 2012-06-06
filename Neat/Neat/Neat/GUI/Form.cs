@@ -52,11 +52,6 @@ namespace Neat.GUI
             Controls = new Dictionary<string, Control>();
             controlChain = new LinkedList<Control>();
             game = g;
-            /*
-#if KINECT
-            Touch = new Kintouch(game);
-#endif
-             */
             HasMouse = game.ShowMouse;
         }
 
@@ -77,80 +72,74 @@ namespace Neat.GUI
         {
             if (MainForm)
                 ClickHandled = false;
-            /*
-#if KINECT
-            if (TrackKinect && Kinect != null)
-            {
-                Touch.Kinect = Kinect;
-                Touch.Update(gameTime);
-            }
-#endif
-            */
             var n = controlChain.First;
             while (n != null)
             {
-                if (n.Value.Visible)
+                n.Value.Update(gameTime);
+                if (!ClickHandled)
                 {
-                    n.Value.Update(gameTime);
-                    if (!ClickHandled) n.Value.HandleInput(gameTime);
-
-                    if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
-                            new Rectangle((int)(MousePosition.X), (int)(MousePosition.Y), 1, 1)))
+                    if (n.Value.Visible)
                     {
-                        n.Value.IsMouseHovered = true;
-                        n.Value.Hovered(MousePosition);
+                        n.Value.HandleInput(gameTime);
 
-                        if (game.IsPressed(Keys.Space, Buttons.A) || game.IsMousePressed())
+                        if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                                new Rectangle((int)(MousePosition.X), (int)(MousePosition.Y), 1, 1)))
                         {
-                            n.Value.Held(MousePosition);
-                        }
-                        else n.Value.IsMouseHold = false;
+                            n.Value.IsMouseHovered = true;
+                            n.Value.Hovered(MousePosition);
 
-                        if (game.IsReleased(Keys.Space, Buttons.A) || game.IsMouseClicked())
-                        {
-                            n.Value.Released(MousePosition);
-                        }
-                        if (game.IsTapped(Keys.Space, Buttons.A) || game.IsMouseClicked(false))
-                        {
-                            n.Value.Pressed(MousePosition);
-                        }
-                        ClickHandled = true;
-                    }
-                    else n.Value.IsMouseHovered = false;
-#if KINECT
-                    if (Touch.Enabled)
-                    {
-                        foreach (var item in Touch.TrackPoints)
-                        {
-                            var pos = item.Position + MouseOffset;
-
-                            if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
-                                new Rectangle((int)(pos.X), (int)(pos.Y), 32, 32)))
+                            if (game.IsPressed(Keys.Space, Buttons.A) || game.IsMousePressed())
                             {
-                                n.Value.IsMouseHovered = true;
-                                n.Value.Hovered(pos);
+                                n.Value.Held(MousePosition);
+                            }
+                            else n.Value.IsMouseHold = false;
 
-                                if (item.Pushed)
-                                {
-                                    n.Value.IsMouseHold = true;
-                                    n.Value.Held(pos);
-                                }
+                            if (game.IsReleased(Keys.Space, Buttons.A) || game.IsMouseClicked())
+                            {
+                                n.Value.Released(MousePosition);
+                            }
+                            if (game.IsTapped(Keys.Space, Buttons.A) || game.IsMouseClicked(false))
+                            {
+                                n.Value.Pressed(MousePosition);
+                            }
+                            ClickHandled = true;
+                        }
+                        else n.Value.IsMouseHovered = false;
+#if KINECT
+                        if (Touch.Enabled)
+                        {
+                            foreach (var item in Touch.TrackPoints)
+                            {
+                                var pos = item.Position + MouseOffset;
 
-                                if (item.LastHold && !item.Hold)
+                                if (GeometryHelper.Vectors2Rectangle(n.Value.Position, n.Value.Size).Intersects(
+                                    new Rectangle((int)(pos.X), (int)(pos.Y), 32, 32)))
                                 {
-                                    n.Value.Released(pos);
-                                    //Touch.Reset();
+                                    n.Value.IsMouseHovered = true;
+                                    n.Value.Hovered(pos);
+
+                                    if (item.Pushed)
+                                    {
+                                        n.Value.IsMouseHold = true;
+                                        n.Value.Held(pos);
+                                    }
+
+                                    if (item.LastHold && !item.Hold)
+                                    {
+                                        n.Value.Released(pos);
+                                        //Touch.Reset();
+                                    }
+                                    else if (!item.LastHold && item.Hold)
+                                    {
+                                        n.Value.Pressed(pos);
+                                        //Touch.Reset();
+                                    }
+                                    ClickHandled = true;
                                 }
-                                else if (!item.LastHold && item.Hold)
-                                {
-                                    n.Value.Pressed(pos);
-                                    //Touch.Reset();
-                                }
-                                ClickHandled = true;
                             }
                         }
-                    }
 #endif
+                    }
                 }
                 n = n.Next;
             }

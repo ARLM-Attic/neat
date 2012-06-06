@@ -137,6 +137,7 @@
     <Compile Include="Core\Transition.cs" />
     <Compile Include="Effects\CropEffect.cs" />
     <Compile Include="Effects\ScaleEffect.cs" />
+    <Compile Include="GUI\Trackbar.cs" />
     <Compile Include="Transitions\Crop.cs" />
     <Compile Include="Transitions\Enter.cs" />
     <Compile Include="Transitions\Exit.cs" />
