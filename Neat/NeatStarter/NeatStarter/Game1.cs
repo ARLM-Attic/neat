@@ -34,6 +34,7 @@ namespace NeatStarter
             ConsoleKey = Keys.OemTilde;
             Graphics.ApplyChanges();
             Window.Title = "NeatStarter";
+            DefaultTransition = new Neat.Transitions.Fader();
             Console.AddCommand("greet", greet_func);
         }
 

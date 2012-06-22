@@ -170,13 +170,25 @@ public class KinectEngine : GameComponent
             // If this sensor is connected, then enable it
             if (this.LastStatus == KinectStatus.Connected)
             {
-                Debug.WriteLine("Sensor is connected. Enabling streams.", "Kinect");
-                this.Sensor.SkeletonStream.Enable();
-                if (enableColor)
-                    this.Sensor.ColorStream.Enable(this.colorImageFormat);
-                if (enableDepth)
-                    this.Sensor.DepthStream.Enable(this.depthImageFormat);
-
+                Debug.WriteLine("Sensor is connected. Enabling SkeletonStream.", "Kinect");
+                try
+                {
+                    this.Sensor.SkeletonStream.Enable();
+                    if (enableColor)
+                    {
+                        Debug.WriteLine("Enabling ColorStream.", "Kinect");
+                        this.Sensor.ColorStream.Enable(this.colorImageFormat);
+                    }
+                    if (enableDepth)
+                    {
+                        Debug.WriteLine("Enabling DepthStream.", "Kinect");
+                        this.Sensor.DepthStream.Enable(this.depthImageFormat);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e, "Kinect");
+                }
                 try
                 {
                     this.Sensor.Start();

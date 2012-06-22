@@ -16,6 +16,7 @@ using Neat.GUI;
 using Neat.Components;
 using Microsoft.Kinect;
 using System.Diagnostics;
+using Console = Neat.Components.Console;
 
 namespace Neat
 {
@@ -77,8 +78,9 @@ namespace Neat
             kinectImage = Form.NewControl("kinectimage", new Image()).ToImage();
             kinectImage.BackgroundImage = "kinectcolor";
             kinectImage.Size = new Vector2(320,240) * 1.5f;
-            kinectImage.AutoSize = false;   
-
+            kinectImage.AutoSize = false;
+            game.Console.AddCommand("kc_showdepth", o => kinectImage.BackgroundImage = bool.Parse(o[1]) ? "kinectdepth" : "kinectcolor");
+            
             Form.NewControl("tiltup", tiltUp = new Button());
             tiltUp.BackgroundImage = "tilt_up";
             tiltUp.Size = new Vector2(64);
