@@ -33,6 +33,8 @@ namespace Neat
 
         Trackbar trackBar1;
 
+        public static bool ShowModeButtons = true;
+
         public CalibrateScreen(NeatGame game)
             : base(game)
         {
@@ -133,6 +135,7 @@ namespace Neat
             trackBar1.Size = new Vector2(500, 32);
             trackBar1.Position = new Vector2(32);
             trackBar1.OnRelease = () => Debug.WriteLine(trackBar1.Percent);
+            trackBar1.Visible = false;
         }
         /*
         void k_smooth(IList<string> args)
@@ -155,6 +158,8 @@ namespace Neat
             //kinectImage.Center();
             //skeletonImage.Center();
 
+            if (ShowModeButtons && !standing.Visible) standing.Visible = seated.Visible = true;
+            else if (!ShowModeButtons && standing.Visible) standing.Visible = seated.Visible = false;
 
             var gc = game.GameCenter;
             var kic = kinectImage.Size / 2.0f;

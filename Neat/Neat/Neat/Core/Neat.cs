@@ -53,7 +53,9 @@ namespace Neat
         public KinectEngine Kinect;
         public Kintouch Touch;
 #endif
-
+#if SPEECH
+        public SpeechEngine Speech;
+#endif
         public bool Freezed = false;
 
 #if LIVE
