@@ -166,7 +166,6 @@ namespace Neat.Components
             : base(game)
         {
             this.Game = game;
-            Position = new Vector2(game.GameWidth, game.GameHeight) - new Vector2(200);
         }
 
         public override void Initialize()
@@ -197,8 +196,14 @@ namespace Neat.Components
 
         public virtual void LoadContent()
         {
+        }
+
+        public virtual void GraphicsReinitialized()
+        {
             target = new RenderTarget2D(Game.GraphicsDevice, Game.GameWidth, Game.GameHeight, false,
                 SurfaceFormat.Alpha8, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+
+            Position = Game.GameSize - new Vector2(200);
         }
 
         public override void Update(GameTime gameTime)

@@ -56,6 +56,10 @@ namespace Neat
             EffectHandler.Game = game;
         }
 
+        public virtual void GraphicsReinitialized()
+        {
+        }
+
         public virtual void Activate()
         {
             if (game.HasConsole && Form != null) Form.AttachToConsole();

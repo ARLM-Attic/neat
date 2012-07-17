@@ -171,6 +171,13 @@ namespace Neat
             ResetRenderTarget();
             Graphics.IsFullScreen = FullScreen;
             Graphics.ApplyChanges();
+
+            foreach (var item in Screens)
+            {
+                Debug.WriteLine("GraphicsReinitialized(" + item.Key + ")");
+                item.Value.GraphicsReinitialized();
+            }
+            ElegantTextEngine.GraphicsReinitialized();
         }
 
         public void ToggleFullScreen()

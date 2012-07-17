@@ -16,10 +16,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace Neat.Mathematics
 {
-    public partial class Polygon
+    [Serializable]
+    public partial class Polygon// : ISerializable
     {
         public enum PolygonCollisionClass
         {
@@ -29,17 +31,30 @@ namespace Neat.Mathematics
         }
 
         public List<Vector2> Vertices;
-        
         const float _epsilon = 0.0000001f;
         public bool AutoTriangulate = false;
-        
+        public List<Triangle> Triangles;
         private int n { get { return Vertices.Count; } }
 
         public Polygon()
         {
             Initialize();
         }
+        /*
+        protected Polygon(SerializationInfo info, StreamingContext context)
+        {
+            Vertices = (List<Vector2>)info.GetValue("Vertices", typeof(List<Vector2>));
+            AutoTriangulate = info.GetBoolean("AutoTriangulate");
+            Triangles = (List<Triangle>)info.GetValue("Triangles", typeof(List<Triangle>));
+        }
 
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Vertices", Vertices, Vertices.GetType());
+            info.AddValue("AutoTriangulate", AutoTriangulate);
+            info.AddValue("Triangles", Triangles, Triangles.GetType());
+        }
+        */
         protected virtual void Initialize()
         {
             Vertices = new List<Vector2>();
@@ -102,6 +117,21 @@ namespace Neat.Mathematics
             return result;
         }
 
+        public bool IsRectangle()
+        {
+            if (Vertices.Count != 4) return false;
+            Vector2[] v = new Vector2[4] { Vertices[0], Vertices[1], Vertices[2], Vertices[3] };
+            /*
+            return
+                (Vertices[0].X == Vertices[1].X || Vertices[0].X == Vertices[2].X || Vertices[0].X == Vertices[3].X) && //Check for 90 deg
+                (Vertices[0] - Vertices[1]).LengthSquared() == (Vertices[2] - Vertices[3]).LengthSquared() &&
+                (Vertices[1] - Vertices[2]).LengthSquared() == (Vertices[3] - Vertices[0]).LengthSquared();*/
+            return
+                (v[0].X == v[1].X || v[0].X == v[2].X || v[0].X == v[3].X) && //Check for 90 deg
+                (v[0] - v[1]).LengthSquared() == (v[2] - v[3]).LengthSquared() &&
+                (v[1] - v[2]).LengthSquared() == (v[3] - v[0]).LengthSquared();
+        }
+
         public static Polygon BuildCircle(int vertices, Vector2 center, float radius)
         {
             Polygon result = new Polygon(vertices);
@@ -155,6 +185,26 @@ namespace Neat.Mathematics
             }
             return this;
         }
+
+        public virtual void Resize(Vector2 newSize, bool dontAllowZero = true)
+        {
+            if (newSize.X <= _epsilon || newSize.Y <= _epsilon) return;
+
+            Vector2 pos;
+            Vector2 size;
+            GetPositionAndSize(out pos, out size);
+            
+            Vector2 scale = newSize / size;
+            for (int i = 0; i < n; i++)
+            {
+                Vertices[i] -= pos;
+                Vertices[i] *= scale;
+                Vertices[i] += pos;
+            }
+
+            if (AutoTriangulate) Triangulate();
+        }
+
         public Vector2 GetPosition()
         {
             Vector2 pos = new Vector2(float.MaxValue, float.MaxValue);

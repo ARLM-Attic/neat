@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Neat
 {
-    public struct DVar
+    public class DVar
     {
-        public string Value;
+        public string Value = "";
 
         public int ReturnInt() { return int.Parse(Value); }
         public string ReturnString() { return Value; }
@@ -18,10 +18,17 @@ namespace Neat
         public bool ReturnBool() { return bool.Parse(Value); }
 
         //TODO: Implement Get/Set for the value: _value = Set(input); return Get(input)
-
-        public void SetValue(object value)
+        public Action<object> SetValue;
+        public Func<string> GetValue;
+        public DVar()
         {
-            Value = value.ToString();
+            SetValue = new Action<object>(_setValue);
+            GetValue = new Func<string>(() => {return Value;});
+        }
+
+        void _setValue(object o)
+        {
+            Value = o.ToString();
         }
     };
 

@@ -131,6 +131,50 @@ namespace Neat.Mathematics
                 return new Vector2(float.NaN);
         }
 
+        //Credit: http://funplosion.com/devblog/collision-detection-line-vs-point-circle-and-rectangle.html
+        public static float GetLineToPointDistance(Vector2 A, Vector2 B, Vector2 p)
+        {
+            //get the normalized line segment vector
+            Vector2 v = B - A;
+            v.Normalize();
+
+            //determine the point on the line segment nearest to the point p
+            float distanceAlongLine = Vector2.Dot(p, v) - Vector2.Dot(A, v);
+            Vector2 nearestPoint;
+            if (distanceAlongLine < 0)
+            {
+                //closest point is A
+                nearestPoint = A;
+            }
+            else if (distanceAlongLine > Vector2.Distance(A, B))
+            {
+                //closest point is B
+                nearestPoint = B;
+            }
+            else
+            {
+                //closest point is between A and B... A + d  * ( ||B-A|| )
+                nearestPoint = A + distanceAlongLine * v;
+            }
+
+            //Calculate the distance between the two points
+            return Vector2.Distance(nearestPoint, p);
+        }
+
+        public static bool RectCollidesWithCircle(Vector2 center, float radius, Rectangle rect)
+        {
+            return
+                GetLineToPointDistance(new Vector2(rect.Left, rect.Top), new Vector2(rect.Right, rect.Top), center) <= radius ||
+                GetLineToPointDistance(new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Right, rect.Bottom), center) <= radius ||
+                GetLineToPointDistance(new Vector2(rect.Left, rect.Top), new Vector2(rect.Left, rect.Bottom), center) <= radius ||
+                GetLineToPointDistance(new Vector2(rect.Right, rect.Top), new Vector2(rect.Right, rect.Bottom), center) <= radius;
+        }
+
+        public static bool LineCollidesWithCircle(Vector2 center, float radius, LineSegment line)
+        {
+            return GetLineToPointDistance(line.StartPos, line.EndPos, center) <= radius;
+        }
+
         public static Vector2 MoveInCircle(TimeSpan time, Vector2 speed)
         {
             double t = time.TotalSeconds;

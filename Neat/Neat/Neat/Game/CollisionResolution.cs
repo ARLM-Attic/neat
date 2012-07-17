@@ -54,7 +54,8 @@ namespace Neat
 
         void Reset()
         {
-            sim = new PhysicsSimulator(game);
+            PhysicsSimulator.Game = game;
+            sim = new PhysicsSimulator();
             sim.Gravity *= 2.0f;
             lb = new LineBrush(game.GraphicsDevice, 1);
 

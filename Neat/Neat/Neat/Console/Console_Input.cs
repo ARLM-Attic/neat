@@ -143,8 +143,8 @@ namespace Neat.Components
             
             if (commandsbuffer.Count > 0)
             {
-                if (game.IsTapped(Keys.Up)) GetNextCommand();
-                else if (game.IsTapped(Keys.Down)) GetPrevCommand();
+                if (game.IsTapped(Keys.Down)) GetNextCommand();
+                else if (game.IsTapped(Keys.Up)) GetPrevCommand();
             }
         }
     }

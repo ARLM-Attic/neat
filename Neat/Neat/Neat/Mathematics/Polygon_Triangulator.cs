@@ -11,21 +11,12 @@ using System.Text;
 //      http://members.gamedev.net/ysaneya/Code/CTriangulator.h
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-#if LIVE
-using Microsoft.Xna.Framework.GamerServices;
-#endif
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace Neat.Mathematics
 {
     public partial class Polygon
     {
-        public List<Triangle> Triangles;
-
         public virtual void Triangulate()
         {
             Triangles = new List<Triangle>();

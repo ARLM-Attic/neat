@@ -12,9 +12,11 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Runtime.Serialization;
 
 namespace Neat.Mathematics
 {
+    [Serializable]
     public class Triangle : Polygon
     {
         public Vector2 A { get { return Vertices[0]; } set { Vertices[0] = value; } }
@@ -25,7 +27,21 @@ namespace Neat.Mathematics
         {
             Initialize();
         }
+        /*
+        protected Triangle(SerializationInfo info, StreamingContext context)
+        {
+            Vertices = (List<Vector2>)info.GetValue("Vertices", typeof(List<Vector2>));
+            AutoTriangulate = info.GetBoolean("AutoTriangulate");
+            Triangles = new List<Triangle>{ this };// (List<Triangle>)info.GetValue("Triangles", typeof(List<Triangle>));
+        }
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Vertices", Vertices, Vertices.GetType());
+            info.AddValue("AutoTriangulate", AutoTriangulate);
+            //info.AddValue("Triangles", Triangles, Triangles.GetType());
+        }
+        */
         protected override void Initialize()
         {
             Vertices = new List<Vector2>(3);

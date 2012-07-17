@@ -8,13 +8,16 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Diagnostics;
 using Neat.Graphics;
+using System.Runtime.Serialization;
 
 namespace Neat.Mathematics
 {
-    public class Body
+    [Serializable]
+    public class Body : ISerializable
     {
+        [NonSerialized]
         public Action<object, Vector2> Collide = null;
-        public Polygon Mesh;
+        public Polygon Mesh { get; set; }
         public bool IsStatic = true;
         public bool IsFree = false;
         //public bool Pushable = true;
@@ -30,7 +33,8 @@ namespace Neat.Mathematics
         public bool PreventSlippingOnSlopes = true; //Hopefully this is just temporary and I'll find the right way to do this
         public bool Convex = false;
         float _mass = 0, _inverseMass = 0;
-        Neat.Components.Console console;
+        public object Entity;
+
         public float Mass
         {
             get
@@ -63,15 +67,61 @@ namespace Neat.Mathematics
                 _inverseMass = value;
             }
         }
-        public object Entity;
-        public PhysicsSimulator Simulator;
-        public NeatGame Game;
 
-        public Body(PhysicsSimulator i_sim, NeatGame i_game,
+        [NonSerialized]
+        public PhysicsSimulator Simulator;
+        public NeatGame Game { get { return PhysicsSimulator.Game; } }
+        Neat.Components.Console console { get { return Game.Console; } }
+
+        protected Body(SerializationInfo info, StreamingContext context)
+        {
+            //Collide = (Action<object, Vector2>)info.GetValue("Collide", typeof(Action<object, Vector2>));
+            Mesh = (Polygon)info.GetValue("Mesh", typeof(Polygon));
+            IsStatic = info.GetBoolean("IsStatic");
+            IsFree = info.GetBoolean("IsFree");
+            AttachToGravity = info.GetBoolean("AttachToGravity");
+            Force = (Vector2)info.GetValue("Force", typeof(Vector2));
+            Acceleration = (Vector2)info.GetValue("Acceleration", typeof(Vector2));
+            Velocity = (Vector2)info.GetValue("Velocity", typeof(Vector2));
+            MaxSpeed = (Vector2)info.GetValue("MaxSpeed", typeof(Vector2));
+            MaxAcceleration = (Vector2)info.GetValue("MaxAcceleration", typeof(Vector2));
+            GravityNormal = (Vector2)info.GetValue("GravityNormal", typeof(Vector2));
+            PreventSlippingOnSlopes = info.GetBoolean("PreventSlippingOnSlopes");
+            Convex = info.GetBoolean("Convex");
+            Entity = info.GetValue("Entity", typeof(object));
+            _mass = info.GetSingle("_mass");
+            _inverseMass = info.GetSingle("_inverseMass");
+
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            //info.AddValue("Collide", Collide, Collide.GetType());
+            info.AddValue("Mesh", Mesh, Mesh.GetType());
+            info.AddValue("IsStatic", IsStatic);
+            info.AddValue("IsFree", IsFree);
+            info.AddValue("AttachToGravity", AttachToGravity);
+            info.AddValue("Force", Force, Force.GetType());
+            info.AddValue("Acceleration", Acceleration, Acceleration.GetType());
+            info.AddValue("Velocity", Velocity, Velocity.GetType());
+            info.AddValue("MaxSpeed", MaxSpeed, MaxSpeed.GetType());
+            info.AddValue("MaxAcceleration", MaxAcceleration, MaxAcceleration.GetType());
+            info.AddValue("GravityNormal", GravityNormal, GravityNormal.GetType());
+            info.AddValue("PreventSlippingOnSlopes", PreventSlippingOnSlopes);
+            info.AddValue("Convex", Convex);
+            info.AddValue("Entity", Entity, typeof(object));
+            info.AddValue("_mass", _mass);
+            info.AddValue("_inverseMass", _inverseMass);
+        }
+
+        public Body()
+        {
+        }
+
+        public Body(PhysicsSimulator i_sim, 
             object i_entity, Polygon i_mesh, float i_mass)
         {
             Simulator = i_sim;
-            Game = i_game;
             Entity = i_entity;
             Mass = i_mass;
             Mesh = i_mesh;
@@ -81,21 +131,16 @@ namespace Neat.Mathematics
             Convex = Mesh.IsConvex();
         }
 
-        public Body(PhysicsSimulator i_sim, NeatGame i_game,
+        public Body(PhysicsSimulator i_sim, 
             Polygon i_mesh, float i_mass)
         {
             Simulator = i_sim;
-            Game = i_game;
             Mass = i_mass;
             Mesh = i_mesh;
 
             Simulator.Bodies.Add(this);
             Stop();
             Convex = Mesh.IsConvex();
-        }
-
-        public Body()
-        {
         }
 
         public void Stop()
@@ -135,7 +180,6 @@ namespace Neat.Mathematics
         public void AttachToConsole()
         {
             if (Game == null) return;
-            console = Game.Console;
             console.AddCommand("bd_static", bd_static);
             console.AddCommand("bd_free", bd_free);
             console.AddCommand("bd_gravity", bd_gravity);
@@ -146,6 +190,7 @@ namespace Neat.Mathematics
             console.AddCommand("bd_detach", bd_detach);
             console.AddCommand("bd_attach", bd_attach);
             console.AddCommand("bd_gravitynormal", bd_gravitynormal);
+            console.AddCommand("bd_rect", o => console.WriteLine(Mesh.IsRectangle().ToString()));
         }
 
         void bd_static(IList<string> args)

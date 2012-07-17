@@ -16,6 +16,7 @@ using Neat.Graphics;
 
 namespace Neat.Mathematics
 {
+    [Serializable]
     public class LineSegment
     {
         public Vector2 StartPos;
@@ -122,6 +123,11 @@ namespace Neat.Mathematics
         public GeometryHelper.LineIntersectionStates Intersects(LineSegment l2)
         {
             return GeometryHelper.LinesIntersect(this, l2, true, true);
+        }
+
+        public float Distance(Vector2 p)
+        {
+            return GeometryHelper.GetLineToPointDistance(StartPos, EndPos, p);
         }
     }
 }

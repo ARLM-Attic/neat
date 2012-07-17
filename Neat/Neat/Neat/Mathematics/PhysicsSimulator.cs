@@ -5,57 +5,87 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-#if LIVE
-using Microsoft.Xna.Framework.GamerServices;
-#endif
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Diagnostics;
 using Neat.Graphics;
+using System.Runtime.Serialization;
 
 namespace Neat.Mathematics
 {
+    [Serializable]
     public class Rope
     {
         public Body A;
         public Body B;
         public float Length;
     }
-    public class PhysicsSimulator : GameComponent
+
+    [Serializable]
+    public class PhysicsSimulator : ISerializable
     {
+        [NonSerialized]
         const float _epsilon = 1f;
+        [NonSerialized]
         const float _bigNumber = 100f;
+        [NonSerialized]
         Vector2 negativeOne = new Vector2(-1);
 
         public float AllowedPenetrationDepth = 0;// -0.1f;
-        public float DampingCoef = 0.95f;
-        public Vector2 Gravity = new Vector2(0, 0.98f);
+        public float DampingCoef = 0.95f;//
+        public Vector2 Gravity = new Vector2(0, 0.98f);//
         public List<Body> Bodies = new List<Body>();
-        public float SpeedCoef = 0.025f;
-        public float StickCoef = 0.8f;
+        public float SpeedCoef = 0.025f;//
+        public float StickCoef = 0.8f;//
         public short MaxUpdatePerBody = 1;
-
-        public float Speed { get; protected set; }
-        public NeatGame game;
-        short[] bodyUpdateCount;
-
+        public float Speed { get; protected set; }//
+        [NonSerialized] short[] bodyUpdateCount;
         public List<Rope> Ropes = new List<Rope>();
+        public bool ShowTriangles;
 
-        Neat.Components.Console console { get { if (game == null) return null; else return game.Console; } set { game.Console = value; } }
+        [NonSerialized] public static NeatGame Game;// { get { return NeatGame.Games[0]; } }
+        Neat.Components.Console console { get { if (Game == null) return null; else return Game.Console; } }
 
-        public PhysicsSimulator(NeatGame i_game) : base(i_game)
+        protected PhysicsSimulator(SerializationInfo info, StreamingContext context)
         {
-            game = i_game;
+            AllowedPenetrationDepth = info.GetSingle("AllowedPenetrationDepth");
+            DampingCoef = info.GetSingle("DampingCoef");
+            Gravity = (Vector2)info.GetValue("Gravity", typeof(Vector2));
+            Bodies = (List<Body>)info.GetValue("Bodies", typeof(List<Body>));
+            SpeedCoef = info.GetSingle("SpeedCoef");
+            StickCoef = info.GetSingle("StickCoef");
+            MaxUpdatePerBody = info.GetInt16("MaxUpdatePerBody");
+            Speed = info.GetSingle("Speed");
+            Ropes = (List<Rope>)info.GetValue("Ropes", typeof(List<Rope>));
+            ShowTriangles = info.GetBoolean("ShowTriangles");
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("AllowedPenetrationDepth", AllowedPenetrationDepth);
+            info.AddValue("DampingCoef", DampingCoef);
+            info.AddValue("Gravity", Gravity, Gravity.GetType());
+            info.AddValue("Bodies", Bodies, Bodies.GetType());
+            info.AddValue("SpeedCoef", SpeedCoef);
+            info.AddValue("StickCoef", StickCoef);
+            info.AddValue("MaxUpdatePerBody", MaxUpdatePerBody);
+            info.AddValue("Speed", Speed);
+            info.AddValue("Ropes", Ropes, Ropes.GetType());
+            info.AddValue("ShowTriangles", ShowTriangles);
+        }
+
+        public PhysicsSimulator()
+        {
             Initialize();
         }
 
-        public override void Initialize()
+        public virtual void Initialize()
         {
             AttachToConsole();
         }
 
-        public override void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             Update((float)(gameTime.ElapsedGameTime.Milliseconds + 1));
         }
@@ -351,7 +381,6 @@ namespace Neat.Mathematics
             return false;
         }
 
-        public bool ShowTriangles;
         public void Draw(SpriteBatch spriteBatch, LineBrush lb, Color color, Vector2 offset, bool? showTriangles=null)
         {
             if ((showTriangles.HasValue && showTriangles.Value) || ShowTriangles)
@@ -427,7 +456,7 @@ namespace Neat.Mathematics
             List<Vector2> points = new List<Vector2>();
             for (int i = 1; i < args.Count; i++)
                 points.Add(GeometryHelper.String2Vector(args[i]));
-            Body b = new Body(this, game, new Polygon(points), 100);
+            Body b = new Body(this, Game, new Polygon(points), 100);
             b.Mesh.AutoTriangulate = true;
             b.Mesh.Triangulate();
             b.IsFree = true;

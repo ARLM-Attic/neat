@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
+using Neat.Mathematics;
 #if LIVE
 using Microsoft.Xna.Framework.GamerServices;
 #endif
@@ -306,7 +307,9 @@ namespace Neat.Components
                 else if (args[1] == "white") cl = Color.White;
                 else if (args[1] == "gray" || args[1] == "grey") cl = Color.Gray;
                 else if (args[1] == "transparent") cl = Color.Transparent;
-                else if (args.Count > 2) // custom color - float, float, float [, float(alpha) ]
+                else if (args[1].Count(new Func<char, bool>(o => o == ',')) == 3) cl = new Color(GeometryHelper.String2Vector4(args[1]));
+                else if (args[1].Count(new Func<char, bool>(o => o == ',')) == 2) cl = new Color(GeometryHelper.String2Vector3(args[1]));
+                else if (args.Count > 2) // custom color - float float float [ float(alpha) ]
                 {
                     try
                     {
