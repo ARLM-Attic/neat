@@ -102,9 +102,6 @@ namespace Neat.Components
             Autocompletes.Add("g_showmouse", AutocompleteBoolean);
             Autocompletes.Add("g_messagecolor", AutocompleteBoolean);
             Autocompletes.Add("g_assigntexture", AutocompleteSprites);
-            //Autocompletes.Add("c_textcolor", AutocompleteColors);
-            //Autocompletes.Add("c_inputcolor", AutocompleteColors);
-            //Autocompletes.Add("c_backcolor", AutocompleteColors);
             Autocompletes.Add("cfx_color", AutocompleteColors);
             Autocompletes.Add("c_allowcolors", AutocompleteBoolean);
             Autocompletes.Add("c_setcolorcode", o =>
@@ -125,7 +122,7 @@ namespace Neat.Components
             Autocompletes.Add("a_sfx", AutocompleteSounds);
             Autocompletes.Add("a_mediaplay", o =>
                 {
-                    var l = AutocompleteSongs(o);
+                    var l = AutocompleteSongs(o).ToList();
                     l.Add("library");
                     return l;
                 });
