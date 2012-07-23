@@ -16,17 +16,7 @@ namespace Neat.Components
     {
         public IList<string> AutocompleteColors(IList<string> args)
         {
-            return new string[] {
-                "black",
-                "blue",
-                "red",
-                "green",
-                "yellow",
-                "purple",
-                "brown",
-                "white",
-                "gray",
-                "transparent" };
+            return knownColors.Keys.ToArray();
         }
 
         public IList<string> AutocompleteSprites(IList<string> args)
