@@ -68,6 +68,8 @@ namespace Neat.Mathematics
             }
         }
 
+        public HashSet<Body> NotCollideWith = new HashSet<Body>();
+
         [NonSerialized]
         public PhysicsSimulator Simulator;
         public NeatGame Game { get { return PhysicsSimulator.Game; } }
@@ -91,7 +93,9 @@ namespace Neat.Mathematics
             Entity = info.GetValue("Entity", typeof(object));
             _mass = info.GetSingle("_mass");
             _inverseMass = info.GetSingle("_inverseMass");
-
+            Body[] ncwArray = (Body[])info.GetValue("NotCollideWith", typeof(Body[]));
+            NotCollideWith = new HashSet<Body>(ncwArray);
+            //NotCollideWith = (HashSet<Body>)info.GetValue("NotCollideWith", typeof(HashSet<Body>));
         }
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -112,6 +116,8 @@ namespace Neat.Mathematics
             info.AddValue("Entity", Entity, typeof(object));
             info.AddValue("_mass", _mass);
             info.AddValue("_inverseMass", _inverseMass);
+            info.AddValue("NotCollideWith", NotCollideWith.ToArray(), typeof(Body[]));
+            //info.AddValue("NotCollideWith", NotCollideWith, NotCollideWith.GetType());
         }
 
         public Body()

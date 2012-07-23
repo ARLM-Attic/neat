@@ -86,26 +86,34 @@ namespace Neat.Components
             else if (IsPressed(Keys.Tab))
             {
                 if (SoundEffects) game.PlaySound("console_space");
+
+                var args = command.Split(' ');
+                var lastArg = args.LastOrDefault();
+                var oldLastArg = lastArg;
+                var keys = ((args.Length <= 1) || args.Length > 1 && !Autocompletes.ContainsKey(args[0].ToLower())) ? Commands.Keys.ToList()
+                    : Autocompletes[args[0].ToLower()](args);
+
                 List<string> s = new List<string>();
-                foreach (var item in Commands.Keys)
-                {
-                    if (item.StartsWith(command.Trim())) s.Add(item);
-                }
+                if (keys != null)
+                    foreach (var item in keys)
+                    {
+                        if (item.StartsWith(lastArg.Trim())) s.Add(item);
+                    }
                 if (s.Count == 0)
                 {
                     WriteLine("No commands found.");
                 }
                 else if (s.Count == 1)
                 {
-                    command += s[0].Substring(command.Trim().Length)+" ";
+                    lastArg += s[0].Substring(lastArg.Trim().Length) + " ";
                 }
                 else
                 {
-                    if (command.Length >= 2)
+                    //if (lastArg.Length >= 2)
                     {
                         var sample = s[0];
-                        int cindex = command.Trim().Length;
-                        for (; cindex < sample.Length; cindex++)
+                        int cindex = lastArg.Trim().Length;
+                        for (; cindex <= sample.Length; cindex++)
                         {
                             bool done = false;
                             for (int i = 1; i < s.Count; i++)
@@ -118,16 +126,24 @@ namespace Neat.Components
                             }
                             if (done) break;
                         }
-                        
-                        command = sample.Substring(0,cindex-1);
-                        if (command.Length < oldcmd.Length) command = oldcmd;
+
+                        lastArg = sample.Substring(0, cindex - 1);
+                        if (lastArg.Length < oldLastArg.Length) lastArg = oldLastArg;
                     }
                     for (int i = 0; i < s.Count; i++)
                     {
                         Write(s[i] + "   ");
                         if (i > 0 && i % 5 == 0) WriteLine("");
                     }
-                    WriteLine("");
+                    WriteLine("");   
+                }
+
+                if (lastArg != oldLastArg)
+                {
+                    command = "";
+                    for (int i = 0; i < args.Length - 1; i++)
+                        command += args[i] + " ";
+                    command += lastArg;
                 }
             }
 

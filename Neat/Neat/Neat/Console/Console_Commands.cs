@@ -19,14 +19,20 @@ namespace Neat.Components
             RunCommand(c);
         }
         public Dictionary<string, Action<IList<string>>> Commands;
+        public Dictionary<string, Func<IList<string>, IList<string>>> Autocompletes;
 
-        public void AddCommand(string key, Action<IList<string>> act)
+        public void AddCommand(string key, Action<IList<string>> act, Func<IList<string>, IList<string>> autocomplete = null)
         {
+            key = key.ToLower();
             if (Commands.ContainsKey(key)) Commands.Remove(key);
             Commands.Add(key, act);
+            if (Autocompletes.ContainsKey(key)) Autocompletes.Remove(key);
+            if (autocomplete != null) Autocompletes.Add(key, autocomplete);
         }
+
         void InitCommands()
         {
+            Autocompletes = new Dictionary<string, Func<IList<string>, IList<string>>>();
             if (standAlone)
             {
                 Commands = new Dictionary<string, Action<IList<string>>>
@@ -157,6 +163,8 @@ namespace Neat.Components
 #endif
 
             };
+
+                InitAutocompletes();
             }
         }
         public virtual void Run(List<string> args)

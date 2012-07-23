@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Neat
 {
+    [Serializable]
     public class DVar
     {
         public string Value = "";
@@ -32,6 +33,7 @@ namespace Neat
         }
     };
 
+    [Serializable]
     public class RAM : Dictionary<string,DVar>
     {
         NeatGame _game;

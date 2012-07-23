@@ -170,6 +170,9 @@ namespace Neat.Mathematics
                 {
                     var item = Bodies[j];
                     if (i == j) continue;
+                    if (item.NotCollideWith.Contains(body) ||
+                        body.NotCollideWith.Contains(item)) 
+                        continue;
 
                     var push = Vector2.Zero;
                     

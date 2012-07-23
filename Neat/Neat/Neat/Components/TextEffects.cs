@@ -200,10 +200,18 @@ namespace Neat.Components
 
         public virtual void GraphicsReinitialized()
         {
+            if (target != null)
+            {
+                Vector2 oldSize = new Vector2(target.Width, target.Height);
+                Vector2 newSize = Game.GameSize;
+                //Position = Game.GameSize - new Vector2(200);
+                Position *= newSize / oldSize;
+            }
+            else
+                Position = Game.GameSize - new Vector2(200);
+
             target = new RenderTarget2D(Game.GraphicsDevice, Game.GameWidth, Game.GameHeight, false,
                 SurfaceFormat.Alpha8, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
-
-            Position = Game.GameSize - new Vector2(200);
         }
 
         public override void Update(GameTime gameTime)

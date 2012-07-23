@@ -334,7 +334,6 @@ namespace Neat.Components
             catch { WriteLine("Error in " + Args2Str(args, 0)); }
             return cl;
         }
-
         public string Args2Str(IList<string> args, int startIndex)
         {
             string result = "";

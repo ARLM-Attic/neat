@@ -48,5 +48,7 @@ namespace Neat
                 return fonts["normal"];
             }
         }
+
+        public string[] FontsKeys { get { return fonts.Keys.ToArray(); } }
     }
 }

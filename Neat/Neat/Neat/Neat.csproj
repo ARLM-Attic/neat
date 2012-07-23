@@ -188,6 +188,7 @@
     <Compile Include="Components\Kintouch.cs" />
     <Compile Include="Components\SpeechEngine.cs" />
     <Compile Include="Components\TextEffects.cs" />
+    <Compile Include="Console\Console_Autocomplete.cs" />
     <Compile Include="Core\EffectChain.cs" />
     <Compile Include="Core\EffectHandler.cs" />
     <Compile Include="Core\Event.cs" />

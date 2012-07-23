@@ -174,6 +174,8 @@ namespace Neat
                 return sounds["mute"];
             }
         }
+
+        public string[] SoundsKeys { get { return sounds.Keys.ToArray(); } }
         #endregion
         #region Songs
         Dictionary<string, Song> songs;
@@ -212,6 +214,8 @@ namespace Neat
                 return songs["blank"];
             }
         }
+
+        public string[] SongsKeys { get { return songs.Keys.ToArray(); } }
         #endregion
     }
 }

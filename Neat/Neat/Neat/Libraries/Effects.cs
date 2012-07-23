@@ -59,5 +59,6 @@ namespace Neat
             SpriteBatch.End();
             SpriteBatch.Begin();
         }
+        public string[] EffectsKeys { get { return effects.Keys.ToArray(); } }
     }
 }

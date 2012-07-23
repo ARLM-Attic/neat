@@ -62,6 +62,8 @@ namespace Neat
                 return videos["error"];
             }
         }
+
+        public string[] VideosKeys { get { return videos.Keys.ToArray(); } }
     }
 #endif
 }
